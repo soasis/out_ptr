@@ -14,20 +14,71 @@ This example comes from real world code using [libavformat]().
 
 <table>
   <tr>
-    <td>Shared Code</td>
-    <td></td>
+    <td colspan="2">Shared Code</td>
   </tr>
   <tr>
-    <td>```<br>#include &lt;memory&gt;<br><br>#include &lt;avformat.h&gt;<br><br><br>struct AVFormatContextDeleter {<br><br>          void operator() (AVFormatContext* c) noexcept {<br><br>               avformat_close_input(&amp;c);<br><br>               avformat_free_context(c);<br><br>          }<br><br>};<br><br>typedef std::unique_ptr&lt;AVFormatContext, AVFormatContextDeleter&gt; AVFormatContext;<br><br>// Signature from libavformat:<br><br>// int avformat_open_input(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);<br>```<br></td>
-    <td></td>
+    <td colspan="2"><pre lang="cpp">
+#include <memory>
+#include <avformat.h>
+// Signature from libavformat:
+// int avformat_open_input(AVFormatContext **ps, const char *url, 
+//	AVInputFormat *fmt, AVDictionary **options);
+
+struct AVFormatContextDeleter {
+		void operator() (AVFormatContext* c) noexcept {
+			avformat_close_input(&c);
+			avformat_free_context(c);
+		}
+};
+
+typedef std::unique_ptr<AVFormatContext, AVFormatContextDeleter> AVFormatContext;
+    </pre><br></td>
   </tr>
   <tr>
     <td>Current Code</td>
-    <td>With Proposal</td>
+    <td>With boost.out_ptr !</td>
   </tr>
   <tr>
-    <td>```<br>int main (int, char* argv[]) {<br><br>     AVFormatContext context(avformat_alloc_context());<br><br>     // ...<br><br>     // used, need to reopen<br><br>     AVFormatContext* raw_context = context.release();<br><br>     if (avformat_open_input(&amp;raw_context, <br><br>          argv[0], nullptr, nullptr) != 0) {<br><br>          std::stringstream ss;<br><br>          ss &lt;&lt; "ffmpeg_image_loader could not open file '"<br><br>               &lt;&lt; path &lt;&lt; "'";<br><br>          throw FFmpegInputException(ss.str().c_str());<br><br>     }<br><br>     context.reset(raw_context);<br><br><br>     // ... off to the races !<br><br><br>     return 0;<br><br>}<br>```<br></td>
-    <td>```<br>int main (int, char* argv[]) {<br><br>     AVFormatContext context(avformat_alloc_context());<br><br>     // ...<br><br>     // used, need to reopen<br><br><br>     if (avformat_open_input(std::inout_ptr(context), <br><br>          argv[0], nullptr, nullptr) != 0) {<br><br>          std::stringstream ss;<br><br>          ss &lt;&lt; "ffmpeg_image_loader could not open file '"<br><br>               &lt;&lt; argv[0] &lt;&lt; "'";<br><br>          throw FFmpegInputException(ss.str().c_str());<br><br>     }<br><br><br><br>     // ... off to the races!<br><br><br>     return 0;<br><br>}<br>```<br></td>
+    <td><pre lang="cpp">
+int main (int, char* argv[]) {
+	AVFormatContext context(avformat_alloc_context());
+	// ...
+	// used, need to reopen
+	AVFormatContext* raw_context = context.release();
+	if (avformat_open_input(&raw_context, 
+		argv[0], nullptr, nullptr) != 0) {
+		std::stringstream ss;
+		ss << "ffmpeg_image_loader could not open file '"
+			<< path << "'";
+		throw FFmpegInputException(ss.str().c_str());
+	}
+	context.reset(raw_context);
+
+	// ... off to the races !
+
+	return 0;
+}
+    </pre><br></td>
+    <td><pre lang="cpp">
+int main (int, char* argv[]) {
+	AVFormatContext context(avformat_alloc_context());
+	// ...
+	// used, need to reopen
+	AVFormatContext* raw_context = context.release();
+	if (avformat_open_input(&raw_context, 
+		argv[0], nullptr, nullptr) != 0) {
+		std::stringstream ss;
+		ss << "ffmpeg_image_loader could not open file '"
+			<< path << "'";
+		throw FFmpegInputException(ss.str().c_str());
+	}
+	context.reset(raw_context);
+
+	// ... off to the races !
+
+	return 0;
+}
+    </pre><br></td>
   </tr>
 </table>
 
