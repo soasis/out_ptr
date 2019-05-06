@@ -28,3 +28,6 @@
 [submodule "vendor/ficapi"]
 	path = vendor/ficapi
 	url = https://github.com/ThePhD/ficapi.git
+[submodule "ficapi"]
+	path = ficapi
+	url = https://github.com/ThePhD/ficapi.git
