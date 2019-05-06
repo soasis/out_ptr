@@ -10,7 +10,7 @@
 
 # Quick Example
 
-This example comes from real world code using [libavformat]().
+This example comes from real world code using [libavformat](http://git.videolan.org/?p=ffmpeg.git;a=blob;f=libavformat/avformat.h;h=fdaffa5bf41b6ed83fa4f7acebcf04ed796296fd;hb=refs/heads/master).
 
 <table>
   <tr>
@@ -18,8 +18,8 @@ This example comes from real world code using [libavformat]().
   </tr>
   <tr>
     <td colspan="2"><pre lang="cpp">
-#include <memory>
-#include <avformat.h>
+#include &lt;memory&gt;
+#include &lt;avformat.h&gt;
 // Signature from libavformat:
 // int avformat_open_input(AVFormatContext **ps, const char *url, 
 //	AVInputFormat *fmt, AVDictionary **options);
@@ -31,7 +31,8 @@ struct AVFormatContextDeleter {
 		}
 };
 
-typedef std::unique_ptr<AVFormatContext, AVFormatContextDeleter> AVFormatContext;
+using AVFormatContext =
+	std::unique_ptr<AVFormatContext, AVFormatContextDeleter>;
     </pre><br></td>
   </tr>
   <tr>
@@ -41,42 +42,42 @@ typedef std::unique_ptr<AVFormatContext, AVFormatContextDeleter> AVFormatContext
   <tr>
     <td><pre lang="cpp">
 int main (int, char* argv[]) {
-	AVFormatContext context(avformat_alloc_context());
-	// ...
-	// used, need to reopen
-	AVFormatContext* raw_context = context.release();
-	if (avformat_open_input(&raw_context, 
-		argv[0], nullptr, nullptr) != 0) {
-		std::stringstream ss;
-		ss << "ffmpeg_image_loader could not open file '"
-			<< path << "'";
-		throw FFmpegInputException(ss.str().c_str());
-	}
-	context.reset(raw_context);
+     AVFormatContext context(avformat_alloc_context());
+     // ...
+     // used, need to reopen
+     AVFormatContext* raw_context = context.release();
+     if (avformat_open_input(&raw_context, 
+          argv[0], nullptr, nullptr) != 0) {
+          std::stringstream ss;
+          ss << "ffmpeg_image_loader could not open file '"
+               << path << "'";
+     throw FFmpegInputException(ss.str().c_str());
+     }
+     context.reset(raw_context);
 
-	// ... off to the races !
+     // ... off to the races !
 
-	return 0;
+     return 0;
 }
     </pre><br></td>
     <td><pre lang="cpp">
 int main (int, char* argv[]) {
-	AVFormatContext context(avformat_alloc_context());
-	// ...
-	// used, need to reopen
-	AVFormatContext* raw_context = context.release();
-	if (avformat_open_input(&raw_context, 
-		argv[0], nullptr, nullptr) != 0) {
-		std::stringstream ss;
-		ss << "ffmpeg_image_loader could not open file '"
-			<< path << "'";
-		throw FFmpegInputException(ss.str().c_str());
-	}
-	context.reset(raw_context);
+     AVFormatContext context(avformat_alloc_context());
+     // ...
+     // used, need to reopen
 
-	// ... off to the races !
+     if (avformat_open_input(std::inout_ptr(context), 
+          argv[0], nullptr, nullptr) != 0) {
+          std::stringstream ss;
+          ss << "ffmpeg_image_loader could not open file '"
+               << argv[0] << "'";
+          throw FFmpegInputException(ss.str().c_str());
+     }
 
-	return 0;
+
+     // ... off to the races!
+
+     return 0;
 }
     </pre><br></td>
   </tr>
@@ -84,11 +85,3 @@ int main (int, char* argv[]) {
 
 
 # Extending for your own pointer types
-
-Extension for Smart Pointers is done by using (Partial) Template Specialization on the types `out_ptr_t` and `inout_ptr_t` for your pointer types. Here is an example for a type called [sg14::retain_ptr](https://github.com/slurps-mad-rips/retain-ptr):
-
-```
-
-```
-
-
