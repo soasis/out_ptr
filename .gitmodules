@@ -25,9 +25,3 @@
 [submodule "vendor/boost/smart_ptr"]
 	path = vendor/boost/smart_ptr
 	url = https://github.com/boostorg/smart_ptr
-[submodule "vendor/ficapi"]
-	path = vendor/ficapi
-	url = https://github.com/ThePhD/ficapi.git
-[submodule "ficapi"]
-	path = ficapi
-	url = https://github.com/ThePhD/ficapi.git
