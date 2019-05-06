@@ -8,16 +8,16 @@
 |          |           |
 |          |           |
 
-# Quick Example
+# Quick Comparison and Example
 
 This example comes from real world code using [libavformat](http://git.videolan.org/?p=ffmpeg.git;a=blob;f=libavformat/avformat.h;h=fdaffa5bf41b6ed83fa4f7acebcf04ed796296fd;hb=refs/heads/master).
 
 <table>
   <tr>
-    <td colspan="2">Shared Code</td>
+    <td>Shared Code</td>
   </tr>
   <tr>
-    <td colspan="2"><pre lang="cpp">
+    <td><pre lang="cpp">
 #include &lt;memory&gt;
 #include &lt;avformat.h&gt;
 // Signature from libavformat:
@@ -31,13 +31,11 @@ struct AVFormatContextDeleter {
 		}
 };
 
-using AVFormatContext =
-	std::unique_ptr<AVFormatContext, AVFormatContextDeleter>;
+using AVFormatContext = std::unique_ptr<AVFormatContext, AVFormatContextDeleter>;
     </pre><br></td>
   </tr>
   <tr>
     <td>Current Code</td>
-    <td>With boost.out_ptr !</td>
   </tr>
   <tr>
     <td><pre lang="cpp">
@@ -60,6 +58,10 @@ int main (int, char* argv[]) {
      return 0;
 }
     </pre><br></td>
+  </tr>
+  <tr>
+    <td>With boost.out_ptr !</td>
+  </tr>
     <td><pre lang="cpp">
 int main (int, char* argv[]) {
      AVFormatContext context(avformat_alloc_context());
