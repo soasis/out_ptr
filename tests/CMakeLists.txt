@@ -1,3 +1,10 @@
+# Copyright Ⓒ 2018-2019 ThePhD
+# Distributed under the Boost Software License, Version 1.0.
+# See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
+
+# Partial (add_subdirectory only) and experimental CMake support
+# Subject to change; please do not rely on the contents of this file yet
+
 set(boost_out_ptr_tests_sources
 	"source/clever_out_ptr_test.cpp"
 	"source/simple_out_ptr_test.cpp"

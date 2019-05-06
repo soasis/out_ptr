@@ -85,5 +85,11 @@ int main (int, char* argv[]) {
   </tr>
 </table>
 
+# Full Examples and Documentation
 
-# Extending for your own pointer types
+There are examples and documentation contained in this repository: please, peruse them as much as you need to! Some interesting/illuminating ones:
+
+- It works with [custom unique pointers just fine](examples/source/std.custom_unique_ptr.cpp)
+- It is [customizable to your own pointer types](examples/source/custom.handle.cpp), if you need performance or different semantics
+- It works with [Boost](examples/source/boost.shared_ptr.cpp) and [Standard](examples/source/std.shared_ptr.cpp) shared pointers.
+- 

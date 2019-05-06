@@ -1,8 +1,17 @@
-set(phd_out_ptr_example_with_special_unique_sources
-	"with_special_unique.cpp"
-)
+# Copyright Ⓒ 2018-2019 ThePhD
+# Distributed under the Boost Software License, Version 1.0.
+# See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
 
-prepend(prefixed_phd_out_ptr_example_with_special_unique_sources "${CMAKE_CURRENT_SOURCE_DIR}/" ${phd_out_ptr_example_with_special_unique_sources})
+# Partial (add_subdirectory only) and experimental CMake support
+# Subject to change; please do not rely on the contents of this file yet
+
+set(phd_out_ptr_example_with_special_unique_sources
+	"boost.shared_ptr.cpp"
+	"boost.intrusive_ptr.cpp"
+	"std.shared_ptr.cpp"
+	"std.unique_ptr.cpp"
+	"std.custom_unique_ptr.cpp"
+)
 
 add_executable(phd_out_ptr_example_with_special_unique ${prefixed_phd_out_ptr_example_with_special_unique_sources})
 if (MSVC)
