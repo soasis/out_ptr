@@ -1,20 +1,20 @@
 [submodule "vendor/config"]
-	path = vendor/config
+	path = vendor/boost/config
 	url = https://github.com/boostorg/config.git
 [submodule "vendor/core"]
-	path = vendor/core
+	path = vendor/boost/core
 	url = https://github.com/boostorg/core.git
 [submodule "vendor/static_assert"]
-	path = vendor/static_assert
+	path = vendor/boost/static_assert
 	url = https://github.com/boostorg/static_assert.git
 [submodule "vendor/catch2"]
 	path = vendor/catch2
 	url = https://github.com/catchorg/Catch2.git
 [submodule "vendor/type_traits"]
-	path = vendor/type_traits
+	path = vendor/boost/type_traits
 	url = https://github.com/boostorg/type_traits.git
 [submodule "vendor/detail"]
-	path = vendor/detail
+	path = vendor/boost/detail
 	url = https://github.com/boostorg/detail.git
 [submodule "vendor/benchmark"]
 	path = vendor/benchmark
