@@ -51,7 +51,7 @@ namespace boost {
 	template <typename Smart,
 		typename... Args>
 	auto out_ptr(Smart& s, Args&&... args) noexcept {
-		using Pointer = meta::pointer_of_t<Smart>;
+		using Pointer = pointer_of_t<Smart>;
 		using P	  = out_ptr_t<Smart, Pointer, Args...>;
 		return P(s, std::forward<Args>(args)...);
 	}

@@ -26,9 +26,9 @@
 namespace boost {
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class clever_inout_ptr_t : public out_ptr_detail::clever_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, std::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>> {
+	class clever_inout_ptr_t : public out_ptr_detail::clever_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
-		using list_t = std::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>;
+		using list_t = std::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
 		using core_t = out_ptr_detail::clever_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
@@ -48,7 +48,7 @@ namespace boost {
 	template <typename Smart,
 		typename... Args>
 	auto clever_inout_ptr(Smart& p, Args&&... args) noexcept {
-		using Pointer = meta::pointer_of_t<Smart>;
+		using Pointer = pointer_of_t<Smart>;
 		using P	  = clever_inout_ptr_t<Smart, Pointer, Args...>;
 		return P(p, std::forward<Args>(args)...);
 	}

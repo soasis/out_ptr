@@ -6,7 +6,7 @@
 //
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
-#include <phd/out_ptr/out_ptr.hpp>
+#include <boost/out_ptr/out_ptr.hpp>
 
 #include <iostream>
 #include <array>
@@ -110,7 +110,7 @@ struct fd_deleter {
 int main() {
 	std::unique_ptr<int, fd_deleter> my_unique_fd;
 
-	auto err = fopen_s(phd::out_ptr<FILE*>(my_unique_fd), "prod.csv", "r+b");
+	auto err = fopen_s(boost::out_ptr<FILE*>(my_unique_fd), "prod.csv", "r+b");
 	// check err, then work with fd
 	if (err != 0) {
 		// something horrible happened

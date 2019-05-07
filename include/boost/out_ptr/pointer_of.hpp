@@ -8,15 +8,14 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_POINTER_OF_HPP
-#define BOOST_OUT_PTR_DETAIL_POINTER_OF_HPP
+#ifndef BOOST_OUT_PTR_POINTER_OF_HPP
+#define BOOST_OUT_PTR_POINTER_OF_HPP
 
 #include <type_traits>
 #include <memory>
 
 namespace boost {
-namespace out_ptr {
-	namespace meta_detail {
+	namespace out_ptr_detail {
 		struct disambiguate_ {
 		};
 
@@ -68,7 +67,7 @@ namespace out_ptr {
 		};
 
 		template <typename T, typename... Args>
-		struct is_resetable {
+		struct is_resetable_test {
 		private:
 			template <typename S>
 			static std::true_type f(decltype(std::declval<S>().reset(std::declval<Args>()...))*);
@@ -79,10 +78,21 @@ namespace out_ptr {
 			constexpr static bool value = std::is_same_v<decltype(f<T>(0)), std::true_type>;
 		};
 
-	} // namespace meta_detail
+		template <typename T, typename = void>
+		struct is_releasable : std::false_type {
+		};
+
+		template <typename T>
+		struct is_releasable<T, std::void_t<decltype(std::declval<T&>().release())>> : std::true_type {
+		};
+
+		template <typename T, typename... Args>
+		struct is_resetable : std::integral_constant<bool, is_resetable_test<T, Args...>::value> {
+		};
+	} // namespace out_ptr_detail
 
 	template <typename T, typename U>
-	struct pointer_of_or : meta_detail::pointer_of_or<T, U> {
+	struct pointer_of_or : out_ptr_detail::pointer_of_or<T, U> {
 	};
 
 	template <typename T, typename U>
@@ -96,30 +106,12 @@ namespace out_ptr {
 
 	template <typename T, typename Dx>
 	struct pointer_type {
-		typedef typename meta_detail::pointer_typedef_enable_if<meta_detail::has_typedef_pointer<Dx>::value, Dx, T>::type type;
+		typedef typename out_ptr_detail::pointer_typedef_enable_if<out_ptr_detail::has_typedef_pointer<Dx>::value, Dx, T>::type type;
 	};
 
 	template <typename T, typename D>
 	using pointer_type_t = typename pointer_type<T, D>::type;
 
-	template <typename T, typename = void>
-	struct is_releasable : std::false_type {
-	};
+} // namespace boost
 
-	template <typename T>
-	struct is_releasable<T, std::void_t<decltype(std::declval<T&>().release())>> : std::true_type {
-	};
-
-	template <typename T>
-	constexpr inline bool is_releasable_v = is_releasable<T>::value;
-
-	template <typename T, typename... Args>
-	struct is_resetable : std::integral_constant<bool, meta_detail::is_resetable<T, Args...>::value> {
-	};
-
-	template <typename T, typename... Args>
-	constexpr inline bool is_resetable_v = is_resetable<T, Args...>::value;
-
-}} // namespace boost::out_ptr
-
-#endif // BOOST_OUT_PTR_DETAIL_POINTER_OF_HPP
+#endif // BOOST_OUT_PTR_POINTER_OF_HPP

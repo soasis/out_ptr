@@ -12,5 +12,6 @@
 #define BOOST_OUT_PTR
 
 #include <boost/out_ptr/out_ptr.hpp>
+#include <boost/out_ptr/inout_ptr.hpp>
 
 #endif // BOOST_OUT_PTR

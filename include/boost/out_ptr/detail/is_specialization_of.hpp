@@ -13,27 +13,20 @@
 
 #include <type_traits>
 
-namespace phd::meta
-{
+namespace boost {
+namespace out_ptr_detail {
+	namespace meta_detail {
+		template <typename T, template <typename...> class Templ>
+		struct is_specialization_of : std::false_type {
+		};
+		template <typename... T, template <typename...> class Templ>
+		struct is_specialization_of<Templ<T...>, Templ> : std::true_type {
+		};
 
-namespace meta_detail
-{
-template <typename T, template <typename...> class Templ>
-struct is_specialization_of : std::false_type
-{
-};
-template <typename... T, template <typename...> class Templ>
-struct is_specialization_of<Templ<T...>, Templ> : std::true_type
-{
-};
-} // namespace meta_detail
-
-template <typename T, template <typename...> class Templ>
-using is_specialization_of = meta_detail::is_specialization_of<std::remove_cv_t<T>, Templ>;
-
-template <typename T, template <typename...> class Templ>
-constexpr inline bool is_specialization_of_v = is_specialization_of<T, Templ>::value;
-
-} // namespace phd::meta
+	} // namespace meta_detail
+	template <typename T, template <typename...> class Templ>
+	using is_specialization_of = meta_detail::is_specialization_of<std::remove_cv_t<T>, Templ>;
+}
+} // namespace boost::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP

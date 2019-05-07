@@ -5,6 +5,9 @@
 # Partial (add_subdirectory only) and experimental CMake support
 # Subject to change; please do not rely on the contents of this file yet
 
+# Test dependency: catch2
+add_subdirectory(../vendor/catch2 "vendor/catch2")
+
 set(boost_out_ptr_tests_sources
 	"source/clever_out_ptr_test.cpp"
 	"source/simple_out_ptr_test.cpp"
@@ -34,8 +37,21 @@ endif()
 target_include_directories(boost_out_ptr_tests
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
-	"${CMAKE_SOURCE_DIR}/vendor/catch2/single_include")
+	# for handle/handle.hpp
+	"${CMAKE_CURRENT_SOURCE_DIR}/../examples/include")
 target_link_libraries(boost_out_ptr_tests 
-	PRIVATE boost::boost ficapi ${CMAKE_DL_LIBS}
+	PRIVATE 
+	Boost::assert
+	Boost::config
+	Boost::core
+	Boost::mp11
+	Boost::static_assert
+	Boost::out_ptr 
+	
+	Catch2::Catch2 
+	
+	ficapi 
+	
+	${CMAKE_DL_LIBS}
 )
 add_test(NAME boost_out_ptr_tests COMMAND boost_out_ptr_tests)

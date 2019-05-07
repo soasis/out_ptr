@@ -13,7 +13,6 @@
 
 #include <boost/out_ptr/clever_inout_ptr.hpp>
 #include <boost/out_ptr/simple_inout_ptr.hpp>
-#include <boost/version/version.hpp>
 
 namespace boost {
 
@@ -47,7 +46,7 @@ namespace boost {
 	template <typename Smart,
 		typename... Args>
 	auto inout_ptr(Smart& s, Args&&... args) noexcept {
-		using Pointer = meta::pointer_of_t<Smart>;
+		using Pointer = pointer_of_t<Smart>;
 		using P	  = inout_ptr_t<Smart, Pointer, Args...>;
 		return P(s, std::forward<Args>(args)...);
 	}

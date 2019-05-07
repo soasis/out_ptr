@@ -15,7 +15,8 @@
 
 #include <memory>
 
-namespace boost::out_ptr_detail {
+namespace boost {
+namespace out_ptr_detail {
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
 	struct clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, Args, List> {
@@ -29,11 +30,11 @@ namespace boost::out_ptr_detail {
 	template <typename T, typename D, typename Pointer>
 	struct clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, std::index_sequence<>,
 		std::enable_if_t<
-			std::is_same_v<meta::pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || std::is_base_of_v<meta::pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || !std::is_convertible_v<meta::pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>>>
+			std::is_same_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || std::is_base_of_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || !std::is_convertible_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>>>
 	: voidpp_op<clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, std::index_sequence<>>, Pointer> {
 	public:
 		using Smart		 = std::unique_ptr<T, D>;
-		using source_pointer = meta::pointer_of_or_t<Smart, Pointer>;
+		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
 	private:
 		using can_aliasing_optimization = std::integral_constant<bool,
@@ -104,6 +105,6 @@ namespace boost::out_ptr_detail {
 			}
 		}
 	};
-} // namespace boost::out_ptr_detail
+}} // namespace boost::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP

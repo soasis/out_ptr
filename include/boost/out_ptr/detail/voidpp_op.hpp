@@ -11,7 +11,8 @@
 #ifndef BOOST_OUT_PTR_DETAIL_VOIDPP_OP_HPP
 #define BOOST_OUT_PTR_DETAIL_VOIDPP_OP_HPP
 
-namespace boost::out_ptr_detail {
+namespace boost {
+namespace out_ptr_detail {
 
 	template <typename T, typename P>
 	struct voidpp_op {
@@ -37,6 +38,6 @@ namespace boost::out_ptr_detail {
 	struct voidpp_op<T, const volatile void*> {
 	};
 
-} // namespace boost::out_ptr_detail
+}} // namespace boost::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_DETAIL_VOIDPP_OP_HPP
