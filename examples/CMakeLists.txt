@@ -39,7 +39,7 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 		${CMAKE_DL_LIBS}
 	)
 	target_include_directories(${example_target} PRIVATE
-		"include"
+		"../vendor/handle/include"
 	)
 	if (BOOST_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})

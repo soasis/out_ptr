@@ -47,6 +47,7 @@ TEST_CASE("out_ptr/raw", "out_ptr type works with raw pointers and c-style outpu
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 		ficapi_handle_delete(p);
 	}
+#if 0 // this no longer applies because there is no implicit void* conversion...
 	SECTION("void*, ficapi::opaque_handle out_ptr") {
 		void* p(nullptr);
 		ficapi_create(boost::out_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
@@ -54,4 +55,5 @@ TEST_CASE("out_ptr/raw", "out_ptr type works with raw pointers and c-style outpu
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
+#endif
 }

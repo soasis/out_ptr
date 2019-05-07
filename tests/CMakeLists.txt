@@ -37,8 +37,8 @@ endif()
 target_include_directories(boost_out_ptr_tests
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
-	# for handle/handle.hpp
-	"${CMAKE_CURRENT_SOURCE_DIR}/../examples/include")
+	"../vendor/handle/include"
+)
 target_link_libraries(boost_out_ptr_tests 
 	PRIVATE 
 	Boost::assert

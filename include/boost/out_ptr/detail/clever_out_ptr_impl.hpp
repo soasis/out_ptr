@@ -12,6 +12,7 @@
 #define BOOST_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
 
 #include <boost/out_ptr/detail/base_out_ptr_impl.hpp>
+#include <boost/mp11/utility.hpp>
 
 #include <memory>
 
@@ -28,10 +29,8 @@ namespace out_ptr_detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	struct clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, std::index_sequence<>,
-		std::enable_if_t<
-			std::is_same_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || std::is_base_of_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || !std::is_convertible_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>>>
-	: voidpp_op<clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, std::index_sequence<>>, Pointer> {
+	struct clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+		boost::mp11::mp_if_c<std::is_same_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || std::is_base_of_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer> || !std::is_convertible_v<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>, void>> {
 	public:
 		using Smart		 = std::unique_ptr<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;

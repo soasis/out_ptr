@@ -56,7 +56,7 @@ namespace boost {
 		}
 
 		~inout_ptr_t() noexcept {
-			reset(boost::mp11::make_index_sequence<ArgsTuple::value>());
+			reset(boost::mp11::make_index_sequence<std::tuple_size<ArgsTuple>::value>());
 		}
 
 	private:
@@ -101,6 +101,7 @@ TEST_CASE("inout_ptr/customization basic", "inout_ptr type works with smart poin
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
+#if 0 // this no longer applies because there is no implicit void* conversion...
 	SECTION("handle<void*>, ficapi::opaque_handle inout_ptr") {
 		phd::handle<void*, ficapi::deleter<ficapi_type::ficapi_type_opaque>> p(nullptr);
 		ficapi_re_create(boost::inout_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
@@ -108,6 +109,7 @@ TEST_CASE("inout_ptr/customization basic", "inout_ptr type works with smart poin
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
+#endif
 }
 
 TEST_CASE("inout_ptr/customization stateful", "inout_ptr type works with stateful deleters in smart pointers") {

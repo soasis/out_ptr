@@ -16,7 +16,6 @@
 #include <boost/mp11/integer_sequence.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
-#include <boost/out_ptr/detail/voidpp_op.hpp>
 
 #include <cstdlib>
 #include <type_traits>
@@ -40,10 +39,9 @@ namespace out_ptr_detail {
 	template <typename Smart, typename Pointer, typename Args, typename List>
 	struct base_out_ptr_impl;
 
-	template <typename Smart, typename Pointer, typename Args, std::size_t... Indices>
-	struct base_out_ptr_impl<Smart, Pointer, Args, boost::mp11::index_sequence<Indices...>>
-	: voidpp_op<base_out_ptr_impl<Smart, Pointer, Args, boost::mp11::index_sequence<Indices...>>, Pointer>,
-	  Args {
+	template <typename Smart, typename Pointer, typename Base, std::size_t... Indices>
+	struct base_out_ptr_impl<Smart, Pointer, Base, boost::mp11::index_sequence<Indices...>>
+	: Base {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
@@ -56,25 +54,25 @@ namespace out_ptr_detail {
 			"initialized, otherwise the deleter will be defaulted "
 			"by the shared_ptr<T>::reset() call!");
 
-		base_out_ptr_impl(Smart& ptr, Args&& args, Pointer initial)
-		: Args(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {
+		base_out_ptr_impl(Smart& ptr, Base&& args, Pointer initial)
+		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {
 		}
 
-		base_out_ptr_impl(Smart& ptr, Args&& args, out_ptr_detail::disambiguate_)
-		: Args(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr() {
+		base_out_ptr_impl(Smart& ptr, Base&& args, out_ptr_detail::disambiguate_)
+		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr() {
 		}
 
 	public:
-		base_out_ptr_impl(Smart& ptr, Args&& args)
+		base_out_ptr_impl(Smart& ptr, Base&& args)
 		: base_out_ptr_impl(ptr, std::move(args), out_ptr_detail::disambiguate_()) {
 		}
 
 		base_out_ptr_impl(base_out_ptr_impl&& right)
-		: Args(std::move(*this)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
+		: Base(std::move(*this)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
 			right.m_smart_ptr = nullptr;
 		}
 		base_out_ptr_impl& operator=(base_out_ptr_impl&& right) {
-			static_cast<Args&>(*this) = std::move(right);
+			static_cast<Base&>(*this) = std::move(right);
 			this->m_smart_ptr		 = right.m_smart_ptr;
 			this->m_target_ptr		 = right.m_target_ptr;
 			right.m_smart_ptr		 = nullptr;
@@ -92,7 +90,7 @@ namespace out_ptr_detail {
 
 		~base_out_ptr_impl() {
 			if (m_smart_ptr) {
-				Args&& args = std::move(static_cast<Args&>(*this));
+				Base&& args = std::move(static_cast<Base&>(*this));
 				// lmao "if constexpr" xD
 				using can_reset = out_ptr_detail::is_resetable<Smart,
 					decltype(static_cast<source_pointer>(this->m_target_ptr)),

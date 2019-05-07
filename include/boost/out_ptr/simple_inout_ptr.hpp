@@ -22,8 +22,8 @@
 namespace boost {
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class simple_inout_ptr_t : public out_ptr_detail::base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, std::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>> {
-		using list_t = std::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>;
+	class simple_inout_ptr_t : public out_ptr_detail::base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>> {
+		using list_t = boost::mp11::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>;
 		using core_t = out_ptr_detail::base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:

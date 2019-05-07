@@ -5,3 +5,8 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
+
+int main(int, char* []) {
+
+	return 0;
+}

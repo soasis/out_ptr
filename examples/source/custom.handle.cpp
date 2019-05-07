@@ -27,7 +27,8 @@ namespace boost {
 	private:
 		using Smart		 = phd::handle<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
-		using Base		 = boost::empty_value<std::tuple<Args...>>;
+		using ArgsTuple	 = std::tuple<Args...>;
+		using Base		 = boost::empty_value<ArgsTuple>;
 
 		Smart* m_smart_ptr;
 		Pointer m_old_ptr;
@@ -61,7 +62,7 @@ namespace boost {
 		}
 
 		~out_ptr_t() noexcept {
-			reset();
+			reset(boost::mp11::make_index_sequence<std::tuple_size<ArgsTuple>::value>());
 		}
 
 	private:
