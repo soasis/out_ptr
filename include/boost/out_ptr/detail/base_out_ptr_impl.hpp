@@ -16,6 +16,7 @@
 #include <boost/mp11/integer_sequence.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
+#include <boost/out_ptr/detail/customization_forward.hpp>
 
 #include <cstdlib>
 #include <type_traits>
@@ -48,7 +49,8 @@ namespace out_ptr_detail {
 		Smart* m_smart_ptr;
 		Pointer m_target_ptr;
 
-		static_assert(!out_ptr_detail::is_specialization_of<Smart, std::shared_ptr>::value || (sizeof...(Indices) > 0),
+		static_assert(!(out_ptr_detail::is_specialization_of<Smart, std::shared_ptr>::value || out_ptr_detail::is_specialization_of<Smart, ::boost::shared_ptr>::value)
+				|| (sizeof...(Indices) > 0), // clang-format hack
 			"shared_ptr<T> must pass a deleter in alongside the out_ptr "
 			"so when reset is called the deleter can be properly "
 			"initialized, otherwise the deleter will be defaulted "
