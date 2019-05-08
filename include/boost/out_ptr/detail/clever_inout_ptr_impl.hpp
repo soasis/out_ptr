@@ -24,30 +24,18 @@
 namespace boost {
 namespace out_ptr_detail {
 
-	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
-	struct clever_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
-	private:
-		using base_t = base_inout_ptr_impl<Smart, Pointer, Args, List>;
-
+	template <typename Smart, typename T, typename D, typename Pointer>
+	struct unique_optimization {
 	public:
-		using base_t::base_t;
-	};
-
-	template <typename T, typename D, typename Pointer>
-	struct clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
-		boost::mp11::mp_if_c<
-			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value || std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value || !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value, void>> {
-	public:
-		using Smart		 = std::unique_ptr<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
 	private:
 		using can_aliasing_optimization = std::integral_constant<bool,
-			sizeof(std::unique_ptr<T, D>) <= sizeof(Pointer) && sizeof(std::unique_ptr<T, D>) <= sizeof(source_pointer)>;
+			sizeof(Smart) <= sizeof(Pointer) && sizeof(Smart) <= sizeof(source_pointer)>;
 
 		Pointer* m_target_ptr;
 
-		clever_inout_ptr_impl(std::true_type, Smart& ptr) noexcept
+		unique_optimization(std::true_type, Smart& ptr) noexcept
 		: m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(ptr)))) {
 			// we can assume things are cleaner here
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
@@ -55,7 +43,7 @@ namespace out_ptr_detail {
 #endif // Clever Sanity Checks
 		}
 
-		clever_inout_ptr_impl(std::false_type, Smart& ptr) noexcept {
+		unique_optimization(std::false_type, Smart& ptr) noexcept {
 			// analysis necessary
 #if defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 			// implementation has Pointer as first member: alias directly
@@ -75,13 +63,13 @@ namespace out_ptr_detail {
 		}
 
 	public:
-		clever_inout_ptr_impl(Smart& ptr, std::tuple<>&&) noexcept
-		: clever_inout_ptr_impl(can_aliasing_optimization(), ptr) {
+		unique_optimization(Smart& ptr, std::tuple<>&&) noexcept
+		: unique_optimization(can_aliasing_optimization(), ptr) {
 		}
-		clever_inout_ptr_impl(clever_inout_ptr_impl&& right) noexcept = default;
-		clever_inout_ptr_impl& operator=(clever_inout_ptr_impl&& right) noexcept = default;
-		clever_inout_ptr_impl(const clever_inout_ptr_impl&)				   = delete;
-		clever_inout_ptr_impl& operator=(const clever_inout_ptr_impl&) = delete;
+		unique_optimization(unique_optimization&& right) noexcept = default;
+		unique_optimization& operator=(unique_optimization&& right) noexcept = default;
+		unique_optimization(const unique_optimization&)				    = delete;
+		unique_optimization& operator=(const unique_optimization&) = delete;
 
 		operator Pointer*() noexcept {
 			return this->m_target_ptr;
@@ -89,7 +77,40 @@ namespace out_ptr_detail {
 		operator Pointer&() noexcept {
 			return *this->m_target_ptr;
 		}
-		// no need for destructor: aliasing directly, and realloc
+	};
+
+	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
+	struct clever_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
+	private:
+		using base_t = base_inout_ptr_impl<Smart, Pointer, Args, List>;
+
+	public:
+		using base_t::base_t;
+	};
+
+	// defer to unique optimization, if possible
+	template <typename T, typename D, typename Pointer>
+	struct clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+		boost::mp11::mp_if_c<
+			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value || std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value || !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value, void>>
+	: unique_optimization<std::unique_ptr<T, D>, T, D, Pointer> {
+	private:
+		using base_t = unique_optimization<std::unique_ptr<T, D>, T, D, Pointer>;
+
+	public:
+		using base_t::base_t;
+	};
+
+	template <typename T, typename D, typename Pointer>
+	struct clever_inout_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+		boost::mp11::mp_if_c<
+			std::is_same<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value || std::is_base_of<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value || !std::is_convertible<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value, void>>
+	: unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
+	private:
+		using base_t = unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;
+
+	public:
+		using base_t::base_t;
 	};
 }} // namespace boost::out_ptr_detail
 

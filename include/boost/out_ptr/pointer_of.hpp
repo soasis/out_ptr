@@ -40,16 +40,13 @@ namespace boost {
 
 		template <typename T>
 		struct has_typedef_pointer {
-			typedef std::true_type yes;
-			typedef std::false_type no;
-
 			template <typename C>
-			static yes& test(typename C::pointer*);
+			static std::true_type& test(typename C::pointer*);
 
 			template <typename>
-			static no& test(...);
+			static std::false_type& test(...);
 
-			static constexpr const bool value = std::is_same_v<decltype(test<T>(0)), yes>;
+			static constexpr const bool value = std::is_same<decltype(test<T>(0)), std::true_type>::value;
 		};
 
 		template <bool b, typename T, typename Fallback>
@@ -75,7 +72,7 @@ namespace boost {
 			static std::false_type f(...);
 
 		public:
-			constexpr static bool value = std::is_same_v<decltype(f<T>(0)), std::true_type>;
+			constexpr static bool value = std::is_same<decltype(f<T>(0)), std::true_type>::value;
 		};
 
 		template <typename T, typename = void>
