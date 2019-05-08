@@ -1,9 +1,10 @@
-# Copyright Ⓒ 2018-2019 ThePhD
-# Distributed under the Boost Software License, Version 1.0.
-# See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
-
-# Partial (add_subdirectory only) and experimental CMake support
-# Subject to change; please do not rely on the contents of this file yet
+#  Copyright ⓒ 2018-2019 ThePhD.
+#
+#  Distributed under the Boost Software License, Version 1.0. (See
+#  accompanying file LICENSE_1_0.txt or copy at
+#  http://www.boost.org/LICENSE_1_0.txt)
+#
+#  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 cmake_minimum_required(VERSION 3.5)
 project(boost.out_ptr VERSION 1.0.0 DESCRIPTION "A library for having output pointers in C-like functions work well with C++ smart pointer types." LANGUAGES C CXX)
@@ -78,12 +79,21 @@ set_target_properties(boost_out_ptr
 
 
 # # Benchmarks, Tests, Examples
-if (BOOST_OUT_PTR_TESTS OR BOOST_OUT_PTR_BENCHMARKS)
+if (BOOST_OUT_PTR_TESTS OR BOOST_OUT_PTR_EXAMPLES OR BOOST_OUT_PTR_BENCHMARKS)
+	if (IS_X86 OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/lib")
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/bin")
+		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/bin")
+	else()
+		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/lib")
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/bin")
+		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/bin")
+	endif()
+
 	enable_testing()
 	add_subdirectory(vendor/boost/config)
 	add_subdirectory(vendor/boost/core)
 	add_subdirectory(vendor/boost/assert)
-	add_subdirectory(vendor/boost/static_assert)
 	add_subdirectory(vendor/boost/mp11)
 	# test and benchmark deps
 	add_subdirectory(vendor/ficapi)

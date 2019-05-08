@@ -12,8 +12,6 @@
 #define BOOST_OUT_PTR_CLEVER_INOUT_PTR_HPP
 
 #include <boost/out_ptr/detail/clever_inout_ptr_impl.hpp>
-#include <boost/config.hpp>
-#include <boost/assert.hpp>
 
 #include <cstdlib>
 #include <cstddef>

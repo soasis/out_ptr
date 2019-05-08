@@ -1,4 +1,4 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+//  C /pyright ⓒ 2018-2019 ThePhD.
 //
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
@@ -10,6 +10,7 @@
 #include <boost/mp11/integer_sequence.hpp>
 
 #include <phd/handle.hpp>
+
 #include <ficapi/ficapi.hpp>
 
 #include <catch2/catch.hpp>

@@ -13,8 +13,6 @@
 
 #include <boost/out_ptr/simple_out_ptr.hpp>
 #include <boost/out_ptr/clever_out_ptr.hpp>
-#include <boost/config.hpp>
-#include <boost/assert.hpp>
 
 #include <type_traits>
 #include <tuple>

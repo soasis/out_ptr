@@ -15,6 +15,7 @@
 #include <boost/mp11/integer_sequence.hpp>
 
 #include <type_traits>
+#include <cassert>
 
 // A template that always evaluates to false anyhow
 template <std::size_t>

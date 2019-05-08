@@ -51,9 +51,7 @@ namespace out_ptr_detail {
 		: m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(ptr)))) {
 			// we can assume things are cleaner here
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-			if (*this->m_target_ptr != static_cast<Pointer>(ptr.get())) {
-				std::terminate();
-			}
+			BOOST_ASSERT_MSG(*this->m_target_ptr == static_cast<Pointer>(ptr.get()), "clever UB-based optimization did not properly retrieve the pointer value");
 #endif // Clever Sanity Checks
 		}
 
@@ -72,9 +70,7 @@ namespace out_ptr_detail {
 			// get direct Pointer
 			this->m_target_ptr = static_cast<Pointer*>(target);
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-			if (*this->m_target_ptr != static_cast<Pointer>(ptr.get())) {
-				std::terminate();
-			}
+			BOOST_ASSERT_MSG(*this->m_target_ptr == static_cast<Pointer>(ptr.get()), "clever UB-based optimization did not properly retrieve the pointer value");
 #endif // Clever Sanity Checks
 		}
 

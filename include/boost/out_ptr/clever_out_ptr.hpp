@@ -13,7 +13,6 @@
 
 #include <boost/out_ptr/detail/clever_out_ptr_impl.hpp>
 #include <boost/config.hpp>
-#include <boost/assert.hpp>
 
 #include <cstdlib>
 #include <cstddef>
