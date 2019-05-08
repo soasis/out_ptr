@@ -37,7 +37,7 @@ namespace boost {
 
 	public:
 		out_ptr_t(Smart& ptr, Args... args) noexcept
-		: Base(std::forward<decltype(Args)>(args)...), m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
+		: Base(std::forward<Args>(args)...), m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
 		}
 
 		out_ptr_t(out_ptr_t&& right) noexcept

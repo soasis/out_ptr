@@ -113,7 +113,7 @@ int main() {
 	auto err = fopen_s(boost::out_ptr<FILE*>(my_unique_fd), "prod.csv", "r+b");
 	// check err, then work with fd
 	if (err != 0) {
-		// something horrible happened
+		// something horrible happened, handle etc. etc.
 		std::cout << "Error is non-zero, could not open prod.csv with a raw handle." << std::endl;
 	}
 	else {

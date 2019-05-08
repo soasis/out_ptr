@@ -24,8 +24,9 @@ namespace out_ptr_detail {
 		};
 
 	} // namespace meta_detail
+
 	template <typename T, template <typename...> class Templ>
-	using is_specialization_of = meta_detail::is_specialization_of<std::remove_cv_t<T>, Templ>;
+	using is_specialization_of = meta_detail::is_specialization_of<typename std::remove_cv<T>::type, Templ>;
 }
 } // namespace boost::out_ptr_detail
 

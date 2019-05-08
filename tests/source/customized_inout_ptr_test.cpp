@@ -8,6 +8,7 @@
 
 #include <boost/out_ptr/inout_ptr.hpp>
 #include <boost/mp11/integer_sequence.hpp>
+#include <boost/out_ptr/detail/always_false.hpp>
 
 #include <phd/handle.hpp>
 
@@ -32,14 +33,14 @@ namespace boost {
 
 	public:
 		inout_ptr_t(Smart& ptr, Args... args) noexcept
-		: Base(empty_init_t(), std::forward < decltype<Args>(args)...), m_smart_ptr(std::addressof(ptr)), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
+		: Base(empty_init_t(), std::forward<Args>(args)...), m_smart_ptr(std::addressof(ptr)), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
 		}
 
 		inout_ptr_t(inout_ptr_t&& right) noexcept
-		: Args(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
+		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
 		}
 		inout_ptr_t& operator=(inout_ptr_t&& right) noexcept {
-			Args::operator	=(std::move(right));
+			Base::operator	=(std::move(right));
 			this->m_smart_ptr  = right.m_smart_ptr;
 			this->m_target_ptr = right.m_target_ptr;
 			right.m_old_ptr == nullptr;
@@ -66,7 +67,7 @@ namespace boost {
 
 		template <std::size_t I0, std::size_t... I>
 		void reset(boost::mp11::index_sequence<I0, I...>) {
-			static_assert(out_ptr_detail::always_false_index_v<I0>, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
+			static_assert(out_ptr_detail::always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
 		}
 	};
 

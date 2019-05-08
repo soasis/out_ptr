@@ -34,7 +34,7 @@ namespace boost {
 		};
 
 		template <typename T, typename D, typename Pointer>
-		struct friendly_inout_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, std::index_sequence<>> {
+		struct friendly_inout_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>> {
 		public:
 			using Smart		 = std::friendly_unique_ptr<T, D>;
 			using source_pointer = pointer_of_or_t<Smart, Pointer>;
@@ -62,9 +62,9 @@ namespace boost {
 	} // namespace out_ptr_detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class friendly_inout_ptr_t : public out_ptr_detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>> {
+	class friendly_inout_ptr_t : public out_ptr_detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
-		using list_t = boost::mp11::make_index_sequence<std::tuple_size_v<std::tuple<Args...>>>;
+		using list_t = boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
 		using core_t = out_ptr_detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
@@ -73,17 +73,14 @@ namespace boost {
 		}
 	};
 
-	template <typename Pointer,
-		typename Smart,
-		typename... Args>
-	decltype(auto) friendly_inout_ptr(Smart& p, Args&&... args) {
+	template <typename Pointer, typename Smart, typename... Args>
+	friendly_inout_ptr_t<Smart, Pointer, Args...> friendly_inout_ptr(Smart& p, Args&&... args) noexcept {
 		return friendly_inout_ptr_t<Smart, Pointer, Args...>(p, std::forward<Args>(args)...);
 	}
 
-	template <typename Smart,
-		typename... Args>
-	auto friendly_inout_ptr(Smart& p, Args&&... args) {
-		using Pointer = meta::pointer_of_t<Smart>;
+	template <typename Smart, typename... Args>
+	friendly_inout_ptr_t<Smart, pointer_of_t<Smart>, Args...> friendly_inout_ptr(Smart& p, Args&&... args) noexcept {
+		using Pointer = pointer_of_t<Smart>;
 		return friendly_inout_ptr<Pointer>(p, std::forward<Args>(args)...);
 	}
 

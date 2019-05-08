@@ -35,17 +35,14 @@ namespace boost {
 		using base_t::base_t;
 	};
 
-	template <typename Pointer,
-		typename Smart,
-		typename... Args>
-	auto inout_ptr(Smart& s, Args&&... args) noexcept {
+	template <typename Pointer, typename Smart, typename... Args>
+	inout_ptr_t<Smart, Pointer, Args...> inout_ptr(Smart& s, Args&&... args) noexcept {
 		using P = inout_ptr_t<Smart, Pointer, Args...>;
 		return P(s, std::forward<Args>(args)...);
 	}
 
-	template <typename Smart,
-		typename... Args>
-	auto inout_ptr(Smart& s, Args&&... args) noexcept {
+	template <typename Smart, typename... Args>
+	inout_ptr_t<Smart, pointer_of_t<Smart>, Args...> inout_ptr(Smart& s, Args&&... args) noexcept {
 		using Pointer = pointer_of_t<Smart>;
 		using P	  = inout_ptr_t<Smart, Pointer, Args...>;
 		return P(s, std::forward<Args>(args)...);

@@ -55,7 +55,7 @@ namespace phd {
 
 		struct has_write_null {
 			template <typename T, typename P,
-				typename U = std::remove_const_t<std::remove_reference_t<T>>,
+				typename U = typename std::remove_const<typename std::remove_reference<T>::type>::type,
 				typename Y = decltype(std::declval<U&>().write_null(std::declval<P&>()))>
 			static std::true_type test(int);
 
@@ -86,7 +86,7 @@ namespace phd {
 
 		template <typename D, typename P>
 		void write_null(D& deleter, P&& p) noexcept {
-			using yes_no = decltype(has_write_null::test<D, std::remove_const_t<std::remove_reference_t<P>>>(0));
+			using yes_no = decltype(has_write_null::test<D, typename std::remove_const<typename std::remove_reference<P>::type>::type>(0));
 			write_null(yes_no(), deleter, std::forward<P>(p));
 		}
 
@@ -97,12 +97,12 @@ namespace phd {
 
 		template <typename D, typename P>
 		bool is_null(std::false_type, D& deleter, P&& p) noexcept {
-			return default_handle_deleter<std::remove_const_t<std::remove_reference_t<P>>>::is_null(std::forward<P>(p));
+			return default_handle_deleter<typename std::remove_const<typename std::remove_reference<P>::type>::type>::is_null(std::forward<P>(p));
 		}
 
 		template <typename D, typename P>
 		bool is_null(D& deleter, P&& p) noexcept {
-			using yes_no = decltype(has_is_null::test<D, std::remove_const_t<std::remove_reference_t<P>>>(0));
+			using yes_no = decltype(has_is_null::test<D, typename std::remove_const<typename std::remove_reference<P>::type>::type>(0));
 			return is_null(yes_no(), deleter, std::forward<P>(p));
 		}
 	} // namespace detail

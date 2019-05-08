@@ -8,6 +8,7 @@
 
 #include <boost/out_ptr/out_ptr.hpp>
 #include <boost/mp11/integer_sequence.hpp>
+#include <boost/out_ptr/detail/always_false.hpp>
 
 #include <phd/handle.hpp>
 
@@ -33,7 +34,7 @@ namespace boost {
 
 	public:
 		out_ptr_t(Smart& ptr, Args... args) noexcept
-		: Base(empty_init_t(), std::forward<decltype(Args)>(args)...), m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
+		: Base(empty_init_t(), std::forward<Args>(args)...), m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
 		}
 
 		out_ptr_t(out_ptr_t&& right) noexcept
