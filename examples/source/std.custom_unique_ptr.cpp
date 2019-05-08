@@ -25,8 +25,8 @@
 #include <unistd.h>
 #include <assert.h>
 
-auto fopen_s(FILE** f, const char* name, const char* mode) {
-	auto ret = 0;
+int fopen_s(FILE** f, const char* name, const char* mode) {
+	int ret = 0;
 	assert(f);
 	*f = fopen(name, mode);
 	/* Can't be sure about 1-to-1 mapping of errno and MS' errno_t */

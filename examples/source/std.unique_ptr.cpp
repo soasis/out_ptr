@@ -22,7 +22,7 @@
 
 #include <assert.h>
 
-auto fopen_s(FILE** f, const char* name, const char* mode) {
+int fopen_s(FILE** f, const char* name, const char* mode) {
 	auto ret = 0;
 	assert(f);
 	*f = std::fopen(name, mode);
