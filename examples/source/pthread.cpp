@@ -7,7 +7,9 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 #include <boost/out_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 
+#include <iostream>
 #include <cassert>
 
 #include <pthread.h>
@@ -36,8 +38,8 @@ int main() {
 
 	// Grab the result returned by the pthread through its `void*`
 	// and put it into the shared pointer
-	boost::shared_ptr<int> result;
-	if (pthread_join(inc_x_thread, boost::out_ptr<void*>(result))) {
+	boost::shared_ptr<int> result(nullptr);
+	if (pthread_join(compute_thread, boost::out_ptr<void*>(result, std::default_delete<int>()))) {
 		std::cerr << "Error joining thread" << std::endl;
 		return 2;
 	}
