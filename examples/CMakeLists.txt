@@ -90,7 +90,7 @@ if (MSVC)
 	endif()
 endif()
 
-if (THREADS_HAVE_PTHREAD_ARG)
+if (CMAKE_USE_PTHREADS_INIT)
 	set(example_source_name "pthread.cpp")
 	set(example_source_file source/${example_source_name})
 	set(example_target boost.out_ptr.${example_source_name})
