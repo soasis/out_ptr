@@ -45,6 +45,15 @@ TEST_CASE("out_ptr/basic", "out_ptr type works with smart pointers and C-style o
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
+#if 0 // this no longer applies because there is no implicit void* conversion...
+	SECTION("unique_ptr<void>, ficapi::opaque_handle out_ptr") {
+		std::unique_ptr<void, ficapi::deleter<ficapi_type::ficapi_type_opaque>> p(nullptr);
+		ficapi_create(boost::out_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
+		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
+	}
+#endif
 	SECTION("shared_ptr<void>") {
 		std::shared_ptr<void> p(nullptr);
 		ficapi_create(boost::out_ptr(p, ficapi::deleter<>()), ficapi_type::ficapi_type_int);
@@ -73,6 +82,15 @@ TEST_CASE("out_ptr/basic", "out_ptr type works with smart pointers and C-style o
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
+#if 0 // this no longer applies because there is no implicit void* conversion...
+	SECTION("shared_ptr<void>, ficapi::opaque_handle out_ptr") {
+		std::shared_ptr<void> p(nullptr);
+		ficapi_create(boost::out_ptr<ficapi::opaque_handle>(p, ficapi::deleter<ficapi_type::ficapi_type_opaque>()), ficapi_type::ficapi_type_opaque);
+		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
+	}
+#endif
 }
 
 TEST_CASE("out_ptr/stateful", "out_ptr type works with stateful deleters in smart pointers") {
@@ -235,9 +253,6 @@ TEST_CASE("out_ptr/simple-bases", "out_ptr will work with statically-castable ba
 }
 
 TEST_CASE("out_ptr/fail", "out_ptr type will static assert various bad usages") {
-	// This will fail complication when uncommencted
-	// EXPECTED: COMPILE FAIL
-	/*
 	SECTION("shared without deleter") {
 		std::shared_ptr<void> p(nullptr);
 		ficapi_create(boost::out_ptr(p), ficapi_type::ficapi_type_int);
@@ -245,5 +260,4 @@ TEST_CASE("out_ptr/fail", "out_ptr type will static assert various bad usages") 
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
 	}
-	*/
 }

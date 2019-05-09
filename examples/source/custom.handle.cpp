@@ -13,6 +13,7 @@
 
 #include <boost/out_ptr.hpp>
 #include <boost/mp11/integer_sequence.hpp>
+#include <boost/assert.hpp>
 
 #include <type_traits>
 #include <cassert>
@@ -84,6 +85,6 @@ int main() {
 	phd::handle<int*, ficapi::int_deleter> p(nullptr);
 	ficapi_create(boost::out_ptr<void*>(p), ficapi_type::ficapi_type_int);
 	int* rawp = static_cast<int*>(p.get());
-	assert(rawp != nullptr);
-	assert(*rawp == ficapi_get_dynamic_data());
+	BOOST_ASSERT(rawp != nullptr);
+	BOOST_ASSERT(*rawp == ficapi_get_dynamic_data());
 }

@@ -25,10 +25,10 @@ This example comes from real world code using [libavformat](http://git.videolan.
 //	AVInputFormat *fmt, AVDictionary **options);
 
 struct AVFormatContextDeleter {
-		void operator() (AVFormatContext* c) noexcept {
-			avformat_close_input(&c);
-			avformat_free_context(c);
-		}
+	void operator() (AVFormatContext* c) noexcept {
+		avformat_close_input(&c);
+		avformat_free_context(c);
+	}
 };
 
 using AVFormatContext = std::unique_ptr<AVFormatContext, AVFormatContextDeleter>;
@@ -43,19 +43,18 @@ int main (int, char* argv[]) {
      AVFormatContext context(avformat_alloc_context());
      // ...
      // used, need to reopen
-     AVFormatContext* raw_context = context.release();
-     if (avformat_open_input(&raw_context, 
-          argv[0], nullptr, nullptr) != 0) {
+	AVFormatContext* raw_context = context.release();
+	if (avformat_open_input(&raw_context, argv[0], nullptr, nullptr) != 0) {
           std::stringstream ss;
           ss << "ffmpeg_image_loader could not open file '"
                << path << "'";
-     throw FFmpegInputException(ss.str().c_str());
+	     throw FFmpegInputException(ss.str().c_str());
      }
      context.reset(raw_context);
 
-     // ... off to the races !
+	// ... off to the races !
 
-     return 0;
+	return 0;
 }
     </pre><br></td>
   </tr>
@@ -68,8 +67,7 @@ int main (int, char* argv[]) {
      // ...
      // used, need to reopen
 
-     if (avformat_open_input(std::inout_ptr(context), 
-          argv[0], nullptr, nullptr) != 0) {
+     if (avformat_open_input(std::inout_ptr(context), argv[0], nullptr, nullptr) != 0) {
           std::stringstream ss;
           ss << "ffmpeg_image_loader could not open file '"
                << argv[0] << "'";

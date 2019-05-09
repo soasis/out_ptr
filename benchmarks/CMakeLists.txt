@@ -36,17 +36,15 @@ set(boost_out_ptr_benchmarks_sources
 	"source/out_ptr_benchmarks_main.cpp"
 )
 
-add_executable(boost_out_ptr_benchmarks ${boost_out_ptr_benchmarks_sources})
-target_include_directories(boost_out_ptr_benchmarks PRIVATE
+add_executable(boost.out_ptr.benchmarks ${boost_out_ptr_benchmarks_sources})
+target_include_directories(boost.out_ptr.benchmarks PRIVATE
 	"include")
 if (MSVC)
-	target_compile_options(boost_out_ptr_benchmarks
-		PRIVATE /std:c++latest)
 else()
-	target_compile_options(boost_out_ptr_benchmarks
-		PRIVATE -std=c++1z)
+	target_compile_options(boost.out_ptr.benchmarks
+		PRIVATE -std=c++11)
 endif()
-target_link_libraries(boost_out_ptr_benchmarks
+target_link_libraries(boost.out_ptr.benchmarks
 	PRIVATE 
 	
 	Boost::config
@@ -79,22 +77,22 @@ set(boost_out_ptr_benchmarks_categories shared_local_out_ptr shared_reset_out_pt
 
 add_custom_command(
 	OUTPUT "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
-	COMMAND boost_out_ptr_benchmarks 
+	COMMAND boost.out_ptr.benchmarks 
 		"--benchmark_out=${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}" 
 		"--benchmark_out_format=${BOOST_OUT_PTR_BENCHMARKS_FORMAT}" 
 		"--benchmark_repetitions=${BOOST_OUT_PTR_BENCHMARKS_REPETITIONS}"
-	DEPENDS boost_out_ptr_benchmarks
+	DEPENDS boost.out_ptr.benchmarks
 	COMMENT "Executing Benchmarks and outputting to '${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}'"
 )
 
 if (Python3_Interpreter_FOUND)
-	add_custom_target(boost_out_ptr_benchmarks_graphs_generator
+	add_custom_target(boost.out_ptr.benchmarks_graphs_generator
 		COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/benchmarks/tools/generate_graphs.py" 
 			"--input=${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 			"--input_format=${BOOST_OUT_PTR_BENCHMARKS_FORMAT}"
 			"--output_dir=${BOOST_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR}"
 			--categories ${boost_out_ptr_benchmarks_categories}
-		DEPENDS boost_out_ptr_benchmarks "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
+		DEPENDS boost.out_ptr.benchmarks "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 		COMMENT "Graphing '${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}' data to '${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}'"
 	)
 endif()

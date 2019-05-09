@@ -8,6 +8,7 @@
 
 #include <boost/out_ptr.hpp>
 #include <boost/smart_ptr.hpp>
+#include <boost/assert.hpp>
 
 #include <iostream>
 #include <cassert>
@@ -44,7 +45,7 @@ int main() {
 		return 2;
 	}
 
-	assert(expected == *result);
+	BOOST_ASSERT(expected == *result);
 
 	return 0;
 }

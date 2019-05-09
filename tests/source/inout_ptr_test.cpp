@@ -43,15 +43,6 @@ TEST_CASE("inout_ptr/basic", "inout_ptr type works with smart pointers and C-sty
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
-#if 0 // this no longer applies because there is no implicit void* conversion...
-	SECTION("unique_ptr<void>, ficapi::opaque_handle inout_ptr") {
-		std::unique_ptr<void, ficapi::deleter<ficapi_type::ficapi_type_opaque>> p(nullptr);
-		ficapi_re_create(boost::inout_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
-		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p.get());
-		REQUIRE(rawp != nullptr);
-		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
-	}
-#endif
 }
 
 TEST_CASE("inout_ptr/stateful", "inout_ptr type works with stateful deleters in smart pointers") {

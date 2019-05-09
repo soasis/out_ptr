@@ -9,13 +9,16 @@
 # Test dependency: catch2
 add_subdirectory(../vendor/catch2 "vendor/catch2")
 
-set(boost_out_ptr_tests_sources
+set(boost.out_ptr.tests_sources
 	"source/clever_out_ptr_test.cpp"
 	"source/simple_out_ptr_test.cpp"
 	"source/out_ptr_test.cpp"
 	"source/raw_out_ptr_test.cpp"
 	"source/customized_out_ptr_test.cpp"
 	"source/custom_unique_deleter_test.cpp"
+
+	"source/exceptions_inout_ptr_test.cpp"
+	"source/exceptions_out_ptr_test.cpp"
 
 	"source/clever_inout_ptr_test.cpp"
 	"source/simple_inout_ptr_test.cpp"
@@ -25,22 +28,18 @@ set(boost_out_ptr_tests_sources
 	"source/out_ptr_tests_main.cpp"
 )
 
-add_executable(boost_out_ptr_tests ${boost_out_ptr_tests_sources})
+add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
 if (MSVC)
-	# just use the compiler's default,
-	# since we can't pick C++11 directly
-	#target_compile_options(boost_out_ptr_tests
-	#	PRIVATE /std:c++latest)
 else()
-	target_compile_options(boost_out_ptr_tests
+	target_compile_options(boost.out_ptr.tests
 		PRIVATE -std=c++11)
 endif()
-target_include_directories(boost_out_ptr_tests
+target_include_directories(boost.out_ptr.tests
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 	"../vendor/handle/include"
 )
-target_link_libraries(boost_out_ptr_tests 
+target_link_libraries(boost.out_ptr.tests 
 	PRIVATE 
 	Boost::assert
 	Boost::config
@@ -54,4 +53,7 @@ target_link_libraries(boost_out_ptr_tests
 	
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME boost_out_ptr_tests COMMAND boost_out_ptr_tests)
+add_test(NAME boost.out_ptr.tests COMMAND boost.out_ptr.tests)
+
+# # failure tests
+add_subdirectory(failure)
