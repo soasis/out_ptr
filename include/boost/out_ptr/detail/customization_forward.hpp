@@ -12,6 +12,7 @@
 #define BOOST_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
 
 namespace boost {
+
 	namespace movelib {
 		template <typename, typename>
 		class unique_ptr;
@@ -19,6 +20,7 @@ namespace boost {
 
 	template <typename>
 	class shared_ptr;
+
 } // namespace boost
 
 #endif // BOOST_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP

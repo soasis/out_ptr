@@ -15,7 +15,10 @@
 #include <memory>
 
 namespace boost {
+namespace ptr {
+
 	namespace out_ptr_detail {
+
 		struct disambiguate_ {
 		};
 
@@ -86,6 +89,7 @@ namespace boost {
 		template <typename T, typename... Args>
 		struct is_resetable : std::integral_constant<bool, is_resetable_test<T, Args...>::value> {
 		};
+
 	} // namespace out_ptr_detail
 
 	template <typename T, typename U>
@@ -109,6 +113,6 @@ namespace boost {
 	template <typename T, typename D>
 	using pointer_type_t = typename pointer_type<T, D>::type;
 
-} // namespace boost
+}} // namespace boost::ptr
 
 #endif // BOOST_OUT_PTR_POINTER_OF_HPP

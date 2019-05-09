@@ -24,6 +24,7 @@
 #include <tuple>
 
 namespace boost {
+namespace ptr {
 namespace out_ptr_detail {
 
 	template <typename Smart, typename... Args>
@@ -48,7 +49,7 @@ namespace out_ptr_detail {
 		Smart* m_smart_ptr;
 		Pointer m_target_ptr;
 
-		static_assert(!(out_ptr_detail::is_specialization_of<Smart, std::shared_ptr>::value || out_ptr_detail::is_specialization_of<Smart, ::boost::shared_ptr>::value)
+		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::boost::shared_ptr>::value)
 				|| (sizeof...(Indices) > 0), // clang-format hack
 			"shared_ptr<T> must pass a deleter in alongside the out_ptr "
 			"so when reset is called the deleter can be properly "
@@ -100,6 +101,7 @@ namespace out_ptr_detail {
 			}
 		}
 	};
-}
-} // namespace boost::out_ptr_detail
+
+}}} // namespace boost::ptr::out_ptr_detail
+
 #endif // BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP

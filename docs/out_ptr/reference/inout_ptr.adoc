@@ -1,0 +1,106 @@
+////
+//  Copyright ⓒ 2018-2019 ThePhD.
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//  See http://www.boost.org/libs/out_ptr/ for documentation.
+////
+
+# inout_ptr
+
+[[ref.inout_ptr.function]]
+### `boost::ptr::inout_ptr`
+
+```
+namespace boost { namespace ptr {
+
+	template <class Pointer, class Smart, class... Args>
+	inout_ptr_t<Smart, Pointer, Args...> inout_ptr(Smart& s, Args&&... args) noexcept
+
+	template <class Smart, class... Args>
+	inout_ptr<Smart, POINTER_OF(Smart), Args...> inout_ptr(Smart& s, Args&&... args) noexcept;
+
+}}
+```
+
+- Effects:
+* The first overload is Equivalent to: `return inout_ptr_t<Smart, Pointer, Args...>(s, std::forward<Args>(args)...);`
+* The second overload is Equivalent to: `return inout_ptr_t<Smart, POINTER_OF(Smart), Args...>(s, std::forward<Args>(args)...);`
+
+
+[[ref.inout_ptr.class]]
+### `boost::ptr::inout_ptr_t`
+
+```
+namespace boost { namespace ptr {
+
+	template <class Smart, class Pointer, class... Args>
+	class inout_ptr_t {
+		inout_ptr_t(Smart&, Args...) noexcept;
+		inout_ptr_t(inout_ptr_t&&) noexcept;
+
+		inout_ptr_t& operator=(inout_ptr_t&&) noexcept;
+
+		~inout_ptr_t();
+
+		operator Pointer*() noexcept;
+
+	private:
+		Smart* s; // exposition only
+		tuple<Args...> a; // exposition only
+		Pointer p; // exposition only
+	};
+	
+}}
+```
+
+IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared_ptr`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]].
+
+NOTE: It is impossible to properly release the managed resource from a `std::shared_ptr` or `boost::shared_ptr` given its shared ownership model.
+
+### Constructors
+
+`inout_ptr_t(Smart& smart, Args... args) noexcept;`
+
+- Effects: initializes `s` with `addressof(smart)`, `a` with `std::forward<Args>(args)...`, and `p` to either
+* `smart` if `std::is_pointer_v<Smart>` is true,
+* otherwise, an unspecified value of either `smart.get()` or `smart.release()`.
+
+NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose.
+
+- Remarks: if an implementation calls `smart.release()`, then it shall not call `s->release()` in the destructor.
+
+`inout_ptr_t(inout_ptr&& rhs) noexcept;`
+
+- Effects: initializes `s` with `std::move(rhs.s)`, `a` with `std::move(args)...`, and `p` with `std::move(rhs.p)`. Then sets `rhs.p` to `nullptr`.
+
+
+### Assignment
+
+`inout_ptr_t& operator=(inout_ptr&& rhs) noexcept;`
+
+- Effects: Equivalent to:
+```
+s = std::move(rhs.s); 
+a = std::move(rhs.a); 
+p = std::move(rhs.p);
+rhs.p = nullptr;
+return *this;
+```
+
+### Destructors
+
+`~inout_ptr_t();`
+
+- Constraints: Either `std::is_pointer_v<Smart>` is `true` or the expression `smart.release()` is well-formed.
+
+- Let `SP` be <<ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
+
+- Effects: Equivalent to:
+* `if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `std::is_pointer_v<Smart>` is true,
+* `s->release(); if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if the expression `s->reset(...)` is well-formed,
+* otherwise, `s->release(); if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }`.
+
+- Remarks: if an implementation calls `s->release()` or `smart.release()` in the constructor, then it shall not call `s->release()` in the destructor.

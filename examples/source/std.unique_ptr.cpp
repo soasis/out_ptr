@@ -52,7 +52,7 @@ int main() {
 		std::unique_ptr<FILE, fclose_deleter> my_unique_fptr;
 
 		// open file, stuff it in this deleter
-		auto err = fopen_s(boost::out_ptr<FILE*>(my_unique_fptr), file_name, "r+b");
+		auto err = fopen_s(boost::ptr::out_ptr<FILE*>(my_unique_fptr), file_name, "r+b");
 		// check err, then work with fd
 		if (err != 0) {
 			// something horrible happened

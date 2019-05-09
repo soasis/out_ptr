@@ -22,7 +22,7 @@
 template <std::size_t>
 using always_false_index = std::false_type;
 
-namespace boost {
+namespace boost { namespace ptr {
 
 	template <typename T, typename D, typename Pointer, typename... Args>
 	class out_ptr_t<phd::handle<T, D>, Pointer, Args...> : boost::empty_value<std::tuple<Args...>> {
@@ -79,11 +79,11 @@ namespace boost {
 			static_assert(always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
 		}
 	};
-} // namespace boost
+}} // namespace boost::ptr
 
 int main() {
 	phd::handle<int*, ficapi::int_deleter> p(nullptr);
-	ficapi_create(boost::out_ptr<void*>(p), ficapi_type::ficapi_type_int);
+	ficapi_create(boost::ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_int);
 	int* rawp = static_cast<int*>(p.get());
 	BOOST_ASSERT(rawp != nullptr);
 	BOOST_ASSERT(*rawp == ficapi_get_dynamic_data());

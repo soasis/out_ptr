@@ -1,0 +1,41 @@
+////
+//  Copyright ⓒ 2018-2019 ThePhD.
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//  See http://www.boost.org/libs/out_ptr/ for documentation.
+////
+
+# boost.out_ptr: the C++11 abstraction for passing smart pointers as parameters to `T**` arguments 
+ThePhD
+:toc: left
+:toclevels: 3
+:idprefix:
+:listing-caption: Code Example
+:table-caption: Illustration
+:docinfo: private-footer
+
+:leveloffset: +1
+
+include::out_ptr/overview.adoc[]
+
+include::out_ptr/definitions.adoc[]
+
+include::out_ptr/examples.adoc[]
+
+include::out_ptr/customization.adoc[]
+
+include::out_ptr/reference.adoc[]
+
+:leveloffset: -1
+
+[appendix]
+## Copyright, License, and Acknowledgments
+
+This documentation is
+
+* Copyright 2019 ThePhD
+
+and is distributed under the http://www.boost.org/LICENSE_1_0.txt[Boost Software License, Version 1.0].

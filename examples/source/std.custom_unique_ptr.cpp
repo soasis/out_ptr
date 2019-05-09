@@ -110,7 +110,7 @@ struct fd_deleter {
 int main() {
 	std::unique_ptr<int, fd_deleter> my_unique_fd;
 
-	auto err = fopen_s(boost::out_ptr<FILE*>(my_unique_fd), "prod.csv", "r+b");
+	auto err = fopen_s(boost::ptr::out_ptr<FILE*>(my_unique_fd), "prod.csv", "r+b");
 	// check err, then work with fd
 	if (err != 0) {
 		// something horrible happened, handle etc. etc.

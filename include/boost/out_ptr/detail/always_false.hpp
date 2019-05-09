@@ -14,6 +14,7 @@
 #include <type_traits>
 
 namespace boost {
+namespace ptr {
 namespace out_ptr_detail {
 
 	template <typename>
@@ -21,7 +22,7 @@ namespace out_ptr_detail {
 
 	template <std::size_t>
 	using always_false_index = std::false_type;
-}
-} // namespace boost::out_ptr_detail
+
+}}} // namespace boost::ptr::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_DETAIL_ALWAYS_FALSE

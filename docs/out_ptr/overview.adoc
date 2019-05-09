@@ -1,0 +1,61 @@
+////
+//  Copyright ⓒ 2018-2019 ThePhD.
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//  See http://www.boost.org/libs/out_ptr/ for documentation.
+////
+
+# Output Pointer Parameters
+
+Have you ever wanted to pass a smart pointer like `std::unique_ptr` or `boost::shared_ptr` or `boost::intrusive_ptr` to a C API?
+
+```
+boost::shared_ptr<mll_driver> axis_driver;
+mll_errno err = mll_driver_init(&axis_driver, 
+	PWM_AXIS_ZERO, 
+	VLT_LOW_POW | VLT_POW_SAVE,
+	0x001B);
+if (err != MLL_SUCESS) {
+	// ...
+}
+```
+
+The above code doesn't compile: the pointer may be "smart", but it isn't smart enough to return a `mll_driver**` when you do `&axis_driver` on it. It also makes it hard to retain the current deleter with a `shared_ptr`. Downgrading to a raw pointer and then inserting it into the pointer works, but is more verbose:
+
+```
+boost::shared_ptr<mll_driver> axis_driver;
+mll_driver* raw_axis_driver = nullptr;
+mll_errno err = mll_driver_init(&raw_axis_driver, 
+	PWM_AXIS_ZERO, 
+	VLT_LOW_POW | VLT_POW_SAVE,
+	0x001B);
+if (err != MLL_SUCESS) {
+	// ...
+}
+axis_driver.reset(raw_axis_driver, mll_driver_free);
+```
+
+This works, but you need to call `.reset(...)` with the raw pointer and set everything up. Plus, there could be a lot of error handling code between us and the actual initialization call. Not to mention a thrown exception between the end of that call and `axis_driver.reset(...);` means you may have a leak.
+
+With `boost.out_ptr`, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
+
+```
+boost::shared_ptr<mll_driver> axis_driver(nullptr);
+mll_errno err = mll_driver_init(boost::ptr::out_ptr(axis_driver, mll_driver_free), 
+	PWM_AXIS_ZERO, 
+	VLT_LOW_POW | VLT_POW_SAVE,
+	0x001B);
+if (err != MLL_SUCESS) {
+	// ...
+}
+```
+
+No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()`.
+
+Welcome to `boost.out_ptr`, the present and future of C API interoperation.
+
+- Get started with the https://github.com/ThePhD/out_ptr/tree/master/examples/source[examples].
+- Read up on how to use it with your <<customization, custom smart pointers>>!

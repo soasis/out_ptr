@@ -20,6 +20,7 @@
 #include <tuple>
 
 namespace boost {
+namespace ptr {
 
 	template <typename Smart, typename Pointer, typename... Args>
 	class simple_inout_ptr_t : public out_ptr_detail::base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
@@ -45,6 +46,6 @@ namespace boost {
 		return P(p, std::forward<Args>(args)...);
 	}
 
-} // namespace boost
+}} // namespace boost::ptr
 
 #endif // BOOST_OUT_PTR_SIMPLE_INOUT_PTR_HPP

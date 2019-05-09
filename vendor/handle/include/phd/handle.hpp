@@ -111,7 +111,7 @@ namespace phd {
 		typename Dx = default_handle_deleter<T>>
 	struct handle : boost::empty_value<Dx> {
 	public:
-		using pointer	 = boost::pointer_type_t<T, Dx>;
+		using pointer	 = boost::ptr::pointer_type_t<T, Dx>;
 		using deleter_type = Dx;
 
 	private:

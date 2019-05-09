@@ -22,7 +22,7 @@
 #include <memory>
 #include <tuple>
 
-namespace boost {
+namespace boost { namespace ptr {
 
 	namespace out_ptr_detail {
 		template <typename Smart, typename Pointer, typename Args, typename List>
@@ -100,7 +100,7 @@ namespace boost {
 		return friendly_out_ptr_t<Smart, Pointer, Args...>(p, std::forward<Args>(args)...);
 	}
 
-} // namespace boost
+}} // namespace boost::ptr
 
 #endif // BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 

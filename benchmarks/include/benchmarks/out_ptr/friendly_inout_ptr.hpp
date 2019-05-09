@@ -21,7 +21,7 @@
 #include <type_traits>
 #include <memory>
 
-namespace boost {
+namespace boost { namespace ptr {
 
 	namespace out_ptr_detail {
 		template <typename Smart, typename Pointer, typename Args, typename List>
@@ -84,7 +84,7 @@ namespace boost {
 		return friendly_inout_ptr<Pointer>(p, std::forward<Args>(args)...);
 	}
 
-} // namespace boost
+}} // namespace boost::ptr
 
 #endif // OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 

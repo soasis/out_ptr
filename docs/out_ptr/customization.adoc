@@ -1,0 +1,98 @@
+////
+//  Copyright ⓒ 2018-2019 ThePhD.
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//  See http://www.boost.org/libs/out_ptr/ for documentation.
+////
+
+[customization]
+# Customization for Your Smart Pointers
+
+Both `boost::ptr::out_ptr` and `boost::ptr::inout_ptr`
+
+## Changing the Defaults
+
+A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<ref.out_ptr.class, boost::ptr::out_ptr_t>> or <<ref.inout_ptr.class, boost::ptr::inout_ptr_t>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
+
+```
+namespace phd {
+	template <typename T>
+	struct default_handle_deleter {
+		using pointer = T;
+
+		static void write_null(pointer& p) noexcept;
+		static bool is_null(const pointer& p) noexcept;
+		void operator()(const pointer&) const noexcept;
+	};
+
+	template <typename T, typename Deleter = default_handle_delete<T>>
+	struct handle {
+		using pointer = /*...*/;
+		using deleter_type = Deleter;
+		
+		handle() noexcept;
+		handle(pointer h) noexcept;
+		handle(std::nullptr_t) noexcept;
+		handle(pointer h, deleter_type d) noexcept;
+		handle(std::nullptr_t, deleter_type d) noexcept;
+
+		pointer& get() noexcept;
+		const pointer& get() const noexcept;
+
+		void reset() noexcept;
+		void reset(pointer h) noexcept;
+
+		pointer get_null() const noexcept;
+		bool is_null() const noexcept;
+	};
+}
+```
+
+This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). A user may _(partially) template specialize_ the customize `boost::ptr::out_ptr_t` and `boost::ptr::inout_ptr_t`. Here is an example for `out_ptr_t`:
+
+- First, open up the `boost::ptr` namespace:
+```
+namespace boost { namespace ptr {
+
+}}
+```
+
+- Then, create a _partial template specialization_:
+```
+namespace boost { namespace ptr {
+	template <typename T, typename Del, typename Pointer, typename... Args>
+	class out_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
+		/* ... */
+	};
+}}
+```
+
+- Now, we need to create a family of required functions (4 types, 5 implementations). We need... 
+* a constructor that takes the smart pointer (the handle) and all the Arguments that need to be stored for use later;
+* a move constructor to transfer over all of the data
+* a conversion operator to the `Pointer*`;
+* and, a destructor that calls .reset()
+```
+namespace boost { namespace ptr {
+	template <typename T, typename Del, typename Pointer, typename... Args>
+	class out_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
+
+		out_ptr_t(Smart& ptr, Args... args) noexcept;
+
+		out_ptr_t(out_ptr_t&& right) noexcept;
+
+		out_ptr_t& operator=(out_ptr_t&& right) noexcept;
+		
+		operator Pointer*() noexcept;
+
+		~out_ptr_t() noexcept;
+	}
+}} // namespace boost::ptr
+```
+
+And that is everything we need to write. A full, optimized implementation for `boost::ptr::out_ptr_t` and `phd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/custom.handle.cpp[this example].
+
+The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `T**` will also handle calling the deleter properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer.

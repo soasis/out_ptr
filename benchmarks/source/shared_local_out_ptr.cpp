@@ -27,7 +27,7 @@ std::shared_ptr<ficapi::opaque> shared_allocate() {
 
 std::shared_ptr<ficapi::opaque> out_ptr_shared_allocate() {
 	std::shared_ptr<ficapi::opaque> p(nullptr);
-	ficapi_handle_no_alloc_create(boost::out_ptr(p, ficapi::handle_no_alloc_deleter()));
+	ficapi_handle_no_alloc_create(boost::ptr::out_ptr(p, ficapi::handle_no_alloc_deleter()));
 	return p;
 }
 
@@ -129,7 +129,7 @@ static void inline_out_ptr_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
 		std::shared_ptr<ficapi::opaque> p(nullptr, ficapi::handle_no_alloc_deleter());
-		ficapi_handle_no_alloc_create(boost::clever_out_ptr(p, ficapi::handle_no_alloc_deleter()));
+		ficapi_handle_no_alloc_create(boost::ptr::clever_out_ptr(p, ficapi::handle_no_alloc_deleter()));
 		x += ficapi_handle_get_data(p.get());
 	}
 	int64_t expected = int64_t(state.iterations()) * ficapi_get_data();

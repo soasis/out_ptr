@@ -19,6 +19,7 @@
 #include <utility>
 
 namespace boost {
+namespace ptr {
 namespace out_ptr_detail {
 
 	template <typename Smart>
@@ -39,7 +40,7 @@ namespace out_ptr_detail {
 	public:
 		base_inout_ptr_impl(Smart& ptr, Args&& args)
 		: base_t(ptr, std::move(args), ptr.get()) {
-			static_assert(out_ptr_detail::is_releasable<Smart>::value, "You cannot use an inout pointer with something that cannot release() its pointer!");
+			static_assert(is_releasable<Smart>::value, "You cannot use an inout pointer with something that cannot release() its pointer!");
 		}
 
 		base_inout_ptr_impl(base_inout_ptr_impl&& right)
@@ -53,9 +54,10 @@ namespace out_ptr_detail {
 		base_inout_ptr_impl& operator=(const base_inout_ptr_impl&) = delete;
 
 		~base_inout_ptr_impl() {
-			call_release(out_ptr_detail::is_releasable<Smart>(), *(this->m_smart_ptr));
+			call_release(is_releasable<Smart>(), *(this->m_smart_ptr));
 		}
 	};
-}} // namespace boost::out_ptr_detail
+
+}}} // namespace boost::ptr::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP

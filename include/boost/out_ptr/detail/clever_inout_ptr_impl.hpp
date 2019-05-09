@@ -22,6 +22,7 @@
 #include <utility>
 
 namespace boost {
+namespace ptr {
 namespace out_ptr_detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
@@ -112,6 +113,7 @@ namespace out_ptr_detail {
 	public:
 		using base_t::base_t;
 	};
-}} // namespace boost::out_ptr_detail
+
+}}} // namespace boost::ptr::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_DETAIL_CLEVER_INOUT_PTR_IMPL_HPP
