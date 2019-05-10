@@ -20,17 +20,17 @@ ThePhD
 
 :leveloffset: +1
 
-include::out_ptr/overview.adoc[Overview]
+include::out_ptr/overview.adoc[]
 
-include::out_ptr/benchmarks.adoc[Benchmarks]
+include::out_ptr/benchmarks.adoc[]
 
-include::out_ptr/caveats.adoc[Caveats]
+include::out_ptr/caveats.adoc[]
 
-include::out_ptr/rationale.adoc[Rationale]
+include::out_ptr/rationale.adoc[]
 
-include::out_ptr/reference.adoc[Reference]
+include::out_ptr/reference.adoc[]
 
-include::out_ptr/customization.adoc[Customization]
+include::out_ptr/customization.adoc[]
 
 :leveloffset: -1
 

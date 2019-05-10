@@ -16,9 +16,9 @@
 
 :leveloffset: +1
 
-include::reference/out_ptr.adoc[`boost::out_ptr::out_ptr` and Associated Class Reference]
+include::reference/out_ptr.adoc[]
 
-include::reference/inout_ptr.adoc[`boost::out_ptr::inout_ptr`  and Associated Class reference]
+include::reference/inout_ptr.adoc[]
 
 :leveloffset: -1
 
