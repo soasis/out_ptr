@@ -90,4 +90,4 @@ There are examples and documentation contained in this repository: please, perus
 - It works with [custom unique pointers just fine](examples/source/std.custom_unique_ptr.cpp)
 - It is [customizable to your own pointer types](examples/source/custom.handle.cpp), if you need performance or different semantics
 - It works with [Boost](examples/source/boost.shared_ptr.cpp) and [Standard](examples/source/std.shared_ptr.cpp) shared pointers.
-- 
+- It works with things like https://github.com/okdshin/unique_resource[unique_resource] out of the box.

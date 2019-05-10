@@ -23,8 +23,8 @@
 #include <tuple>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	template <typename Smart, typename Pointer, typename... Args>
 	class clever_out_ptr_t : public clever_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
@@ -51,6 +51,6 @@ namespace out_ptr_detail {
 		return P(p, std::forward<Args>(args)...);
 	}
 
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_CLEVER_OUT_PTR_HPP

@@ -11,10 +11,10 @@
 # inout_ptr
 
 [[ref.inout_ptr.function]]
-### `boost::ptr::inout_ptr`
+### `boost::out_ptr::inout_ptr`
 
 ```
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 
 	template <class Pointer, class Smart, class... Args>
 	inout_ptr_t<Smart, Pointer, Args...> inout_ptr(Smart& s, Args&&... args) noexcept
@@ -31,10 +31,10 @@ namespace boost { namespace ptr {
 
 
 [[ref.inout_ptr.class]]
-### `boost::ptr::inout_ptr_t`
+### `boost::out_ptr::inout_ptr_t`
 
 ```
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 
 	template <class Smart, class Pointer, class... Args>
 	class inout_ptr_t {
@@ -70,7 +70,7 @@ NOTE: It is impossible to properly release the managed resource from a `std::sha
 * `smart` if `std::is_pointer_v<Smart>` is true,
 * otherwise, an unspecified value of either `smart.get()` or `smart.release()`.
 
-NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. `boost::ptr::inout_ptr_t`s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised <<caveat.order, Order of Evaluation>> issues in C++.
+NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. `boost::out_ptr::inout_ptr_t`s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in C++.
 
 - Remarks: if an implementation calls `smart.release()`, then it shall not call `s->release()` in the destructor.
 
@@ -98,7 +98,7 @@ return *this;
 
 - Constraints: Either `std::is_pointer_v<Smart>` is `true` or the expression `s->release()` is well-formed.
 
-- Let `SP` be <<ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
+- Let `SP` be <<../reference.adoc#ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
 
 - Effects: Equivalent to:
 * `if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `std::is_pointer_v<Smart>` is true,

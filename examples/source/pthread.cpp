@@ -40,7 +40,7 @@ int main() {
 	// Grab the result returned by the pthread through its `void*`
 	// and put it into the shared pointer
 	boost::shared_ptr<int> result(nullptr);
-	if (pthread_join(compute_thread, boost::ptr::out_ptr<void*>(result, std::default_delete<int>()))) {
+	if (pthread_join(compute_thread, boost::out_ptr::out_ptr<void*>(result, std::default_delete<int>()))) {
 		std::cerr << "Error joining thread" << std::endl;
 		return 2;
 	}

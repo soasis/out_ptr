@@ -1,27 +1,38 @@
+////
+//  Copyright ⓒ 2018-2019 ThePhD.
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//  See http://www.boost.org/libs/out_ptr/ for documentation.
+////
+
+[[caveats]]
 # Caveats and Caution
 
 There are a few places where the rules of C++ (or a poorly implemented C library) can cause problems with this abstraction and thus force you to rewrite some of your code.
 
-
+[[caveats.if]]
 ## `if` statement ordering and temporaries
 
 `out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard C++, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
 
 ```
-if (my_maybe_failing_C_api(boost::ptr::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
+if (my_maybe_failing_C_api(boost::out_ptr::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
 && my_handle) {
 	// do something here if the function returns success (0) 
 	// and "my_handle" is non-null
 }
 ```
 
-The problem is that all temporaties -- including the one `boost::ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
+The problem is that all temporaties -- including the one `boost::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
 
 C++17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
 
 ```
 if (c_error_t err = my_maybe_failing_C_api(
-boost::ptr::out_ptr(my_handle), 56, ID_SOFT_CLS); 
+boost::out_ptr::out_ptr(my_handle), 56, ID_SOFT_CLS); 
 err == 0 && my_handle) {
 	// still wrong
 }
@@ -30,6 +41,7 @@ err == 0 && my_handle) {
 Everywhere else in the language, temporaries stop at the semicolon: that is not the case here. It is unfortunate, but that is how it works. Please use `out_ptr` (and any RAII abstraction) outside of the context of if/else conditionals.
 
 
+[[caveats.poor_c]]
 ## Poorly designed C APIs
 
 Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries are poorly designed and behaved: they will not do this. Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `T**` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
@@ -37,6 +49,7 @@ Almost all well-designed C APIs will set the user-provided output pointer argume
 It is impossible for this abstraction to handle such wild cases. Perhaps in the future additional types can be provided for "misbehaving" APIs, but they are thankfully few and far between so as not to cause this problem.
 
 
+[[caveats.poor_cxx]]
 ## Poorly designed C++ API
 
 Note that a C++ API that takes a `T**` may throw. The API could throw after deleting / freeing the passed-in resoure, but before setting it to `nullptr`. Therefore, given a `really::terrible::api`, this can result in a double-delete:
@@ -54,24 +67,24 @@ namespace really::terrible { // C++17 nested namespaces
 
 int main () {
 	// leaks because of do_something_that_throws
-	auto result = really::terrible::api(boost::ptr::inout_ptr(my_smart));
+	auto result = really::terrible::api(boost::out_ptr::inout_ptr(my_smart));
 }
 ```
 
 The workaround is not using this kind of API.
 
 
-[caveats.order]
-## Order of Evaluation (with `boost::ptr::inout_ptr`)
+[[caveats.order]]
+## Order of Evaluation (with `boost::out_ptr::inout_ptr`)
 
-Because `boost::ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters. 
+Because `boost::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters. 
 
 For `boost.out_ptr`, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
 
 For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
 
 ```
-my_c_api(boost::ptr::inout_ptr(my_smart), 
+my_c_api(boost::out_ptr::inout_ptr(my_smart), 
 	24, 
 	// unspecified into undefined behavior below: bad 
 	// implementation called .release() in constructor and

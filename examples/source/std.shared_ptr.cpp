@@ -17,10 +17,10 @@ int main(int, char* []) {
 
 	std::shared_ptr<ficapi::opaque> p(nullptr);
 	// next line would error: forgot to pass deleter and it got reset!
-	//ficapi_handle_create(boost::ptr::out_ptr(p));
+	//ficapi_handle_create(boost::out_ptr::out_ptr(p));
 
 	// next line does not error
-	ficapi_handle_create(boost::ptr::out_ptr(p, ficapi_handle_delete));
+	ficapi_handle_create(boost::out_ptr::out_ptr(p, ficapi_handle_delete));
 	ficapi::opaque_handle rawp = p.get();
 
 	BOOST_ASSERT(rawp != nullptr);

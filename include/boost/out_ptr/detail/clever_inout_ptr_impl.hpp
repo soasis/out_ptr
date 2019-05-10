@@ -22,8 +22,8 @@
 #include <utility>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
 	struct unique_optimization {
@@ -115,6 +115,6 @@ namespace out_ptr_detail {
 		using base_t::base_t;
 	};
 
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_DETAIL_CLEVER_INOUT_PTR_IMPL_HPP

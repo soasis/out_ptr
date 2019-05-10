@@ -18,8 +18,8 @@
 #include <memory>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
 	struct clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, Args, List> {
@@ -175,6 +175,6 @@ namespace out_ptr_detail {
 			}
 		}
 	};
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP

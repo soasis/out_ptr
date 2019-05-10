@@ -22,9 +22,9 @@
 #include <memory>
 #include <tuple>
 
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 
-	namespace out_ptr_detail {
+	namespace detail {
 		template <typename Smart, typename Pointer, typename Args, typename List>
 		class friendly_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, Args, List> {
 		private:
@@ -74,13 +74,13 @@ namespace boost { namespace ptr {
 				}
 			}
 		};
-	} // namespace out_ptr_detail
+	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	struct friendly_out_ptr_t : public out_ptr_detail::friendly_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	struct friendly_out_ptr_t : public detail::friendly_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
 		using list_t = boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
-		using core_t = out_ptr_detail::friendly_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
+		using core_t = detail::friendly_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
 		friendly_out_ptr_t(Smart& s, Args... args)
@@ -99,7 +99,7 @@ namespace boost { namespace ptr {
 		return friendly_out_ptr_t<Smart, Pointer, Args...>(p, std::forward<Args>(args)...);
 	}
 
-}} // namespace boost::ptr
+}} // namespace boost::out_ptr
 
 #endif // BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 

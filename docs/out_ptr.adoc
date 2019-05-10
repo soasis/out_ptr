@@ -13,6 +13,7 @@ ThePhD
 :toc: left
 :toclevels: 3
 :idprefix:
+:source-highlighter: pygments
 :listing-caption: Code Example
 :table-caption: Illustration
 :docinfo: private-footer

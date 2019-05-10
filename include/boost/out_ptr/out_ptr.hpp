@@ -18,9 +18,9 @@
 #include <type_traits>
 #include <tuple>
 
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 
-	namespace out_ptr_detail {
+	namespace detail {
 
 #if defined(BOOST_OUT_PTR_NO_CLEVERNESS) && BOOST_OUT_PTR_NO_CLEVERNESS != 0
 		template <typename Smart, typename Pointer, typename... Args>
@@ -30,12 +30,12 @@ namespace boost { namespace ptr {
 		using core_out_ptr_t = clever_out_ptr_t<Smart, Pointer, Args...>;
 #endif // BOOST_OUT_PTR_NO_CLEVERNESS
 
-	} // namespace out_ptr_detail
+	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class out_ptr_t : public out_ptr_detail::core_out_ptr_t<Smart, Pointer, Args...> {
+	class out_ptr_t : public detail::core_out_ptr_t<Smart, Pointer, Args...> {
 	private:
-		using base_t = out_ptr_detail::core_out_ptr_t<Smart, Pointer, Args...>;
+		using base_t = detail::core_out_ptr_t<Smart, Pointer, Args...>;
 
 	public:
 		using base_t::base_t;
@@ -54,6 +54,6 @@ namespace boost { namespace ptr {
 		return P(s, std::forward<Args>(args)...);
 	}
 
-}} // namespace boost::ptr
+}} // namespace boost::out_ptr
 
 #endif // BOOST_OUT_PTR_HPP

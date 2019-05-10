@@ -24,8 +24,8 @@
 #include <tuple>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	template <typename Smart, typename... Args>
 	void reset_or_create(std::true_type, Smart& s, Args&&... args) {
@@ -60,13 +60,13 @@ namespace out_ptr_detail {
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {
 		}
 
-		base_out_ptr_impl(Smart& ptr, Base&& args, out_ptr_detail::disambiguate_)
+		base_out_ptr_impl(Smart& ptr, Base&& args, detail::disambiguate_)
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr() {
 		}
 
 	public:
 		base_out_ptr_impl(Smart& ptr, Base&& args)
-		: base_out_ptr_impl(ptr, std::move(args), out_ptr_detail::disambiguate_()) {
+		: base_out_ptr_impl(ptr, std::move(args), detail::disambiguate_()) {
 		}
 
 		base_out_ptr_impl(base_out_ptr_impl&& right)
@@ -91,7 +91,7 @@ namespace out_ptr_detail {
 			if (m_smart_ptr) {
 				Base&& args = std::move(static_cast<Base&>(*this));
 				// lmao "if constexpr" xD
-				using can_reset = out_ptr_detail::is_resetable<Smart,
+				using can_reset = detail::is_resetable<Smart,
 					decltype(static_cast<source_pointer>(this->m_target_ptr)),
 					decltype(std::get<Indices>(std::move(args)))...>;
 				reset_or_create(can_reset(), *this->m_smart_ptr, static_cast<source_pointer>(this->m_target_ptr), std::get<Indices>(std::move(args))...);
@@ -99,6 +99,6 @@ namespace out_ptr_detail {
 		}
 	};
 
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP

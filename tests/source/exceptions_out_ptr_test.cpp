@@ -37,7 +37,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 		try {
 			std::unique_ptr<void, std::reference_wrapper<reused_deleter>> p(nullptr, std::ref(deleter));
 
-			ficapi_create(boost::ptr::out_ptr(p), ficapi_type::ficapi_type_int);
+			ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 			{
 				int* rawp = static_cast<int*>(p.get());
 				REQUIRE(rawp != nullptr);
@@ -45,7 +45,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
 				REQUIRE(p.get_deleter().get().store == 0);
 			}
-			ficapi_create(boost::ptr::out_ptr(p), ficapi_type::ficapi_type_int);
+			ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 			{
 				int* rawp = static_cast<int*>(p.get());
 				REQUIRE(rawp != nullptr);
@@ -53,7 +53,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
 				REQUIRE(p.get_deleter().get().store == 1);
 			}
-			if (ficapi_int_create_fail(boost::ptr::out_ptr<int*>(p), 1)) {
+			if (ficapi_int_create_fail(boost::out_ptr::out_ptr<int*>(p), 1)) {
 				int* rawp = static_cast<int*>(p.get());
 				REQUIRE(rawp == nullptr);
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
@@ -70,7 +70,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 		try {
 			std::unique_ptr<int, std::reference_wrapper<reused_int_deleter>> p(nullptr, std::ref(deleter));
 
-			ficapi_int_create(boost::ptr::out_ptr(p));
+			ficapi_int_create(boost::out_ptr::out_ptr(p));
 			{
 				int* rawp = p.get();
 				REQUIRE(rawp != nullptr);
@@ -78,7 +78,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
 				REQUIRE(p.get_deleter().get().store == 0);
 			}
-			ficapi_int_create(boost::ptr::out_ptr(p));
+			ficapi_int_create(boost::out_ptr::out_ptr(p));
 			{
 				int* rawp = p.get();
 				REQUIRE(rawp != nullptr);
@@ -86,7 +86,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
 				REQUIRE(p.get_deleter().get().store == 1);
 			}
-			if (ficapi_create_fail(boost::ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_int, 1)) {
+			if (ficapi_create_fail(boost::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_int, 1)) {
 				int* rawp = p.get();
 				REQUIRE(rawp == nullptr);
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));

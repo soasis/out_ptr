@@ -14,8 +14,8 @@
 #include <type_traits>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	template <typename>
 	using always_false = std::false_type;
@@ -23,6 +23,6 @@ namespace out_ptr_detail {
 	template <std::size_t>
 	using always_false_index = std::false_type;
 
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_DETAIL_ALWAYS_FALSE

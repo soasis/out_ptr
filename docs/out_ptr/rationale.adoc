@@ -8,6 +8,7 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 ////
 
+[[rationale]]
 # Rationale
 
 Below is the rationale for the design. Most of this rationale can also be found in https://thephd.github.io/vendor/future_cxx/papers/d1132.html[p1132 - std::out_ptr].
@@ -15,7 +16,7 @@ Below is the rationale for the design. Most of this rationale can also be found 
 
 ## Why not a CTAD-based design?
 
-A design where the class itself is called `out_ptr` and CTAD is relied on means that the casting version of the factory function -- `boost::ptr::out_ptr<IUnknown>(my_derived_smart_ptr);` -- would not work. It means that you would need to write a second version, `boost::ptr::out_ptr_cast<IUnknown>(my_derived_smart_ptr)`. This does not improve the interface at all: you need to remember 2 functions. It also means you could never supply template arguments to `boost::ptr::out_ptr(my_derived_smart_ptr)`. We believe the factory function is a superior design, and works further back than just C++17.
+A design where the class itself is called `out_ptr` and CTAD is relied on means that the casting version of the factory function -- `boost::out_ptr::out_ptr<IUnknown>(my_derived_smart_ptr);` -- would not work. It means that you would need to write a second version, `boost::out_ptr::out_ptr_cast<IUnknown>(my_derived_smart_ptr)`. This does not improve the interface at all: you need to remember 2 functions. It also means you could never supply template arguments to `boost::out_ptr::out_ptr(my_derived_smart_ptr)`. We believe the factory function is a superior design, and works further back than just C++17.
 
 
 ## Move Constructible? Move Assignable?!

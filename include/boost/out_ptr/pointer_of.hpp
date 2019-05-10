@@ -15,9 +15,9 @@
 #include <memory>
 
 namespace boost {
-namespace ptr {
+namespace out_ptr {
 
-	namespace out_ptr_detail {
+	namespace detail {
 
 		struct disambiguate_ {
 		};
@@ -90,10 +90,10 @@ namespace ptr {
 		struct is_resetable : std::integral_constant<bool, is_resetable_test<T, Args...>::value> {
 		};
 
-	} // namespace out_ptr_detail
+	} // namespace detail
 
 	template <typename T, typename U>
-	struct pointer_of_or : out_ptr_detail::pointer_of_or<T, U> {
+	struct pointer_of_or : detail::pointer_of_or<T, U> {
 	};
 
 	template <typename T, typename U>
@@ -107,12 +107,12 @@ namespace ptr {
 
 	template <typename T, typename Dx>
 	struct pointer_type {
-		typedef typename out_ptr_detail::pointer_typedef_enable_if<out_ptr_detail::has_typedef_pointer<Dx>::value, Dx, T>::type type;
+		typedef typename detail::pointer_typedef_enable_if<detail::has_typedef_pointer<Dx>::value, Dx, T>::type type;
 	};
 
 	template <typename T, typename D>
 	using pointer_type_t = typename pointer_type<T, D>::type;
 
-}} // namespace boost::ptr
+}} // namespace boost::out_ptr
 
 #endif // BOOST_OUT_PTR_POINTER_OF_HPP

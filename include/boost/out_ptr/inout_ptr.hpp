@@ -15,9 +15,9 @@
 #include <boost/out_ptr/simple_inout_ptr.hpp>
 
 namespace boost {
-namespace ptr {
+namespace out_ptr {
 
-	namespace out_ptr_detail {
+	namespace detail {
 #if defined(BOOST_OUT_PTR_NO_CLEVERNESS) && BOOST_OUT_PTR_NO_CLEVERNESS != 0
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_inout_ptr_t = simple_inout_ptr_t<Smart, Pointer, Args...>;
@@ -26,12 +26,12 @@ namespace ptr {
 		using core_inout_ptr_t = clever_inout_ptr_t<Smart, Pointer, Args...>;
 #endif // BOOST_OUT_PTR_NO_CLEVERNESS
 
-	} // namespace out_ptr_detail
+	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class inout_ptr_t : public out_ptr_detail::core_inout_ptr_t<Smart, Pointer, Args...> {
+	class inout_ptr_t : public detail::core_inout_ptr_t<Smart, Pointer, Args...> {
 	private:
-		using base_t = out_ptr_detail::core_inout_ptr_t<Smart, Pointer, Args...>;
+		using base_t = detail::core_inout_ptr_t<Smart, Pointer, Args...>;
 
 	public:
 		using base_t::base_t;
@@ -50,6 +50,6 @@ namespace ptr {
 		return P(s, std::forward<Args>(args)...);
 	}
 
-}} // namespace boost::ptr
+}} // namespace boost::out_ptr
 
 #endif // BOOST_OUT_PTR_INOUT_PTR_HPP

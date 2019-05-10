@@ -19,8 +19,8 @@
 #include <utility>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	template <typename Smart>
 	void call_release(std::true_type, Smart& s) {
@@ -58,6 +58,6 @@ namespace out_ptr_detail {
 		}
 	};
 
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP

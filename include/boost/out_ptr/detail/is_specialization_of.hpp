@@ -14,8 +14,8 @@
 #include <type_traits>
 
 namespace boost {
-namespace ptr {
-namespace out_ptr_detail {
+namespace out_ptr {
+namespace detail {
 
 	namespace meta_detail {
 		template <typename T, template <typename...> class Templ>
@@ -30,6 +30,6 @@ namespace out_ptr_detail {
 	template <typename T, template <typename...> class Templ>
 	using is_specialization_of = meta_detail::is_specialization_of<typename std::remove_cv<T>::type, Templ>;
 
-}}} // namespace boost::ptr::out_ptr_detail
+}}} // namespace boost::out_ptr::detail
 
 #endif // BOOST_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP

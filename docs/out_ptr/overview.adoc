@@ -44,7 +44,7 @@ With `boost.out_ptr`, we can do better. Get rid of the raw pointer and avoid pot
 
 ```
 boost::shared_ptr<mll_driver> axis_driver(nullptr);
-mll_errno err = mll_driver_init(boost::ptr::out_ptr(axis_driver, mll_driver_free), 
+mll_errno err = mll_driver_init(boost::out_ptr::out_ptr(axis_driver, mll_driver_free), 
 	PWM_AXIS_ZERO, 
 	VLT_LOW_POW | VLT_POW_SAVE,
 	0x001B);
@@ -57,6 +57,10 @@ No reset call, no inspecting for exception safety, and it remembers the deleter 
 
 Welcome to `boost.out_ptr`, the present and future of C API interoperation.
 
-- Get started with the https://github.com/ThePhD/out_ptr/tree/master/examples/source[examples].
-- Understand the pitfalls and problems that come with C++ by reading the link:caveats[the Caveats].
-- Read up on how to use it with your link:customization[custom smart pointers], if you do not have a conforming interface!
+- Get started with the link:../../examples/source[examples].
+- Understand the pitfalls and problems that come with C++ by reading <<caveats.adoc#caveats, the Caveats>>.
+- Read up on how to use it with your <<customization.adoc#customization, custom smart pointers>>, if you do not have a conforming interface!
+
+C APIs might not be fun, but at least working with the pointers should feel easy and safe and simple!
+
+Happy programming. ♥

@@ -8,16 +8,27 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 ////
 
-[#reference]
+[[ref]]
 # Reference
 :toc:
 :toc-title:
 :idprefix:
 
-The contents of the library are in namespace `boost::ptr`. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions: `out_ptr_t` and `inout_ptr_t`:
+:leveloffset: +1
+
+include::reference/out_ptr.adoc[]
+
+include::reference/inout_ptr.adoc[]
+
+:leveloffset: -1
+
+[[ref.syn]]
+## Synopsis
+
+The contents of the library are in namespace `boost::out_ptr`. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions: `out_ptr_t` and `inout_ptr_t`:
 
 ```
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 	
 	template <class Smart, class Pointer, class... Args>
 	struct out_ptr_t;
@@ -36,11 +47,11 @@ namespace boost { namespace ptr {
 	
 	template <class Smart, class... Args>
 	inout_ptr_t<Smart, POINTER_OF(SMART), Args...> inout_ptr(Smart& s, Args&&... args) noexcept 
-}} // namespace boost::ptr
+}} // namespace boost::out_ptr
 ```
 The following documentation describes `out_ptr` and `inout_ptr`.
 
-[ref.def]
+[[ref.def]]
 ## Definitions
 
 The following are definitions for some meta-functions done on types. If you see these used on
@@ -53,11 +64,3 @@ The following are definitions for some meta-functions done on types. If you see 
 
 [ref.def.pointer_of]
 - Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
-
-:leveloffset: +1
-
-include::reference/out_ptr.adoc[]
-
-include::reference/inout_ptr.adoc[]
-
-:leveloffset: -1

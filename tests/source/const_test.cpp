@@ -28,7 +28,7 @@ void cxx_03_re_wrapper_function(const Args&... args) {
 TEST_CASE("out_ptr/const wrappers", "out_ptr works with const APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);
-		cxx_03_wrapper_function(boost::ptr::out_ptr(p), ficapi_type::ficapi_type_int);
+		cxx_03_wrapper_function(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
@@ -38,7 +38,7 @@ TEST_CASE("out_ptr/const wrappers", "out_ptr works with const APIs") {
 TEST_CASE("inout_ptr/const wrappers", "out_ptr works with const APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);
-		cxx_03_re_wrapper_function(boost::ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
+		cxx_03_re_wrapper_function(boost::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());

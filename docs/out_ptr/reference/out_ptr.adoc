@@ -11,10 +11,10 @@
 # out_ptr
 
 [[ref.out_ptr.function]]
-### function template `boost::ptr::out_ptr`
+### function template `boost::out_ptr::out_ptr`
 
 ```
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 
 	template <class Pointer, class Smart, class... Args>
 	out_ptr_t<Smart, Pointer, Args...> out_ptr(Smart& s, Args&&... args) noexcept
@@ -31,10 +31,10 @@ namespace boost { namespace ptr {
 
 
 [[ref.out_ptr.class]]
-### class template `boost::ptr::out_ptr_t`
+### class template `boost::out_ptr::out_ptr_t`
 
 ```
-namespace boost { namespace ptr {
+namespace boost { namespace out_ptr {
 
 	template <class Smart, class Pointer, class... Args>
 	class out_ptr_t {
@@ -94,7 +94,7 @@ return *this;
 
 `~out_ptr_t();`
 
-- Let `SP` be <<ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
+- Let `SP` be <<../reference.adoc#ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
 
 - Effects: Equivalent to:
 * `if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `reset` is a valid member function on `Smart`
