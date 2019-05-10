@@ -12,7 +12,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 
 TEST_CASE("out_ptr/raw", "out_ptr type works with raw pointers and c-style output APIs") {
 	SECTION("void*") {

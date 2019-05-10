@@ -29,7 +29,7 @@ namespace out_ptr_detail {
 
 	template <typename Smart>
 	void call_release(std::false_type, Smart&) {
-		static_assert(std::is_pointer<Smart>::value, "the type that does not get release called on it must be a pointer type");
+		static_assert(std::is_pointer<Smart>::value, "the type that does not have release called on it must be a pointer type");
 	}
 
 	template <typename Smart, typename Pointer, typename Args, typename List>

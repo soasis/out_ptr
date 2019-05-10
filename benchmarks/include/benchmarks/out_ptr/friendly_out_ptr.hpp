@@ -63,12 +63,11 @@ namespace boost { namespace ptr {
 			}
 			friendly_out_ptr_impl(const friendly_out_ptr_impl&) = delete;
 			friendly_out_ptr_impl& operator=(const friendly_out_ptr_impl&) = delete;
-			operator Pointer*() noexcept {
-				return m_target_ptr;
+
+			operator Pointer*() const noexcept {
+				return const_cast<Pointer*>(m_target_ptr);
 			}
-			operator Pointer&() noexcept {
-				return *m_target_ptr;
-			}
+
 			~friendly_out_ptr_impl() noexcept {
 				if (m_old_ptr != nullptr) {
 					m_smart_ptr->get_deleter()(m_old_ptr);

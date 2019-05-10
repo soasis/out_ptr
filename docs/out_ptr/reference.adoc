@@ -45,11 +45,13 @@ The following documentation describes `out_ptr` and `inout_ptr`.
 
 The following are definitions for some meta-functions done on types. If you see these used on
 
+[ref.def.pointer_of_or]
 - Let `POINTER_OF_OR(T, U)` denote a type that is:
 * `T::pointer` if the qualified-id `T::pointer` is valid and denotes a type, or
 * otherwise, `typename T::element_type*` if the qualified-id `T::element_type` is valid and denotes a type,
 * otherwise, `U`.
 
+[ref.def.pointer_of]
 - Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
 
 :leveloffset: +1

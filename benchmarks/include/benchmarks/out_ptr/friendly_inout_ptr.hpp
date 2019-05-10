@@ -52,11 +52,8 @@ namespace boost { namespace ptr {
 			friendly_inout_ptr_impl(const friendly_inout_ptr_impl&)				  = delete;
 			friendly_inout_ptr_impl& operator=(const friendly_inout_ptr_impl&) = delete;
 
-			operator Pointer*() noexcept {
-				return m_target_ptr;
-			}
-			operator Pointer&() noexcept {
-				return *m_target_ptr;
+			operator Pointer*() const noexcept {
+				return const_cast<Pointer*>(m_target_ptr);
 			}
 		};
 	} // namespace out_ptr_detail

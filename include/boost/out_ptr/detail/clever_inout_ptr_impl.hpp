@@ -72,11 +72,8 @@ namespace out_ptr_detail {
 		unique_optimization(const unique_optimization&)				    = delete;
 		unique_optimization& operator=(const unique_optimization&) = delete;
 
-		operator Pointer*() noexcept {
-			return this->m_target_ptr;
-		}
-		operator Pointer&() noexcept {
-			return *this->m_target_ptr;
+		operator Pointer*() const noexcept {
+			return const_cast<Pointer*>(this->m_target_ptr);
 		}
 	};
 
@@ -92,8 +89,10 @@ namespace out_ptr_detail {
 	// defer to unique optimization, if possible
 	template <typename T, typename D, typename Pointer>
 	struct clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
-		boost::mp11::mp_if_c<
-			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value || std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value || !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value, void>>
+		typename std::enable_if<
+			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
+			|| std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
+			|| !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value>::type>
 	: unique_optimization<std::unique_ptr<T, D>, T, D, Pointer> {
 	private:
 		using base_t = unique_optimization<std::unique_ptr<T, D>, T, D, Pointer>;
@@ -104,8 +103,10 @@ namespace out_ptr_detail {
 
 	template <typename T, typename D, typename Pointer>
 	struct clever_inout_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
-		boost::mp11::mp_if_c<
-			std::is_same<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value || std::is_base_of<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value || !std::is_convertible<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value, void>>
+		typename std::enable_if<
+			std::is_same<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
+			|| std::is_base_of<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
+			|| !std::is_convertible<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value>::type>
 	: unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
 	private:
 		using base_t = unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;

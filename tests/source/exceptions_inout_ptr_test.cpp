@@ -12,7 +12,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 
 TEST_CASE("inout_ptr/exceptions/basic fail in scope", "inout_ptr does not double-delete or destroy a pointer if the C function fails") {
 	SECTION("unique_ptr<void>") {
@@ -73,6 +72,7 @@ TEST_CASE("inout_ptr/exceptions/basic fail in scope", "inout_ptr does not double
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 		try {
+			decltype(auto) pp = boost::ptr::inout_ptr<void*>(p);
 			if (ficapi_re_create_fail(boost::ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_opaque, 1) != 0) {
 				throw std::runtime_error("ficapi: failure to create");
 			}

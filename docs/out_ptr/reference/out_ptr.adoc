@@ -45,7 +45,7 @@ namespace boost { namespace ptr {
 
 		~out_ptr_t();
 
-		operator Pointer*() noexcept;
+		operator Pointer*() const noexcept;
 
 	private:
 		Smart* s; // exposition only
@@ -94,7 +94,7 @@ return *this;
 
 `~out_ptr_t();`
 
-- Let `SP` be `POINTER_OF_OR(Smart, Pointer)` (**19.10.2**).
+- Let `SP` be <<ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
 
 - Effects: Equivalent to:
 * `if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `reset` is a valid member function on `Smart`
@@ -105,6 +105,6 @@ where `Args` are the arguments stored in `a`.
 
 ### Conversions
 
-`operator Pointer*() noexcept;`
+`operator Pointer*() const noexcept;`
 
 - Effects: returns a pointer to `p`.

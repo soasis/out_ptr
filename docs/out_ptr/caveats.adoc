@@ -2,6 +2,7 @@
 
 There are a few places where the rules of C++ (or a poorly implemented C library) can cause problems with this abstraction and thus force you to rewrite some of your code.
 
+
 ## `if` statement ordering and temporaries
 
 `out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard C++, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
@@ -28,8 +29,57 @@ err == 0 && my_handle) {
 
 Everywhere else in the language, temporaries stop at the semicolon: that is not the case here. It is unfortunate, but that is how it works. Please use `out_ptr` (and any RAII abstraction) outside of the context of if/else conditionals.
 
+
 ## Poorly designed C APIs
 
-Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries are poorly designed and behaved: they will not do this. Worse, some re-allocating APIs (for use with <<overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `T**` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
+Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries are poorly designed and behaved: they will not do this. Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `T**` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
 
 It is impossible for this abstraction to handle such wild cases. Perhaps in the future additional types can be provided for "misbehaving" APIs, but they are thankfully few and far between so as not to cause this problem.
+
+
+## Poorly designed C++ API
+
+Note that a C++ API that takes a `T**` may throw. The API could throw after deleting / freeing the passed-in resoure, but before setting it to `nullptr`. Therefore, given a `really::terrible::api`, this can result in a double-delete:
+
+```
+namespace really::terrible { // C++17 nested namespaces
+	inline int api (int** res) {
+		delete *res;
+		do_something_that_throws();
+		*res = nullptr;
+		/* other stuff */
+		return 0;
+	}
+}
+
+int main () {
+	// leaks because of do_something_that_throws
+	auto result = really::terrible::api(boost::ptr::inout_ptr(my_smart));
+}
+```
+
+The workaround is not using this kind of API.
+
+
+[caveats.order]
+## Order of Evaluation (with `boost::ptr::inout_ptr`)
+
+Because `boost::ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters. 
+
+For `boost.out_ptr`, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
+
+For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
+
+```
+my_c_api(boost::ptr::inout_ptr(my_smart), 
+	24, 
+	// unspecified into undefined behavior below: bad 
+	// implementation called .release() in constructor and
+	// the first argument was evaluated before this one
+	// (e.g., in MSVC as opposed to GCC or Clang)
+	my_smart->a_value,
+	nullptr
+);
+```
+
+This is an inherent flaw with all order-dependent function calls, but there is little that can be done until the Standard chooses a well-defined argument order.

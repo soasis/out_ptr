@@ -10,7 +10,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 #include <atomic>
 #include <mutex>
 #include <thread>

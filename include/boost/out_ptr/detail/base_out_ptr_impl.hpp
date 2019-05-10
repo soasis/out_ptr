@@ -83,11 +83,8 @@ namespace out_ptr_detail {
 		base_out_ptr_impl(const base_out_ptr_impl&) = delete;
 		base_out_ptr_impl& operator=(const base_out_ptr_impl&) = delete;
 
-		operator Pointer*() noexcept {
-			return std::addressof(this->m_target_ptr);
-		}
-		operator Pointer&() noexcept {
-			return this->m_target_ptr;
+		operator Pointer*() const noexcept {
+			return const_cast<Pointer*>(std::addressof(this->m_target_ptr));
 		}
 
 		~base_out_ptr_impl() {

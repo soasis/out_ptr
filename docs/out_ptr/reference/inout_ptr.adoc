@@ -45,7 +45,9 @@ namespace boost { namespace ptr {
 
 		~inout_ptr_t();
 
-		operator Pointer*() noexcept;
+		T* const* -> T**
+
+		operator Pointer const*() noexcept const;
 
 	private:
 		Smart* s; // exposition only
@@ -68,7 +70,7 @@ NOTE: It is impossible to properly release the managed resource from a `std::sha
 * `smart` if `std::is_pointer_v<Smart>` is true,
 * otherwise, an unspecified value of either `smart.get()` or `smart.release()`.
 
-NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose.
+NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. `boost::ptr::inout_ptr_t`s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised <<caveat.order, Order of Evaluation>> issues in C++.
 
 - Remarks: if an implementation calls `smart.release()`, then it shall not call `s->release()` in the destructor.
 
@@ -94,7 +96,7 @@ return *this;
 
 `~inout_ptr_t();`
 
-- Constraints: Either `std::is_pointer_v<Smart>` is `true` or the expression `smart.release()` is well-formed.
+- Constraints: Either `std::is_pointer_v<Smart>` is `true` or the expression `s->release()` is well-formed.
 
 - Let `SP` be <<ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
 

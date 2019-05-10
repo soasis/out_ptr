@@ -21,11 +21,12 @@
 
 namespace boost {
 namespace ptr {
+namespace out_ptr_detail {
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class simple_inout_ptr_t : public out_ptr_detail::base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	class simple_inout_ptr_t : public base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 		using list_t = boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
-		using core_t = out_ptr_detail::base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
+		using core_t = base_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
 		simple_inout_ptr_t(Smart& s, Args... args)
@@ -46,6 +47,6 @@ namespace ptr {
 		return P(p, std::forward<Args>(args)...);
 	}
 
-}} // namespace boost::ptr
+}}} // namespace boost::ptr::out_ptr_detail
 
 #endif // BOOST_OUT_PTR_SIMPLE_INOUT_PTR_HPP

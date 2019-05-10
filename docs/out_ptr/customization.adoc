@@ -11,14 +11,25 @@
 [customization]
 # Customization for Your Smart Pointers
 
-Both `boost::ptr::out_ptr` and `boost::ptr::inout_ptr`
+Both `boost::ptr::out_ptr` and `boost::ptr::inout_ptr` have expectations on the Smart Pointer passed into it as the first argument.
+
+In general, `boost::ptr::out_ptr` needs the following 2 things:
+- A `.get()` call, to retrieve the underlying pointer;
+- and, one of `.reset(pointer, Args...)` or `SmartPointer(pointer, Args...)` to be a well-formed expression.
+
+Additionally, `boost::ptr::inout_ptr` has one more additional requirement:
+- have a `.release()` function to release ownership of the resource so that utilized API can delete it and then re-allocate it.
+
+Therefore, if you have a `.get()` and `.reset()` call, alongside a `.release()` for `inout_ptr`, you are completely fine with the default implementation.
+
 
 ## Changing the Defaults
 
-A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<ref.out_ptr.class, boost::ptr::out_ptr_t>> or <<ref.inout_ptr.class, boost::ptr::inout_ptr_t>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
+A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<reference/out_ptr.adoc#ref.out_ptr.class, `boost::ptr::out_ptr_t`>> or <<reference/inout_ptr.adoc#ref.inout_ptr.class, `boost::ptr::inout_ptr_t`>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
 
 ```
 namespace phd {
+
 	template <typename T>
 	struct default_handle_deleter {
 		using pointer = T;
@@ -48,7 +59,8 @@ namespace phd {
 		pointer get_null() const noexcept;
 		bool is_null() const noexcept;
 	};
-}
+
+} // namespace phd
 ```
 
 This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). A user may _(partially) template specialize_ the customize `boost::ptr::out_ptr_t` and `boost::ptr::inout_ptr_t`. Here is an example for `out_ptr_t`:
@@ -57,26 +69,30 @@ This type may require special support. For example, this might represent a handl
 ```
 namespace boost { namespace ptr {
 
-}}
+}} // namespace boost::ptr
 ```
 
 - Then, create a _partial template specialization_:
 ```
 namespace boost { namespace ptr {
+	
 	template <typename T, typename Del, typename Pointer, typename... Args>
 	class out_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
 		/* ... */
 	};
-}}
+
+}} // namespace boost::ptr
 ```
 
 - Now, we need to create a family of required functions (4 types, 5 implementations). We need... 
 * a constructor that takes the smart pointer (the handle) and all the Arguments that need to be stored for use later;
 * a move constructor to transfer over all of the data
 * a conversion operator to the `Pointer*`;
-* and, a destructor that calls .reset()
+* and, a destructor that calls .reset().
+
 ```
 namespace boost { namespace ptr {
+	
 	template <typename T, typename Del, typename Pointer, typename... Args>
 	class out_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
 
@@ -86,13 +102,14 @@ namespace boost { namespace ptr {
 
 		out_ptr_t& operator=(out_ptr_t&& right) noexcept;
 		
-		operator Pointer*() noexcept;
+		operator Pointer*() const noexcept;
 
 		~out_ptr_t() noexcept;
 	}
+
 }} // namespace boost::ptr
 ```
 
 And that is everything we need to write. A full, optimized implementation for `boost::ptr::out_ptr_t` and `phd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/custom.handle.cpp[this example].
 
-The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `T**` will also handle calling the deleter properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer.
+The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `T**` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `boost::ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.

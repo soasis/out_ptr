@@ -32,7 +32,9 @@ namespace out_ptr_detail {
 
 	template <typename T, typename D, typename Pointer>
 	struct clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
-		boost::mp11::mp_if_c<std::is_same<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value || std::is_base_of<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value || !std::is_convertible<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value, void>> {
+		typename std::enable_if<std::is_same<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| std::is_base_of<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| !std::is_convertible<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value>::type> {
 	public:
 		using Smart		 = std::unique_ptr<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
@@ -90,12 +92,10 @@ namespace out_ptr_detail {
 		clever_out_ptr_impl(const clever_out_ptr_impl&) = delete;
 		clever_out_ptr_impl& operator=(const clever_out_ptr_impl&) = delete;
 
-		operator Pointer*() noexcept {
-			return this->m_target_ptr;
+		operator Pointer*() const noexcept {
+			return const_cast<Pointer*>(this->m_target_ptr);
 		}
-		operator Pointer&() noexcept {
-			return *this->m_target_ptr;
-		}
+
 		~clever_out_ptr_impl() noexcept {
 			if (this->m_old_ptr != nullptr) {
 				this->m_smart_ptr->get_deleter()(static_cast<source_pointer>(this->m_old_ptr));
@@ -105,7 +105,9 @@ namespace out_ptr_detail {
 
 	template <typename T, typename D, typename Pointer>
 	struct clever_out_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
-		boost::mp11::mp_if_c<std::is_same<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value || std::is_base_of<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value || !std::is_convertible<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value, void>> {
+		typename std::enable_if<std::is_same<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| std::is_base_of<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| !std::is_convertible<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value>::type> {
 	public:
 		using Smart		 = boost::movelib::unique_ptr<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
@@ -164,11 +166,9 @@ namespace out_ptr_detail {
 		clever_out_ptr_impl& operator=(const clever_out_ptr_impl&) = delete;
 
 		operator Pointer*() noexcept {
-			return this->m_target_ptr;
+			return const_cast<Pointer*>(this->m_target_ptr);
 		}
-		operator Pointer&() noexcept {
-			return *this->m_target_ptr;
-		}
+
 		~clever_out_ptr_impl() noexcept {
 			if (this->m_old_ptr != nullptr) {
 				this->m_smart_ptr->get_deleter()(static_cast<source_pointer>(this->m_old_ptr));

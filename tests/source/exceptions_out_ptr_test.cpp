@@ -12,7 +12,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 
 #include <c_api.hpp>
 

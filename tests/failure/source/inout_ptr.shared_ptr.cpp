@@ -12,7 +12,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 
 TEST_CASE("inout_ptr/fail", "inout_ptr type will static assert various bad usages") {
 	SECTION("shared with inout_ptr") {

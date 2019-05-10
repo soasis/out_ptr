@@ -53,9 +53,10 @@ if (err != MLL_SUCESS) {
 }
 ```
 
-No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()`.
+No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers.
 
 Welcome to `boost.out_ptr`, the present and future of C API interoperation.
 
 - Get started with the https://github.com/ThePhD/out_ptr/tree/master/examples/source[examples].
-- Read up on how to use it with your <<customization, custom smart pointers>>!
+- Understand the pitfalls and problems that come with C++ by reading the link:caveats[the Caveats].
+- Read up on how to use it with your link:customization[custom smart pointers], if you do not have a conforming interface!

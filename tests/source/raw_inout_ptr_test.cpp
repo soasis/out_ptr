@@ -12,7 +12,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 
 TEST_CASE("inout_ptr/basic", "inout_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("void*") {

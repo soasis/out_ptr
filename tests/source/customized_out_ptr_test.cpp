@@ -16,7 +16,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <iostream>
 
 namespace boost { namespace ptr {
 	template <typename T, typename D, typename Pointer, typename... Args>
@@ -52,11 +51,8 @@ namespace boost { namespace ptr {
 		out_ptr_t(const out_ptr_t&) = delete;
 		out_ptr_t& operator=(const out_ptr_t&) = delete;
 
-		operator Pointer*() noexcept {
-			return this->m_target_ptr;
-		}
-		operator Pointer&() noexcept {
-			return *this->m_target_ptr;
+		operator Pointer*() const noexcept {
+			return const_cast<Pointer*>(this->m_target_ptr);
 		}
 
 		~out_ptr_t() noexcept {
