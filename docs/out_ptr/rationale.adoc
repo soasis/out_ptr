@@ -38,3 +38,8 @@ We observe that the usage of `const_cast` here to enable returning a plain `Poin
 ## Wait a second -- this works with raw pointers?
 
 Yes. The primary motivation behind this is due to generic wrapper functions. Passing in a raw pointer should simply be identical to using the `&ptr`: doing something different and making certain function calls explode and break for users does not seem like a valuable trade off for something that can be supported for essentially free.
+
+
+## Why the customization point structs?
+
+These are extensible because benchmarking and user input has proven that being able to override the functionality for their own pointers and their own performance is necessary. See the <<benchmarks.adoc#benchmarks, benchmarks>> for more information.

@@ -22,6 +22,8 @@ ThePhD
 
 include::out_ptr/overview.adoc[]
 
+include::out_ptr/examples.adoc[]
+
 include::out_ptr/benchmarks.adoc[]
 
 include::out_ptr/caveats.adoc[]

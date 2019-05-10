@@ -63,7 +63,7 @@ No reset call, no inspecting for exception safety, and it remembers the deleter 
 
 Welcome to `boost.out_ptr`, the present and future of C API interoperation.
 
-- Get started with the link:../../examples/source[examples].
+- Get started with the <<examples.adoc#examples,examples>>.
 - Understand the pitfalls and problems that come with C++ by reading <<caveats.adoc#caveats, the Caveats>>.
 - Read up on how to use it with your <<customization.adoc#customization, custom smart pointers>>, if you do not have a conforming interface!
 

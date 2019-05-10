@@ -8,7 +8,7 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 ////
 
-[customization]
+[[customization]]
 # Customization for Your Smart Pointers
 
 Both `boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr` have expectations on the Smart Pointer passed into it as the first argument.
