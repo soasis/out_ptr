@@ -70,7 +70,7 @@ NOTE: It is impossible to properly release the managed resource from a `std::sha
 * `smart` if `std::is_pointer_v<Smart>` is true,
 * otherwise, an unspecified value of either `smart.get()` or `smart.release()`.
 
-NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. `boost::out_ptr::inout_ptr_t`s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in C++.
+NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. ``boost::out_ptr::inout_ptr_t``s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in C++.
 
 - Remarks: if an implementation calls `smart.release()`, then it shall not call `s->release()` in the destructor.
 

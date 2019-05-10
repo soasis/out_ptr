@@ -8,7 +8,7 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 ////
 
-# Output Pointer Parameters
+# `boost.out_ptr` at a glance
 
 Have you ever wanted to pass a smart pointer like `std::unique_ptr` or `boost::shared_ptr` or `boost::intrusive_ptr` to a C API?
 
@@ -23,7 +23,11 @@ if (err != MLL_SUCESS) {
 }
 ```
 
-The above code doesn't compile: the pointer may be "smart", but it isn't smart enough to return a `mll_driver**` when you do `&axis_driver` on it. It also makes it hard to retain the current deleter with a `shared_ptr`. Downgrading to a raw pointer and then inserting it into the pointer works, but is more verbose:
+The above code doesn't compile: the pointer may be "smart", but it isn't smart enough to return a `mll_driver**` when you do `&axis_driver` on it. It also makes it hard to retain the current deleter with a `shared_ptr`.
+
+### So, try raw pointers?
+
+Downgrading to a raw pointer and then inserting it into the pointer works, but is more verbose:
 
 ```
 boost::shared_ptr<mll_driver> axis_driver;
@@ -39,6 +43,8 @@ axis_driver.reset(raw_axis_driver, mll_driver_free);
 ```
 
 This works, but you need to call `.reset(...)` with the raw pointer and set everything up. Plus, there could be a lot of error handling code between us and the actual initialization call. Not to mention a thrown exception between the end of that call and `axis_driver.reset(...);` means you may have a leak.
+
+### Let's make it simple and easy!
 
 With `boost.out_ptr`, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
 

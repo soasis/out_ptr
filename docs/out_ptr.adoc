@@ -20,23 +20,25 @@ ThePhD
 
 :leveloffset: +1
 
-include::out_ptr/overview.adoc[]
+include::out_ptr/overview.adoc[Overview]
 
-include::out_ptr/definitions.adoc[]
+include::out_ptr/benchmarks.adoc[Benchmarks]
 
-include::out_ptr/examples.adoc[]
+include::out_ptr/caveats.adoc[Caveats]
 
-include::out_ptr/customization.adoc[]
+include::out_ptr/rationale.adoc[Rationale]
 
-include::out_ptr/reference.adoc[]
+include::out_ptr/reference.adoc[Reference]
+
+include::out_ptr/customization.adoc[Customization]
 
 :leveloffset: -1
 
-[appendix]
+[[appendix]]
 ## Copyright, License, and Acknowledgments
 
 This documentation is
 
-* Copyright 2019 ThePhD
+* Copyright ⓒ 2019 ThePhD
 
 and is distributed under the http://www.boost.org/LICENSE_1_0.txt[Boost Software License, Version 1.0].
