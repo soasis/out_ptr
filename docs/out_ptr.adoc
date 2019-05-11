@@ -20,20 +20,54 @@ ThePhD
 :docinfo: private-footer
 
 :leveloffset: +1
-
+ifdef::env-github[]
+link:out_ptr/overview.adoc[Overview]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/overview.adoc[]
+endif::[]
 
+ifdef::env-github[]
+link:out_ptr/overview.adoc[Examples]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/examples.adoc[]
+endif::[]
 
+ifdef::env-github[]
+link:out_ptr/benchmarks.adoc[Benchmarks]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/benchmarks.adoc[]
+endif::[]
 
+ifdef::env-github[]
+link:out_ptr/caveats.adoc[Caveats]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/caveats.adoc[]
+endif::[]
 
+ifdef::env-github[]
+link:out_ptr/rationale.adoc[Rationale]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/rationale.adoc[]
+endif::[]
 
+ifdef::env-github[]
+link:out_ptr/reference.adoc[API Reference]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/reference.adoc[]
+endif::[]
 
+ifdef::env-github[]
+link:out_ptr/customization.adoc[Customization]
+endif::[]
+ifndef::env-github[]
 include::out_ptr/customization.adoc[]
+endif::[]
 
 :leveloffset: -1
 

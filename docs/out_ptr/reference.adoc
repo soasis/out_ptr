@@ -14,13 +14,23 @@
 :toc-title:
 :idprefix:
 
-:leveloffset: +1
+The following documentation describes `out_ptr` and `inout_ptr`.
 
-include::reference/out_ptr.adoc[]
+[[ref.def]]
+## Definitions
 
-include::reference/inout_ptr.adoc[]
+The following are definitions for some meta-functions done on types. If you see these used on
 
-:leveloffset: -1
+[[ref.def.pointer_of_or]]
+- Let `POINTER_OF_OR(T, U)` denote a type that is:
+* `T::pointer` if the qualified-id `T::pointer` is valid and denotes a type, or
+* otherwise, `typename T::element_type*` if the qualified-id `T::element_type` is valid and denotes a type,
+* otherwise, `U`.
+
+
+[[ref.def.pointer_of]]
+- Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
+
 
 [[ref.syn]]
 ## Synopsis
@@ -49,18 +59,24 @@ namespace boost { namespace out_ptr {
 	inout_ptr_t<Smart, POINTER_OF(SMART), Args...> inout_ptr(Smart& s, Args&&... args) noexcept 
 }} // namespace boost::out_ptr
 ```
-The following documentation describes `out_ptr` and `inout_ptr`.
 
-[[ref.def]]
-## Definitions
+[[ref.api]]
+## API Reference
 
-The following are definitions for some meta-functions done on types. If you see these used on
+:leveloffset: +1
 
-[ref.def.pointer_of_or]
-- Let `POINTER_OF_OR(T, U)` denote a type that is:
-* `T::pointer` if the qualified-id `T::pointer` is valid and denotes a type, or
-* otherwise, `typename T::element_type*` if the qualified-id `T::element_type` is valid and denotes a type,
-* otherwise, `U`.
+ifdef::env-github[]
+link:reference/out_ptr.adoc[`out_ptr` and `out_ptr_t`]
+endif::[]
+ifndef::env-github[]
+include::reference/out_ptr.adoc[]
+endif::[]
 
-[ref.def.pointer_of]
-- Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
+ifdef::env-github[]
+link:reference/inout_ptr.adoc[`inout_ptr` and `inout_ptr_t`]
+endif::[]
+ifndef::env-github[]
+include::reference/inout_ptr.adoc[]
+endif::[]
+
+:leveloffset: -1
