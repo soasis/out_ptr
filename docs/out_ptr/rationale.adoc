@@ -23,7 +23,7 @@ A design where the class itself is called `out_ptr` and CTAD is relied on means 
 
 The class is move constructible to enable it to be properly returned and placed as an argument into functions that take things by values. You can imagine a wrapper for a C API that takes all arguments by value and drops them into the real function call.
 
-This is also C++11, where copy elision is not guaranteed. In a C++17 library, the move constructor may be less likely. The move assignment comes along for the ride because a type that is move constructible but not move assignable is not properly sussed out in the Standard or in Boost. There is still ongoing work on "what is a parameter-only type meant to look like and how much does it interplay with the rest of the C++ ecosystem"; we leave the final determination on the question to the pundits.
+This is also {cpp}11, where copy elision is not guaranteed. In a {cpp}17 library, the move constructor may be less likely. The move assignment comes along for the ride because a type that is move constructible but not move assignable is not properly sussed out in the Standard or in Boost. There is still ongoing work on "what is a parameter-only type meant to look like and how much does it interplay with the rest of the {cpp} ecosystem"; we leave the final determination on the question to the pundits.
 
 There is little harm in having it move assignable at the moment, and the semantics for such are well-defined. Individuals who write the specification for the C++ Standard have also expressed an interest in leaving it move assignable.
 

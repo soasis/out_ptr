@@ -19,17 +19,16 @@ The whole world of smart pointers is available to you. Taking advantage of the c
 
 You can add a template parameter `out_ptr<T>()` to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
 
-[source,cpp,linenums]
-----
+//[source,cpp,linenums]
+
 include::../../examples/source/com.intrusive_ptr.cpp[lines=8..-1]] 
-----
+
 
 Notice how an extra parameter gets passed to the function:
 
-[source,cpp,linenums]
-----
+//[source,cpp,linenums]
+
 include::../../examples/source/com.intrusive_ptr.cpp[lines=35]] 
-----
 
 What this does is forward the `false` to ``intrusive_ptr``'s `reset(T* ptr, bool addRef)` call. You can invoke any `.reset()` with additional parameters so that you can work with any pointer type that takes `.reset(new_ptr, args...)`. Pass in as many `args` as you like to make the call work out!
 
@@ -38,20 +37,20 @@ What this does is forward the `false` to ``intrusive_ptr``'s `reset(T* ptr, bool
 
 And for a Linux example, observe how you can pick up the ``new``ly created value after the `pthread` exits:
 
-[source,cpp,linenums]
-----
+//[source,cpp,linenums]
+
 include::../../examples/source/pthread.cpp[lines=8..-1]] 
-----
+
 
 
 ## Prevents errors with `shared_ptr` resetting the deleter.
 
 If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). `boost::out_ptr` prevents that from happening by giving a strong, compile-time warning when you forget:
 
-[source,cpp,linenums]
-----
+//[source,cpp,linenums]
+
 include::../../examples/source/std.shared_ptr.cpp[lines=8..-1]] 
-----
+
 
 This prevents you from making mistakes in your code and having strange non-delete bugs later on with your smart pointers.
 

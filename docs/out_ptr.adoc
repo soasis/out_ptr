@@ -10,7 +10,8 @@
 
 # boost.out_ptr: the C++11 abstraction for passing smart pointers as parameters to `T**` arguments 
 ThePhD
-:toc: left
+:toc:
+:toc-placement!:
 :toclevels: 3
 :idprefix:
 :source-highlighter: pygments
@@ -35,6 +36,8 @@ include::out_ptr/reference.adoc[]
 include::out_ptr/customization.adoc[]
 
 :leveloffset: -1
+
+toc::[]
 
 [[appendix]]
 ## Copyright, License, and Acknowledgments
