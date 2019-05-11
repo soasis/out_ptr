@@ -15,6 +15,7 @@
 
 #include <c_api.hpp>
 
+
 TEST_CASE("out_ptr/basic", "out_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);

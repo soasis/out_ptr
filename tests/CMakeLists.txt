@@ -25,14 +25,18 @@ set(boost.out_ptr.tests_sources
 	"source/inout_ptr_test.cpp"
 	"source/customized_inout_ptr_test.cpp"
 
+	"source/footguns.cpp"
+
 	"source/out_ptr_tests_main.cpp"
 )
 
 add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
 if (MSVC)
+	target_compile_options(boost.out_ptr.tests
+		PRIVATE /std:c++latest)
 else()
 	target_compile_options(boost.out_ptr.tests
-		PRIVATE -std=c++11)
+		PRIVATE -std=c++2a)
 endif()
 target_include_directories(boost.out_ptr.tests
 	PRIVATE 

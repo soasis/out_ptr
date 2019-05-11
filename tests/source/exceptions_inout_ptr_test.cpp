@@ -72,7 +72,6 @@ TEST_CASE("inout_ptr/exceptions/basic fail in scope", "inout_ptr does not double
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 		try {
-			decltype(auto) pp = boost::out_ptr::inout_ptr<void*>(p);
 			if (ficapi_re_create_fail(boost::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_opaque, 1) != 0) {
 				throw std::runtime_error("ficapi: failure to create");
 			}
