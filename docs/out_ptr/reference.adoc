@@ -12,7 +12,11 @@
 # Reference
 :toc:
 :toc-title:
+:toc:
+:toc-placement!:
 :idprefix:
+
+toc::[]
 
 The following documentation describes `out_ptr` and `inout_ptr`.
 

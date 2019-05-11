@@ -19,7 +19,10 @@ ThePhD
 :table-caption: Illustration
 :docinfo: private-footer
 
+toc::[]
+
 :leveloffset: +1
+
 ifdef::env-github[]
 link:out_ptr/overview.adoc[Overview]
 endif::[]
@@ -70,8 +73,6 @@ include::out_ptr/customization.adoc[]
 endif::[]
 
 :leveloffset: -1
-
-toc::[]
 
 [[appendix]]
 ## Copyright, License, and Acknowledgments
