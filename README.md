@@ -8,6 +8,7 @@
 |          |           |
 |          |           |
 
+
 # Quick Comparison and Example
 
 ```cpp
@@ -44,3 +45,25 @@ There are examples and documentation contained in this repository: please, perus
 - It is [customizable to your own pointer types](examples/source/custom.handle.cpp), if you need performance or different semantics
 - It works with [Boost](examples/source/boost.shared_ptr.cpp) and [Standard](examples/source/std.shared_ptr.cpp) shared pointers.
 - It works with things like [unique_resource](https://github.com/okdshin/unique_resource) out of the box.
+
+
+# Running Tests
+
+Right now, can be run easily VIA CMake. To ease development, all necessary dependencies -- including other Boost dependencies -- are included as submodules. You can initialize and update all submodules by performing a successful `git submodule update --init --recursive` call.
+
+From there, CMake is run. It requires that the parameters `BOOST_OUT_PTR_TESTS` is `ON`. Examples can also be run by specifying `BOOST_OUT_PTR_EXAMPLES` and `BOOST_OUT_PTR_TESTS` to be `ON` at the same time:
+
+```bash
+md out_ptr-build
+cd out_ptr-build
+cmake path/to/out_ptr/src -GNinja -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
+cmake --build .
+ctest --output-on-failure
+```
+
+You can replace the `-G` argument with the generator of your choice. You may also add the `-DCMAKE_BUILD_TYPE=Debug|Release` to test certain build types. If you do, make sure to specify it on the build and test lines as well with `cmake --build . --config Debug|Release` and `ctest --output-on-failure --build-config=Debug|Release`.
+
+
+# Running Benchmarks
+
+Benchmarks can be run by running CMake with the option `-DBOOST_OUT_PTR_BENCHMARKS` set to `ON`.
