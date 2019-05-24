@@ -7,8 +7,6 @@
 #  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 
-version: 3.0.2-{build}
-
 max_jobs: 4
 
 pull_requests:
@@ -18,7 +16,6 @@ image:
 - Visual Studio 2015
 - Visual Studio 2017
 
-# Run x64 first, x86 second
 platform:
 - x64
 - x86
