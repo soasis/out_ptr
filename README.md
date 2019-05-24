@@ -2,11 +2,8 @@
 
 `boost.out_ptr` is a simple parameter wrapper for output pointers.
 
-| Appveyor | Travis CI |
-| -------- | --------- |
-|          |           |
-|          |           |
-|          |           |
+[![Linux & Max OSX Build Status](https://travis-ci.org/ThePhD/out_ptr.svg?branch=master)](https://travis-ci.org/ThePhD/out_ptr)
+[![Build status](https://ci.appveyor.com/api/projects/status/aj895ac668xa8jo0?svg=true)](https://ci.appveyor.com/project/ThePhD/out-ptr)
 
 
 # Quick Comparison and Example
