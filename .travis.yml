@@ -24,13 +24,13 @@ compiler:
 script:
 - mkdir out_ptr-build-debug
 - cd out_ptr-build-debug
-- cmake /root/out_ptr -GNinja -DCMAKE_BUILD_TYPE=DEBUG -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
+- cmake .. -GNinja -DCMAKE_BUILD_TYPE=DEBUG -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
 - cmake --build . --config Debug
 - ctest --output-on-failure --build-config Debug
 - cd ..
 - mkdir out_ptr-build-release
 - cd out_ptr-build-release
-- cmake /root/out_ptr -GNinja -DCMAKE_BUILD_TYPE=RELEASE -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
+- cmake .. -GNinja -DCMAKE_BUILD_TYPE=RELEASE -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
 - cmake --build . --config Release
 - ctest --output-on-failure --build-config Release
 
