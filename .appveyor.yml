@@ -1,0 +1,37 @@
+#  Copyright ⓒ 2018-2019 ThePhD.
+#
+#  Distributed under the Boost Software License, Version 1.0. (See
+#  accompanying file LICENSE or copy at
+#  http://www.boost.org/LICENSE_1_0.txt)
+#
+#  See http://www.boost.org/libs/out_ptr/ for documentation.
+
+
+version: 3.0.2-{build}
+
+max_jobs: 4
+
+pull_requests:
+  do_not_increment_build_number: true
+
+image:
+- Visual Studio 2015
+- Visual Studio 2017
+
+# Run x64 first, x86 second
+platform:
+- x64
+- x86
+
+before_build:
+- md build
+- cd build
+- cmake .. -G -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON 
+
+build_script:
+- cmake --build . --config Debug
+- cmake --build . --config Release
+
+test_script:
+- ctest --output-on-failure --build-config Debug
+- ctest --output-on-failure --build-config Release
