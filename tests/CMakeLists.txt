@@ -32,7 +32,7 @@ set(boost.out_ptr.tests_sources
 
 add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
 if (MSVC)
-	target_compile_options(${example_target}
+	target_compile_options(boost.out_ptr.tests
 		PRIVATE /W4)
 else()
 	target_compile_options(boost.out_ptr.tests
