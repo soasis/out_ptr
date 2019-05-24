@@ -12,16 +12,28 @@
 #define BOOST_OUT_PTR_DETAIL_ALWAYS_FALSE
 
 #include <type_traits>
+#include <cstddef>
 
 namespace boost {
 namespace out_ptr {
 namespace detail {
 
+	// NOTE:
+	// if these are using aliases and not,
+	// base structs, clang in C++11 mode
+	// sees right through them and performs no SFINAE
+	// or substitution, meaning
+	// it will error in static_asserts that take
+	// the template argument since it can see
+	// the template argument is not used through
+	// the using
+	// which is kind of shitty, but that's how it goes!
+
 	template <typename>
-	using always_false = std::false_type;
+	struct always_false : std::false_type {};
 
 	template <std::size_t>
-	using always_false_index = std::false_type;
+	struct always_false_index : std::false_type {};
 
 }}} // namespace boost::out_ptr::detail
 

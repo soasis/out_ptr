@@ -8,6 +8,8 @@
 
 #include <boost/out_ptr/out_ptr.hpp>
 
+#include <assert.hpp>
+
 #include <iostream>
 #include <array>
 #include <cstdio>
@@ -23,11 +25,10 @@
 // Some functions to achieve cross-platform parity
 
 #include <unistd.h>
-#include <assert.h>
 
 int fopen_s(FILE** f, const char* name, const char* mode) {
 	int ret = 0;
-	assert(f);
+	OUT_PTR_C_ASSERT(f);
 	*f = fopen(name, mode);
 	/* Can't be sure about 1-to-1 mapping of errno and MS' errno_t */
 	if (!*f)

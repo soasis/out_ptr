@@ -32,11 +32,11 @@ set(boost.out_ptr.tests_sources
 
 add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
 if (MSVC)
-	#target_compile_options(boost.out_ptr.tests
-	#	PRIVATE /std:c++latest)
+	target_compile_options(${example_target}
+		PRIVATE /W4)
 else()
 	target_compile_options(boost.out_ptr.tests
-		PRIVATE -std=c++11)
+		PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
 endif()
 target_include_directories(boost.out_ptr.tests
 	PRIVATE 

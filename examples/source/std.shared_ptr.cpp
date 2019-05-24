@@ -7,9 +7,10 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 #include <boost/out_ptr.hpp>
-#include <boost/assert.hpp>
 
 #include <ficapi/ficapi.hpp>
+
+#include <assert.hpp>
 
 #include <memory>
 
@@ -23,8 +24,9 @@ int main(int, char* []) {
 	ficapi_handle_create(boost::out_ptr::out_ptr(p, ficapi_handle_delete));
 	ficapi::opaque_handle rawp = p.get();
 
-	BOOST_ASSERT(rawp != nullptr);
-	BOOST_ASSERT(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
+	// avoid unused variable in release builds !
+	OUT_PTR_C_ASSERT(rawp != nullptr);
+	OUT_PTR_C_ASSERT(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 
 	return 0;
 }

@@ -13,10 +13,10 @@
 
 #include <boost/out_ptr.hpp>
 #include <boost/mp11/integer_sequence.hpp>
-#include <boost/assert.hpp>
+
+#include <assert.hpp>
 
 #include <type_traits>
-#include <cassert>
 
 // A template that always evaluates to false anyhow
 template <std::size_t>
@@ -43,14 +43,14 @@ namespace boost { namespace out_ptr {
 
 		out_ptr_t(out_ptr_t&& right) noexcept
 		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_old_ptr(right.m_old_ptr), m_target_ptr(right.m_target_ptr) {
-			right.m_old_ptr == nullptr;
+			right.m_old_ptr = nullptr;
 		}
 		out_ptr_t& operator=(out_ptr_t&& right) noexcept {
 			Base::operator	=(std::move(right));
 			this->m_smart_ptr  = right.m_smart_ptr;
 			this->m_old_ptr    = right.m_old_ptr;
 			this->m_target_ptr = right.m_target_ptr;
-			right.m_old_ptr == nullptr;
+			right.m_old_ptr    = nullptr;
 			return *this;
 		}
 		out_ptr_t(const out_ptr_t&) = delete;
@@ -82,6 +82,7 @@ int main() {
 	phd::handle<int*, ficapi::int_deleter> p(nullptr);
 	ficapi_create(boost::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_int);
 	int* rawp = static_cast<int*>(p.get());
-	BOOST_ASSERT(rawp != nullptr);
-	BOOST_ASSERT(*rawp == ficapi_get_dynamic_data());
+
+	OUT_PTR_C_ASSERT(rawp != nullptr);
+	OUT_PTR_C_ASSERT(*rawp == ficapi_get_dynamic_data());
 }

@@ -40,9 +40,11 @@ add_executable(boost.out_ptr.benchmarks ${boost_out_ptr_benchmarks_sources})
 target_include_directories(boost.out_ptr.benchmarks PRIVATE
 	"include")
 if (MSVC)
+	target_compile_options(${example_target}
+		PRIVATE /W4)
 else()
 	target_compile_options(boost.out_ptr.benchmarks
-		PRIVATE -std=c++11)
+		PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
 endif()
 target_link_libraries(boost.out_ptr.benchmarks
 	PRIVATE 

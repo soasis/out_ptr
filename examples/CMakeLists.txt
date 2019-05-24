@@ -34,7 +34,7 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 	if (MSVC)
 	else()
 		target_compile_options(${example_target}
-			PRIVATE -std=c++11)
+			PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
 	endif()
 	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
 	target_link_libraries(${example_target}
@@ -42,7 +42,6 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 		
 		Threads::Threads
 
-		Boost::assert
 		Boost::config
 		Boost::core
 		Boost::mp11
@@ -54,6 +53,7 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 	)
 	target_include_directories(${example_target} PRIVATE
 		"../vendor/handle/include"
+		"include"
 	)
 	if (BOOST_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})
@@ -68,7 +68,7 @@ if (MSVC)
 	if (MSVC)
 	else()
 		target_compile_options(${example_target}
-			PRIVATE -std=c++11)
+			PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
 	endif()
 	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
 	target_link_libraries(${example_target}
@@ -76,7 +76,6 @@ if (MSVC)
 		
 		Threads::Threads
 
-		Boost::assert
 		Boost::config
 		Boost::core
 		Boost::mp11
@@ -84,6 +83,9 @@ if (MSVC)
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}
+	)
+	target_include_directories(${example_target} PRIVATE
+		"include"
 	)
 	if (BOOST_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})
@@ -96,9 +98,11 @@ if (CMAKE_USE_PTHREADS_INIT)
 	set(example_target boost.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
 	if (MSVC)
+		target_compile_options(${example_target}
+			PRIVATE /W4)
 	else()
 		target_compile_options(${example_target}
-			PRIVATE -std=c++11)
+			PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
 	endif()
 	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
 	target_link_libraries(${example_target}
@@ -106,7 +110,6 @@ if (CMAKE_USE_PTHREADS_INIT)
 		
 		Threads::Threads
 
-		Boost::assert
 		Boost::config
 		Boost::core
 		Boost::mp11
@@ -115,6 +118,9 @@ if (CMAKE_USE_PTHREADS_INIT)
 		
 		${CMAKE_DL_LIBS}
 	)
+	target_include_directories(${example_target} PRIVATE
+		"include"
+	)	
 	if (BOOST_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})
 	endif()
