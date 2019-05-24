@@ -22,13 +22,13 @@ compiler:
   - gcc
 
 script:
-- md out_ptr-build-debug
+- mkdir out_ptr-build-debug
 - cd out_ptr-build-debug
 - cmake /root/out_ptr -GNinja -DCMAKE_BUILD_TYPE=DEBUG -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
 - cmake --build . --config Debug
 - ctest --output-on-failure --build-config Debug
 - cd ..
-- md out_ptr-build-release
+- mkdir out_ptr-build-release
 - cd out_ptr-build-release
 - cmake /root/out_ptr -GNinja -DCMAKE_BUILD_TYPE=RELEASE -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON
 - cmake --build . --config Release
