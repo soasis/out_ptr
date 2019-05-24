@@ -18,10 +18,6 @@
 
 #include <type_traits>
 
-// A template that always evaluates to false anyhow
-template <std::size_t>
-using always_false_index = std::false_type;
-
 namespace boost { namespace out_ptr {
 
 	template <typename T, typename D, typename Pointer, typename... Args>
@@ -73,7 +69,7 @@ namespace boost { namespace out_ptr {
 
 		template <std::size_t I0, std::size_t... I>
 		void reset(boost::mp11::index_sequence<I0, I...>) {
-			static_assert(always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
+			static_assert(detail::always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
 		}
 	};
 }} // namespace boost::out_ptr
