@@ -38,14 +38,14 @@ namespace boost { namespace out_ptr {
 
 		out_ptr_t(out_ptr_t&& right) noexcept
 		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_old_ptr(right.m_old_ptr), m_target_ptr(right.m_target_ptr) {
-			right.m_old_ptr == nullptr;
+			right.m_old_ptr = nullptr;
 		}
 		out_ptr_t& operator=(out_ptr_t&& right) noexcept {
 			Base::operator	=(std::move(right));
 			this->m_smart_ptr  = right.m_smart_ptr;
 			this->m_old_ptr    = right.m_old_ptr;
 			this->m_target_ptr = right.m_target_ptr;
-			right.m_old_ptr == nullptr;
+			right.m_old_ptr    = nullptr;
 			return *this;
 		}
 		out_ptr_t(const out_ptr_t&) = delete;

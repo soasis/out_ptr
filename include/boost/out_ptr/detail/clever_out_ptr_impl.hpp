@@ -80,13 +80,13 @@ namespace detail {
 		}
 		clever_out_ptr_impl(clever_out_ptr_impl&& right) noexcept
 		: m_smart_ptr(right.m_smart_ptr), m_old_ptr(right.m_old_ptr), m_target_ptr(right.m_target_ptr) {
-			right.m_old_ptr == nullptr;
+			right.m_old_ptr = nullptr;
 		}
 		clever_out_ptr_impl& operator=(clever_out_ptr_impl&& right) noexcept {
 			this->m_smart_ptr  = right.m_smart_ptr;
 			this->m_old_ptr    = right.m_old_ptr;
 			this->m_target_ptr = right.m_target_ptr;
-			right.m_old_ptr == nullptr;
+			right.m_old_ptr    = nullptr;
 			return *this;
 		}
 		clever_out_ptr_impl(const clever_out_ptr_impl&) = delete;
