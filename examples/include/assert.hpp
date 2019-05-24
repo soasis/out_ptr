@@ -17,8 +17,8 @@
 	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message << std::endl), (void)std::abort()) \
 			    : (void)0)
 
-#define OUT_PTR_C_ASSERT(condition) \
-	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << std::endl), (void)std::abort())
+#define OUT_PTR_C_ASSERT(condition)                                                                                                                      \
+	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << std::endl), (void)std::abort()) \
 			    : (void)0)
 
 #else
