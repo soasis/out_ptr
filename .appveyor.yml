@@ -21,14 +21,27 @@ platform:
 - x86
 
 before_build:
-- md build
-- cd build
-- cmake .. -G -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON 
+- md build-debug
+- cd build-debug
+- cmake .. -DCMAKE_BUIDL_TYPE=Debug -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON 
+- cd ..
+- md build-release
+- cd build-release
+- cmake .. -DCMAKE_BUIDL_TYPE=Release -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON 
+- cd ..
 
 build_script:
+- cd build-debug
 - cmake --build . --config Debug
+- cd ..
+- cd build-release
 - cmake --build . --config Release
+- cd ..
 
 test_script:
+- cd build-debug
 - ctest --output-on-failure --build-config Debug
+- cd ..
+- cd build-release
 - ctest --output-on-failure --build-config Release
+- cd ..
