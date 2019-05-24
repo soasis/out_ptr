@@ -13,40 +13,21 @@
 
 #ifdef NDEBUG
 
-#define OUT_PTR_ASSERT_MSG(condition, message)                                    \
-	do {                                                                         \
-		if (!(condition)) {                                                     \
-			std::cerr << "Assertion `" #condition "` failed in " << __FILE__   \
-					<< " line " << __LINE__ << ": " << message << std::endl; \
-			std::terminate();                                                  \
-		}                                                                       \
-	} while (false)
+#define OUT_PTR_ASSERT_MSG(condition, message)                                                                                                                              \
+	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message << std::endl), (void)std::abort()) \
+			    : (void)0)
 
-#define OUT_PTR_C_ASSERT(condition)                                             \
-	do {                                                                       \
-		if (!(condition)) {                                                   \
-			std::cerr << "Assertion `" #condition "` failed in " << __FILE__ \
-					<< " line " << __LINE__ << std::endl;                  \
-			std::terminate();                                                \
-		}                                                                     \
-	} while (false)
+#define OUT_PTR_C_ASSERT(condition) \
+	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << std::endl), (void)std::abort())
+			    : (void)0)
 
 #else
 
 #define OUT_PTR_ASSERT_MSG(condition, message) \
-	do {                                      \
-		if (false) {                         \
-			(void)(condition);              \
-			(void)sizeof(message);          \
-		}                                    \
-	} while (false)
+	(false ? ((void)(condition), (void)(message)) : (void)0)
 
 #define OUT_PTR_C_ASSERT(condition) \
-	do {                           \
-		if (false) {              \
-			(void)(condition);   \
-		}                         \
-	} while (false)
+	(false ? ((void)(condition)) : (void)0)
 
 #endif // NDEBUG
 

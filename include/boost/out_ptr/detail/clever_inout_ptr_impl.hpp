@@ -15,7 +15,7 @@
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 
-#include <boost/mp11/utility.hpp>
+#include <boost/mp11/integer_sequence.hpp>
 
 #include <memory>
 #include <tuple>

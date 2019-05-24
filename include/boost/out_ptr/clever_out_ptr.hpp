@@ -12,6 +12,7 @@
 #define BOOST_OUT_PTR_CLEVER_OUT_PTR_HPP
 
 #include <boost/out_ptr/detail/clever_out_ptr_impl.hpp>
+
 #include <boost/config.hpp>
 
 #include <cstdlib>

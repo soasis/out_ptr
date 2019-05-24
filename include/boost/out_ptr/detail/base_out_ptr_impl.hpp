@@ -11,11 +11,13 @@
 #ifndef BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 #define BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 
-#include <boost/config.hpp>
-#include <boost/mp11/integer_sequence.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
 #include <boost/out_ptr/detail/customization_forward.hpp>
+
+#include <boost/mp11/integer_sequence.hpp>
+
+#include <boost/config.hpp>
 
 #include <cstdlib>
 #include <type_traits>

@@ -13,7 +13,8 @@
 
 #include <boost/out_ptr/detail/base_out_ptr_impl.hpp>
 #include <boost/out_ptr/detail/customization_forward.hpp>
-#include <boost/mp11/utility.hpp>
+
+#include <boost/mp11/integer_sequence.hpp>
 
 #include <memory>
 
