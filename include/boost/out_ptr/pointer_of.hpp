@@ -22,13 +22,18 @@ namespace out_ptr {
 		struct disambiguate_ {
 		};
 
+		template <typename... Ts>
+		struct make_void { typedef void type; };
+		template <typename... Ts>
+		using void_t = typename make_void<Ts...>::type;
+
 		template <typename T, typename U, typename = void>
 		struct element_type {
 			using type = U;
 		};
 
 		template <typename T, typename U>
-		struct element_type<T, U, std::void_t<typename T::element_type>> {
+		struct element_type<T, U, detail::void_t<typename T::element_type>> {
 			using type = typename T::element_type*;
 		};
 
@@ -37,7 +42,7 @@ namespace out_ptr {
 		};
 
 		template <typename T, typename U>
-		struct pointer_of_or<T, U, std::void_t<typename T::pointer>> {
+		struct pointer_of_or<T, U, detail::void_t<typename T::pointer>> {
 			using type = typename T::pointer;
 		};
 
@@ -83,7 +88,7 @@ namespace out_ptr {
 		};
 
 		template <typename T>
-		struct is_releasable<T, std::void_t<decltype(std::declval<T&>().release())>> : std::true_type {
+		struct is_releasable<T, detail::void_t<decltype(std::declval<T&>().release())>> : std::true_type {
 		};
 
 		template <typename T, typename... Args>
