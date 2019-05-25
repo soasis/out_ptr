@@ -11,9 +11,12 @@
 #ifndef BOOST_OUT_PTR_EXAMPLES_ASSERT
 #define BOOST_OUT_PTR_EXAMPLES_ASSERT
 
-#ifdef NDEBUG
+#ifndef NDEBUG
 
-#define OUT_PTR_ASSERT_MSG(condition, message)                                                                                                                              \
+#include <iostream>
+#include <cstdlib>
+
+#define BOOST_OUT_PTR_EXAMPLE_ASSERT_MSG(condition, message)                                                                                                                \
 	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message << std::endl), (void)std::abort()) \
 			    : (void)0)
 
@@ -23,7 +26,7 @@
 
 #else
 
-#define OUT_PTR_ASSERT_MSG(condition, message) \
+#define BOOST_OUT_PTR_EXAMPLE_ASSERT_MSG(condition, message) \
 	(false ? ((void)(condition), (void)(message)) : (void)0)
 
 #define OUT_PTR_C_ASSERT(condition) \
