@@ -17,11 +17,10 @@
 #include <assert.hpp>
 
 #include <type_traits>
-#include <cstdint>
 
 // A template that always evaluates to false anyhow
 template <std::size_t I>
-struct always_false_index : std::integral_constant<bool, I == SIZE_MAX> {};
+struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
 
 namespace boost { namespace out_ptr {
 
