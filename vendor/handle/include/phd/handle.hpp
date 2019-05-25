@@ -79,7 +79,7 @@ namespace phd {
 		}
 
 		template <typename D, typename P>
-		void write_null(std::false_type, D& deleter, P&& p) noexcept {
+		void write_null(std::false_type, D&, P&& p) noexcept {
 			using X = typename std::remove_const<typename std::remove_reference<P>::type>::type;
 			default_handle_deleter<X>::write_null(std::forward<P>(p));
 		}
@@ -96,7 +96,7 @@ namespace phd {
 		}
 
 		template <typename D, typename P>
-		bool is_null(std::false_type, D& deleter, P&& p) noexcept {
+		bool is_null(std::false_type, D&, P&& p) noexcept {
 			return default_handle_deleter<typename std::remove_const<typename std::remove_reference<P>::type>::type>::is_null(std::forward<P>(p));
 		}
 

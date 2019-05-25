@@ -17,6 +17,11 @@
 #include <assert.hpp>
 
 #include <type_traits>
+#include <cstdint>
+
+// A template that always evaluates to false anyhow
+template <std::size_t I>
+struct always_false_index : std::integral_constant<bool, I == SIZE_MAX> {};
 
 namespace boost { namespace out_ptr {
 
@@ -69,7 +74,7 @@ namespace boost { namespace out_ptr {
 
 		template <std::size_t I0, std::size_t... I>
 		void reset(boost::mp11::index_sequence<I0, I...>) {
-			static_assert(detail::always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
+			static_assert(always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
 		}
 	};
 }} // namespace boost::out_ptr

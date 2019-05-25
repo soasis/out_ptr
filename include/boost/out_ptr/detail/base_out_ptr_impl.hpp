@@ -92,7 +92,7 @@ namespace detail {
 		~base_out_ptr_impl() {
 			if (m_smart_ptr) {
 				Base&& args = std::move(static_cast<Base&>(*this));
-				// lmao "if constexpr" xD
+				(void)args; // unused if "Indices" is empty
 				using can_reset = detail::is_resetable<Smart,
 					decltype(static_cast<source_pointer>(this->m_target_ptr)),
 					decltype(std::get<Indices>(std::move(args)))...>;
