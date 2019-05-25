@@ -8,7 +8,6 @@
 
 #include <boost/out_ptr/inout_ptr.hpp>
 #include <boost/mp11/integer_sequence.hpp>
-#include <boost/out_ptr/detail/always_false.hpp>
 
 #include <phd/handle.hpp>
 
@@ -16,6 +15,9 @@
 
 #include <catch2/catch.hpp>
 
+// A template that always evaluates to false anyhow
+template <std::size_t I>
+struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
 
 namespace boost { namespace out_ptr {
 	template <typename T, typename D, typename Pointer, typename... Args>
@@ -63,7 +65,7 @@ namespace boost { namespace out_ptr {
 
 		template <std::size_t I0, std::size_t... I>
 		void reset(boost::mp11::index_sequence<I0, I...>) {
-			static_assert(detail::always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
+			static_assert(always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
 		}
 	};
 
