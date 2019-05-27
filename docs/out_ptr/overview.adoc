@@ -15,9 +15,7 @@ Have you ever wanted to pass a smart pointer like `std::unique_ptr` or `boost::s
 ```
 boost::shared_ptr<mll_driver> axis_driver;
 mll_errno err = mll_driver_init(&axis_driver, 
-	PWM_AXIS_ZERO, 
-	VLT_LOW_POW | VLT_POW_SAVE,
-	0x001B);
+	/* additional args ...*/);
 if (err != MLL_SUCESS) {
 	// ...
 }
@@ -33,9 +31,7 @@ Downgrading to a raw pointer and then inserting it into the pointer works, but i
 boost::shared_ptr<mll_driver> axis_driver;
 mll_driver* raw_axis_driver = nullptr;
 mll_errno err = mll_driver_init(&raw_axis_driver, 
-	PWM_AXIS_ZERO, 
-	VLT_LOW_POW | VLT_POW_SAVE,
-	0x001B);
+	/* additional args ...*/);
 if (err != MLL_SUCESS) {
 	// ...
 }
@@ -49,11 +45,11 @@ This works, but you need to call `.reset(...)` with the raw pointer and set ever
 With `boost.out_ptr`, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
 
 ```
+using bop = boost::out_ptr;
+
 boost::shared_ptr<mll_driver> axis_driver(nullptr);
-mll_errno err = mll_driver_init(boost::out_ptr::out_ptr(axis_driver, mll_driver_free), 
-	PWM_AXIS_ZERO, 
-	VLT_LOW_POW | VLT_POW_SAVE,
-	0x001B);
+mll_errno err = mll_driver_init(bop::out_ptr(axis_driver, mll_driver_free), 
+	/* additional args ...*/);
 if (err != MLL_SUCESS) {
 	// ...
 }
@@ -61,11 +57,12 @@ if (err != MLL_SUCESS) {
 
 No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers.
 
-Welcome to `boost.out_ptr`, the present and future of C API interoperation.
+Welcome to `boost.out_ptr`, the present and future of C API interoperation. This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `T**`.
 
 - Get started with the <<examples.adoc#examples,examples>>.
 - Understand the pitfalls and problems that come with C++ by reading <<caveats.adoc#caveats, the Caveats>>.
 - Read up on how to use it with your <<customization.adoc#customization, custom smart pointers>>, if you do not have a conforming interface!
+- The exact interface requirements on the desired smart pointers can be seen in the <<reference.adoc#ref.api, reference documentation for the types produced by the factory functions>>.
 
 C APIs might not be fun, but at least working with the pointers should feel easy and safe and simple!
 

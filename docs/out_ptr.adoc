@@ -19,6 +19,8 @@ ThePhD
 :table-caption: Illustration
 :docinfo: private-footer
 
+This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `T**`. Additional optimizations are implemented within the library to ensure good performance by default for a myriad of types, including `boost::movelib:unique_ptr` and `std::unique_ptr`. It also helps catch small errors in using `shared_ptr`-types reset calls, and works out-of-the-box for many other types including the upcoming `std::retain_ptr`, `boost::intrusive_ptr`, and any other types which follow the `.reset(...)`/`.release()` paradigm (or have constructors that behave similarly).
+
 toc::[]
 
 :leveloffset: +1

@@ -14,9 +14,22 @@
 Below is the rationale for the design. Most of this rationale can also be found in https://thephd.github.io/vendor/future_cxx/papers/d1132.html[p1132 - std::out_ptr].
 
 
-## Why not a CTAD-based design?
+## It is tedious to manage lifetime with smart pointers and C functions
 
-A design where the class itself is called `out_ptr` and CTAD is relied on means that the casting version of the factory function -- `boost::out_ptr::out_ptr<IUnknown>(my_derived_smart_ptr);` -- would not work. It means that you would need to write a second version, `boost::out_ptr::out_ptr_cast<IUnknown>(my_derived_smart_ptr)`. This does not improve the interface at all: you need to remember 2 functions. It also means you could never supply template arguments to `boost::out_ptr::out_ptr(my_derived_smart_ptr)`. We believe the factory function is a superior design, and works further back than just C++17.
+This often leads to error-prone code or bad error handling where a user does not properly reseat or reset a smart pointer before throwing an exception, or worse. Automating the `.reset()` (and also the `.release()`) calls allows us to more succinctly express what it is the code is doing and also keep a tight order of operations that does not allow for exception leakage or worse.
+
+The specification is done in terms of calling `.reset()` with an optional `.release()` beforehand depending on if one is using `boost::out_ptr::inout_ptr` (which is used when a C function will deallocate the resource before re-allocating it). By having 2 distinct cases -- `inout_ptr` and `out_ptr` -- the user can opt-in to the `.release()`-before-hand mechanism.
+
+
+## Easier to express safety and prevent errors with C APIs
+
+There are times when individuals who call ``std::shared_ptr``\``boost::shared_ptr``'s reset function forget that it will reset the deleter. When using it with a C APIs -- which always have their own create and destroy functions -- it is paramount that the user is warned when they attempt to use a `.reset(ptr)` without also specifying the deleter. `boost::out_ptr` loudly warns a user at compile-time when they make such a mistake. Reducing such missteps eliminates hard-to-track-down bugs or subtle leaks of otherwise important resources and data.
+
+Furthermore, there are places where trying to do a `.release()` and then `.reset()` are not compatible.
+
+## Why not a Class Template Argument Deduction (CTAD)-based design?
+
+A design where the class itself is called `out_ptr` and https://en.cppreference.com/w/cpp/language/class_template_argument_deduction[Class Template Argument Deduction (CTAD)] is relied on means that the casting version of the factory function present in this iteration -- `boost::out_ptr::out_ptr<IUnknown>(my_derived_smart_ptr);` -- would not work. It means that you would need to write a second version, `boost::out_ptr::out_ptr_cast<IUnknown>(my_derived_smart_ptr)`. This does not improve the interface at all: you need to remember 2 functions. It also means you could never supply template arguments to `boost::out_ptr::out_ptr(my_derived_smart_ptr)`. We believe the factory function is a superior design, and works further back than just C++17.
 
 
 ## Move Constructible? Move Assignable?!
