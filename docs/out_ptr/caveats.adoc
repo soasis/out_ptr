@@ -74,13 +74,21 @@ int main () {
 }
 ```
 
-The workaround is not using this kind of API.
+The workaround is not using this kind of API and filing a bug with the person who wrote it / maintains it.
+
+
+[[caveats.general_order]]
+# General Order of Evaluations problems
+
+C++ function calls are indeterminately sequenced in a non-interleaving way from left to right. (There was a paper to fix this; it was stopped at the last second in a C++ Standards Plenary meeting for inertia and platform specific reasons. Thusly, we are in a situation wherethat mouthful of an opening sentence is the best "guarantee" you'll get about general function calls.
+
+As such, you must ensure that construction of the smart pointer and checking for things like whether the smart pointer's contained pointer is the same (with a `== nullptr` or `explicit operator bool` conversion) or whether or not the function finished successfully are in separate expressions. Normal usage makes this a hard pit to fall into: please try not to be creative with your <<caveats.adoc#caveats.if, if statements>> and usage of this.
 
 
 [[caveats.order]]
-## Order of Evaluation (with `boost::out_ptr::inout_ptr`)
+## Order of Evaluation with `boost::out_ptr::inout_ptr`
 
-Because `boost::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters. 
+Because `boost::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
 
 For `boost.out_ptr`, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
 
