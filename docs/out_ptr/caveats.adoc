@@ -44,9 +44,11 @@ Everywhere else in the language, temporaries stop at the semicolon: that is not 
 [[caveats.poor_c]]
 ## Poorly designed C APIs
 
-Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries are poorly designed and behaved: they will not do this. Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `T**` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
+Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries do the opposite: they guarantee that the parameter will be unchanged, no matter what the incoming value is or whether or not the API suceeded or not. Defensively, you can make sure that in these cases when using <<overview.adoc#overview.inout_ptr, `out_ptr`>>, your smart pointer is already initialized with `nullptr` (as it is in the default case). If you are using a previously-allocated pointer with `out_ptr`, there is no need to worry because the default implementation will call `.reset()` on the type with a `nullptr` that was never changed. This is actually a tiny bit (but still measurable) performance drag and perhaps even a pessimization: more work is being done to try and zero-in on type of `out_ptr` that can take advantage of C APIs which will set the value to `nullptr` on failure of output in the non-reallocating case.
 
-It is impossible for this abstraction to handle such wild cases. Perhaps in the future additional types can be provided for "misbehaving" APIs, but they are thankfully few and far between so as not to cause this problem.
+Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `T**` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
+
+It is impossible for this abstraction to handle such wild cases. Perhaps in the future additional types can be provided for "misbehaving" APIs, but they are thankfully few and far between so as not to cause this problem often.
 
 
 [[caveats.poor_cxx]]
@@ -66,8 +68,9 @@ namespace really::terrible { // C++17 nested namespaces
 }
 
 int main () {
+	using bop = boost::out_ptr;
 	// leaks because of do_something_that_throws
-	auto result = really::terrible::api(boost::out_ptr::inout_ptr(my_smart));
+	auto result = really::terrible::api(bop::inout_ptr(my_smart));
 }
 ```
 

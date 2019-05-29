@@ -11,8 +11,8 @@
 #ifndef BOOST_OUT_PTR_INOUT_PTR_HPP
 #define BOOST_OUT_PTR_INOUT_PTR_HPP
 
-#include <boost/out_ptr/clever_inout_ptr.hpp>
-#include <boost/out_ptr/simple_inout_ptr.hpp>
+#include <boost/out_ptr/detail/clever_inout_ptr.hpp>
+#include <boost/out_ptr/detail/simple_inout_ptr.hpp>
 
 namespace boost {
 namespace out_ptr {

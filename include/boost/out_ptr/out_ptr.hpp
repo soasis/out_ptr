@@ -11,8 +11,8 @@
 #ifndef BOOST_OUT_PTR_HPP
 #define BOOST_OUT_PTR_HPP
 
-#include <boost/out_ptr/simple_out_ptr.hpp>
-#include <boost/out_ptr/clever_out_ptr.hpp>
+#include <boost/out_ptr/detail/simple_out_ptr.hpp>
+#include <boost/out_ptr/detail/clever_out_ptr.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
@@ -22,10 +22,13 @@ namespace boost { namespace out_ptr {
 
 	namespace detail {
 
-#if defined(BOOST_OUT_PTR_NO_CLEVERNESS) && BOOST_OUT_PTR_NO_CLEVERNESS != 0
+#if 1 //defined(BOOST_OUT_PTR_NO_CLEVERNESS) && BOOST_OUT_PTR_NO_CLEVERNESS != 0
+
+		// we can never use the clever version because many C APIs do not set the pointer to null on parameter failure
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_out_ptr_t = simple_out_ptr_t<Smart, Pointer, Args...>;
 #else
+		// TODO: a separate out_ptr factory function for non-modifying C functions?
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_out_ptr_t = clever_out_ptr_t<Smart, Pointer, Args...>;
 #endif // BOOST_OUT_PTR_NO_CLEVERNESS

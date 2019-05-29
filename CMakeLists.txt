@@ -90,6 +90,11 @@ if (BOOST_OUT_PTR_TESTS OR BOOST_OUT_PTR_EXAMPLES OR BOOST_OUT_PTR_BENCHMARKS)
 		set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x64/bin")
 	endif()
 
+	if (MSVC)
+		string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
+		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	endif()
+
 	enable_testing()
 	add_subdirectory(vendor/boost/config)
 	add_subdirectory(vendor/boost/core)
