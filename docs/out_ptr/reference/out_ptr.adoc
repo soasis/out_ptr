@@ -90,15 +90,19 @@ return *this;
 
 ### Destructors
 
-`~out_ptr_t();`
+`~out_ptr_t() noexcept(see-below);`
 
 - Let `SP` be <<../reference.adoc#ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
+
+- Requires: `noexcept(true)` if the evaluation of the Effects is `noexcept`. Otherwise, `noexcept(false)`.
 
 - Effects: Equivalent to:
 * `if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `reset` is a valid member function on `Smart`
 * otherwise `if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }`.
 
 where `Args` are the arguments stored in `a`.
+
+- Throws: any exceptions thrown by evaluation of Effects. Otherwise, throws nothing.
 
 
 ### Conversions

@@ -30,12 +30,12 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename... Args>
-	void reset_or_create(std::true_type, Smart& s, Args&&... args) {
+	void reset_or_create(std::true_type, Smart& s, Args&&... args) noexcept(noexcept(s.reset(std::forward<Args>(args)...))) {
 		s.reset(std::forward<Args>(args)...);
 	}
 
 	template <typename Smart, typename... Args>
-	void reset_or_create(std::false_type, Smart& s, Args&&... args) {
+	void reset_or_create(std::false_type, Smart& s, Args&&... args) noexcept(noexcept(s = Smart(std::forward<Args>(args)...))) {
 		s = Smart(std::forward<Args>(args)...);
 	}
 
@@ -47,6 +47,9 @@ namespace detail {
 	: Base {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
+		using can_reset	 = detail::is_resetable<Smart,
+			source_pointer,
+			typename std::tuple_element<Indices, Base>::type...>;
 
 		Smart* m_smart_ptr;
 		Pointer m_target_ptr;
@@ -89,13 +92,10 @@ namespace detail {
 			return const_cast<Pointer*>(std::addressof(this->m_target_ptr));
 		}
 
-		~base_out_ptr_impl() {
+		~base_out_ptr_impl() noexcept(noexcept(reset_or_create(can_reset(), *this->m_smart_ptr, static_cast<source_pointer>(this->m_target_ptr), std::get<Indices>(std::move(std::move(static_cast<Base&>(*this))))...))) {
 			if (m_smart_ptr) {
 				Base&& args = std::move(static_cast<Base&>(*this));
 				(void)args; // unused if "Indices" is empty
-				using can_reset = detail::is_resetable<Smart,
-					decltype(static_cast<source_pointer>(this->m_target_ptr)),
-					decltype(std::get<Indices>(std::move(args)))...>;
 				reset_or_create(can_reset(), *this->m_smart_ptr, static_cast<source_pointer>(this->m_target_ptr), std::get<Indices>(std::move(args))...);
 			}
 		}
