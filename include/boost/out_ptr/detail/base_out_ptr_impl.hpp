@@ -61,24 +61,24 @@ namespace detail {
 			"initialized, otherwise the deleter will be defaulted "
 			"by the shared_ptr<T>::reset() call!");
 
-		base_out_ptr_impl(Smart& ptr, Base&& args, Pointer initial)
+		base_out_ptr_impl(Smart& ptr, Base&& args, Pointer initial) noexcept
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {
 		}
 
-		base_out_ptr_impl(Smart& ptr, Base&& args, detail::disambiguate_)
+		base_out_ptr_impl(Smart& ptr, Base&& args, detail::disambiguate_) noexcept
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr() {
 		}
 
 	public:
-		base_out_ptr_impl(Smart& ptr, Base&& args)
+		base_out_ptr_impl(Smart& ptr, Base&& args) noexcept
 		: base_out_ptr_impl(ptr, std::move(args), detail::disambiguate_()) {
 		}
 
-		base_out_ptr_impl(base_out_ptr_impl&& right)
+		base_out_ptr_impl(base_out_ptr_impl&& right) noexcept
 		: Base(std::move(*this)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
 			right.m_smart_ptr = nullptr;
 		}
-		base_out_ptr_impl& operator=(base_out_ptr_impl&& right) {
+		base_out_ptr_impl& operator=(base_out_ptr_impl&& right) noexcept {
 			static_cast<Base&>(*this) = std::move(right);
 			this->m_smart_ptr		 = right.m_smart_ptr;
 			this->m_target_ptr		 = right.m_target_ptr;
