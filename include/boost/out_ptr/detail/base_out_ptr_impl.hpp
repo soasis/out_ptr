@@ -92,7 +92,7 @@ namespace detail {
 			return const_cast<Pointer*>(std::addressof(this->m_target_ptr));
 		}
 
-		~base_out_ptr_impl() noexcept(noexcept(reset_or_create(can_reset(), *this->m_smart_ptr, static_cast<source_pointer>(this->m_target_ptr), std::get<Indices>(std::move(std::move(static_cast<Base&>(*this))))...))) {
+		~base_out_ptr_impl() noexcept(noexcept(reset_or_create(can_reset(), std::declval<Smart&>(), static_cast<source_pointer>(nullptr), std::get<Indices>(std::move(std::declval<Base&>()))...))) {
 			if (m_smart_ptr) {
 				Base&& args = std::move(static_cast<Base&>(*this));
 				(void)args; // unused if "Indices" is empty
