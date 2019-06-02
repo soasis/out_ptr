@@ -23,12 +23,12 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart>
-	void call_release(std::true_type, Smart& s) {
+	void call_release(std::true_type, Smart& s) noexcept {
 		s.release();
 	}
 
 	template <typename Smart>
-	void call_release(std::false_type, Smart&) {
+	void call_release(std::false_type, Smart&) noexcept {
 		static_assert(std::is_pointer<Smart>::value, "the type that does not have release called on it must be a pointer type");
 	}
 
@@ -38,22 +38,22 @@ namespace detail {
 		using base_t = base_out_ptr_impl<Smart, Pointer, Args, List>;
 
 	public:
-		base_inout_ptr_impl(Smart& ptr, Args&& args)
+		base_inout_ptr_impl(Smart& ptr, Args&& args) noexcept
 		: base_t(ptr, std::move(args), ptr.get()) {
 			static_assert(is_releasable<Smart>::value, "You cannot use an inout pointer with something that cannot release() its pointer!");
 		}
 
-		base_inout_ptr_impl(base_inout_ptr_impl&& right)
+		base_inout_ptr_impl(base_inout_ptr_impl&& right) noexcept
 		: base_t(std::move(right)) {
 		}
-		base_inout_ptr_impl& operator=(base_inout_ptr_impl&& right) {
+		base_inout_ptr_impl& operator=(base_inout_ptr_impl&& right) noexcept {
 			static_cast<base_t&>(*this) = std::move(right);
 		}
 
 		base_inout_ptr_impl(const base_inout_ptr_impl&) = delete;
 		base_inout_ptr_impl& operator=(const base_inout_ptr_impl&) = delete;
 
-		~base_inout_ptr_impl() {
+		~base_inout_ptr_impl() noexcept {
 			call_release(is_releasable<Smart>(), *(this->m_smart_ptr));
 		}
 	};

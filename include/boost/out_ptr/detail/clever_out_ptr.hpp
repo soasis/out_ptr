@@ -34,7 +34,7 @@ namespace detail {
 		using core_t = clever_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
-		clever_out_ptr_t(Smart& s, Args... args)
+		clever_out_ptr_t(Smart& s, Args... args) noexcept
 		: core_t(s, std::forward_as_tuple(std::forward<Args>(args)...)) {
 		}
 	};

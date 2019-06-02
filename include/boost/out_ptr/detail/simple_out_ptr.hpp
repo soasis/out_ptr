@@ -30,7 +30,7 @@ namespace detail {
 		using core_t = base_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
-		simple_out_ptr_t(Smart& s, Args... args)
+		simple_out_ptr_t(Smart& s, Args... args) noexcept
 		: core_t(s, std::forward_as_tuple(std::forward<Args>(args)...)) {
 		}
 	};
