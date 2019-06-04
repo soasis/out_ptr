@@ -43,7 +43,7 @@ namespace boost { namespace out_ptr {
 
 		out_ptr_t& operator=(out_ptr_t&&) noexcept;
 
-		~out_ptr_t();
+		~out_ptr_t() noexcept(see-below);
 
 		operator Pointer*() const noexcept;
 

@@ -23,7 +23,7 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart>
-	void call_release(std::true_type, Smart& s) noexcept {
+	void call_release(std::true_type, Smart& s) noexcept(noexcept(std::declval<Smart&>().release())) {
 		s.release();
 	}
 
@@ -53,7 +53,7 @@ namespace detail {
 		base_inout_ptr_impl(const base_inout_ptr_impl&) = delete;
 		base_inout_ptr_impl& operator=(const base_inout_ptr_impl&) = delete;
 
-		~base_inout_ptr_impl() noexcept {
+		~base_inout_ptr_impl() noexcept(std::is_nothrow_destructible<base_t>::value&& noexcept(call_release(is_releasable<Smart>(), std::declval<Smart&>()))) {
 			call_release(is_releasable<Smart>(), *(this->m_smart_ptr));
 		}
 	};

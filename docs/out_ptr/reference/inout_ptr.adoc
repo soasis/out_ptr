@@ -43,9 +43,7 @@ namespace boost { namespace out_ptr {
 
 		inout_ptr_t& operator=(inout_ptr_t&&) noexcept;
 
-		~inout_ptr_t();
-
-		T* const* -> T**
+		~inout_ptr_t() noexcept(see-below);
 
 		operator Pointer const*() noexcept const;
 
@@ -94,7 +92,7 @@ return *this;
 
 ### Destructors
 
-`~inout_ptr_t();`
+`~inout_ptr_t() noexcept(see-below);`
 
 - Constraints: Either `std::is_pointer_v<Smart>` is `true` or the expression `s->release()` is well-formed.
 
@@ -106,3 +104,5 @@ return *this;
 * otherwise, `s->release(); if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }`.
 
 - Remarks: if an implementation calls `s->release()` or `smart.release()` in the constructor, then it shall not call `s->release()` in the destructor.
+
+- Throws: any exceptions thrown by Effects. Otherwise, throws nothing.
