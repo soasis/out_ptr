@@ -55,10 +55,11 @@ if (err != MLL_SUCESS) {
 }
 ```
 
-No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers.
+No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers that stores the deleter.
 
 Welcome to `boost.out_ptr`, the present and future of C API interoperation. This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `T**`.
 
+- Use <<reference/out_ptr.adoc#ref.out_ptr.function, `boost::out_ptr::out_ptr`>> when you just need to call `.reset()`, or use <<reference/inout_ptr.adoc#ref.inout_ptr.function, `boost::out_ptr::inout_ptr`>>, when you need to call `.release()` and then `.reset()` (e.g., for a reallocating C function).
 - Get started with the <<examples.adoc#examples,examples>>.
 - Understand the pitfalls and problems that come with C++ by reading <<caveats.adoc#caveats, the Caveats>>.
 - Read up on how to use it with your <<customization.adoc#customization, custom smart pointers>>, if you do not have a conforming interface!
