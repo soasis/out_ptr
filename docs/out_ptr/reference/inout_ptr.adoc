@@ -70,7 +70,7 @@ NOTE: It is impossible to properly release the managed resource from a `std::sha
 
 NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. ``boost::out_ptr::inout_ptr_t``s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in C++.
 
-- Remarks: if an implementation calls `smart.release()`, then it shall not call `s->release()` in the destructor.
+- Remarks: if an implementation calls `smart.release()` or `s->release()`, then it shall not call `s->release()` in the destructor.
 
 `inout_ptr_t(inout_ptr&& rhs) noexcept;`
 
@@ -100,9 +100,14 @@ return *this;
 
 - Effects: Equivalent to:
 * `if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `std::is_pointer_v<Smart>` is true,
-* `s->release(); if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if the expression `s->reset(...)` is well-formed,
+* `s->release(); if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if the expression `s->reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed,
 * otherwise, `s->release(); if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }`.
 
 - Remarks: if an implementation calls `s->release()` or `smart.release()` in the constructor, then it shall not call `s->release()` in the destructor.
 
-- Throws: any exceptions thrown by Effects. Otherwise, throws nothing.
+- Throws:
+* no exceptions and is `noexcept` if `std::is_pointer_v<Smart>` is true;
+* any exceptions and is conditionally `noexcept` from `s->release();` and `s->reset( static_cast<SP>(p), std::forward<Args>(args)... );` if the expression `s->reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed;
+* otherwise, any exceptions and is conditionally `noexcept` from `s->release();` and `*s = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`;
+
+where `Args` are the arguments stored in `a`.
