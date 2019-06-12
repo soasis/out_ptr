@@ -10,6 +10,8 @@
 
 #include <benchmark/benchmark.h>
 
+#define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+
 #include <benchmarks/out_ptr/friendly_unique_ptr.hpp>
 #include <boost/out_ptr/inout_ptr.hpp>
 #include <benchmarks/out_ptr/friendly_inout_ptr.hpp>

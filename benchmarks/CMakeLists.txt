@@ -62,17 +62,17 @@ target_link_libraries(boost.out_ptr.benchmarks
 	${CMAKE_DL_LIBS}
 )
 
-set(BOOST_OUT_PTR_BENCHMARKS_REPETITIONS 250
+set(BOOST_OUT_PTR_BENCHMARKS_REPETITIONS 150
 	CACHE STRING "The number of times to re-rerun the benchmarks to gather additional data")
 set(BOOST_OUT_PTR_BENCHMARKS_FORMAT json 
-	CACHE STRING "The output format of the data. Must be json or csv")
+	CACHE STRING "The output format of the data. Must be json")
 string(TOLOWER ${BOOST_OUT_PTR_BENCHMARKS_FORMAT} BOOST_OUT_PTR_BENCHMARKS_FORMAT_LOWER)
 set(BOOST_OUT_PTR_BENCHMARKS_FORMAT ${BOOST_OUT_PTR_BENCHMARKS_FORMAT_LOWER} 
-	CACHE STRING "The output format of the data. Must be json or csv" FORCE)
+	CACHE STRING "The output format of the data. Must be json" FORCE)
 
-set(BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results/out_ptr")
+set(BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
 set(BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}/out_ptr_benchmarks.${BOOST_OUT_PTR_BENCHMARKS_FORMAT}")
-set(BOOST_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results/out_ptr")
+set(BOOST_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
 file(MAKE_DIRECTORY "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}")
 
 set(boost_out_ptr_benchmarks_categories shared_local_out_ptr shared_reset_out_ptr local_out_ptr reset_out_ptr local_inout_ptr reset_inout_ptr)

@@ -31,10 +31,17 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 	set(example_source_file source/${example_source_name})
 	set(example_target boost.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
+	set_target_properties(${example_target} PROPERTIES
+		CXX_STANDARD 11
+		CXX_STANDARD_REQUIRED TRUE
+		CXX_EXTENSIONS FALSE
+	)
 	if (MSVC)
+		target_compile_options(${example_target}
+			PRIVATE /W4)
 	else()
 		target_compile_options(${example_target}
-			PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
+			PRIVATE -Wpedantic -Wall -Werror)
 	endif()
 	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
 	target_link_libraries(${example_target}
@@ -60,15 +67,32 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 	endif()
 endforeach()
 
-if (MSVC)
+set(boost_out_ptr_atl_dir "${CMAKE_BINARY_DIR}/boost.out_ptr.test_atl_include")
+set(boost_out_ptr_atl_file "${boost_out_ptr_atl_dir}/atl_test.cpp")
+file(GENERATE OUTPUT ${boost_out_ptr_atl_file}
+CONTENT "#include <atlbase.h>
+int main (int, char*[]) { return 0; }")
+try_run(boost_out_ptr_examples_has_atl_run boost_out_ptr_examples_has_atl_compile 
+	${boost_out_ptr_atl_dir} ${boost_out_ptr_atl_file}
+	CMAKE_FLAGS "CMAKE_CXX_FLAGS:${CMAKE_CXX_FLAGS}" "CMAKE_C_FLAGS:${CMAKE_C_FLAGS}"
+	"CMAKE_C_COMPILER:${CMAKE_C_COMPILER}" "CMAKE_CXX_COMPILER:${CMAKE_CXX_COMPILER}"
+)
+if (boost_out_ptr_examples_has_atl_run)
 	set(example_source_name "com.intrusive_ptr.cpp")
 	set(example_source_file source/${example_source_name})
 	set(example_target boost.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
+	set_target_properties(${example_target} PROPERTIES
+		CXX_STANDARD 11
+		CXX_STANDARD_REQUIRED TRUE
+		CXX_EXTENSIONS FALSE
+	)
 	if (MSVC)
+		target_compile_options(${example_target}
+			PRIVATE /W4)
 	else()
 		target_compile_options(${example_target}
-			PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
+			PRIVATE -Wpedantic -Wall -Werror)
 	endif()
 	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
 	target_link_libraries(${example_target}
@@ -97,12 +121,17 @@ if (CMAKE_USE_PTHREADS_INIT)
 	set(example_source_file source/${example_source_name})
 	set(example_target boost.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
+	set_target_properties(${example_target} PROPERTIES
+		CXX_STANDARD 11
+		CXX_STANDARD_REQUIRED TRUE
+		CXX_EXTENSIONS FALSE
+	)
 	if (MSVC)
 		target_compile_options(${example_target}
 			PRIVATE /W4)
 	else()
 		target_compile_options(${example_target}
-			PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
+			PRIVATE -Wpedantic -Wall -Werror)
 	endif()
 	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
 	target_link_libraries(${example_target}

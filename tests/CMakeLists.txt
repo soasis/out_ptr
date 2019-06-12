@@ -31,12 +31,17 @@ set(boost.out_ptr.tests_sources
 )
 
 add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
+set_target_properties(${example_target} PROPERTIES
+	CXX_STANDARD 11
+	CXX_STANDARD_REQUIRED TRUE
+	CXX_EXTENSIONS FALSE
+)
 if (MSVC)
 	target_compile_options(boost.out_ptr.tests
 		PRIVATE /W4)
 else()
 	target_compile_options(boost.out_ptr.tests
-		PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
+		PRIVATE -Wpedantic -Wall -Werror)
 endif()
 target_include_directories(boost.out_ptr.tests
 	PRIVATE 

@@ -114,17 +114,17 @@ def parse_json(j, data_point_names, name_removals, categories, scale,
 	j_benchmarks_array = j["benchmarks"]
 	for j_benchmark in j_benchmarks_array:
 		name = j_benchmark['name']
-		base_name = j_benchmark['base_name']
+		run_name = j_benchmark['run_name']
 		benchmark = None
 		potential_targets = [
-		    b for b in all_benchmarks if b['base_name'] == base_name
+		    b for b in all_benchmarks if b['run_name'] == run_name
 		]
 		potential_categories = None if categories == None else [
-		    c for c in categories if c in base_name
+		    c for c in categories if c in run_name
 		]
 
 		category = ""
-		benchmark_name = base_name
+		benchmark_name = run_name
 		point_scalar = 1
 		if (len(potential_categories) > 1):
 			potential_categories.sort(key=len_sorter, reverse=True)
@@ -134,13 +134,13 @@ def parse_json(j, data_point_names, name_removals, categories, scale,
 				point_scalar = 1 / scale
 
 		if (len(potential_targets) < 1):
-			benchmark_name = base_name.replace(category, "").strip("_")
+			benchmark_name = run_name.replace(category, "").strip("_")
 			for chunk in name_removals:
 				benchmark_name = benchmark_name.replace(chunk, "")
 			all_benchmarks.append({
 			    "category": category,
 			    "name": benchmark_name,
-			    "base_name": base_name,
+			    "run_name": run_name,
 			    "data": {},
 			    "statistics": {},
 			    "heuristics": {
@@ -171,7 +171,7 @@ def parse_json(j, data_point_names, name_removals, categories, scale,
 		unit_index = timescale_units.index(time_unit)
 		time_scale = time_scales[unit_index]
 		to_seconds_multiplier = time_scale[2]
-		if name == base_name:
+		if name == run_name:
 			# is a data point
 			for point_name_lower in data_point_names:
 				point_name = point_name_lower[0]
@@ -183,7 +183,7 @@ def parse_json(j, data_point_names, name_removals, categories, scale,
 				heuristics["max"] = max(heuristics["max"], point_adjusted)
 		else:
 			# is a statistic
-			statistic_name = name.replace(base_name, "").strip("_")
+			statistic_name = name.replace(run_name, "").strip("_")
 			if statistic_name not in statistics:
 				statistics[statistic_name] = {}
 			statistic = statistics[statistic_name]

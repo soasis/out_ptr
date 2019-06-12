@@ -21,7 +21,9 @@ namespace std {
 #define _NOEXCEPT noexcept
 #endif // MSVC's noexcept is properly boxed from the user in later releases
 
+#ifndef BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 #define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#endif
 
 	template <class _Ty,
 		class _Dx>
@@ -50,11 +52,19 @@ namespace std {
 		}
 
 		pointer& _Myptr() noexcept { // return reference to pointer
+#if _MSC_VER < 1920
 			return (_Mypair._Get_second());
+#else
+			return (_Mypair._Myval2);
+#endif
 		}
 
 		const pointer& _Myptr() const noexcept { // return const reference to pointer
+#if _MSC_VER < 1920
 			return (_Mypair._Get_second());
+#else
+			return (_Mypair._Myval2);
+#endif
 		}
 
 		_Compressed_pair<_Dx, pointer> _Mypair;
@@ -184,6 +194,14 @@ namespace std {
 			return (this->_Myptr());
 		}
 
+		_NODISCARD pointer& friendly_get() noexcept { // return pointer to object
+			return (this->_Myptr());
+		}
+
+		_NODISCARD const pointer& friendly_get() const noexcept { // return pointer to object
+			return (this->_Myptr());
+		}
+
 		explicit operator bool() const noexcept { // test for non-null pointer
 			return (get() != pointer());
 		}
@@ -208,7 +226,9 @@ namespace std {
 
 #elif defined(_LIBCPP_VERSION)
 
+#ifndef BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 #define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#endif
 
 	template <class _Tp, class _Dp = default_delete<_Tp>>
 	class _LIBCPP_TEMPLATE_VIS friendly_unique_ptr {
@@ -480,7 +500,9 @@ namespace std {
 
 #elif defined(__GLIBCXX__)
 
+#ifndef BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 #define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#endif
 
 	/// 20.7.1.2 friendly_unique_ptr for single objects.
 	template <typename _Tp, typename _Dp = default_delete<_Tp>>
