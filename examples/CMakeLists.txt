@@ -68,12 +68,15 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 endforeach()
 
 set(boost_out_ptr_atl_dir "${CMAKE_BINARY_DIR}/boost.out_ptr.test_atl_include")
+set(boost_out_ptr_atl_bin_dir "${boost_out_ptr_atl_dir}/bin")
 set(boost_out_ptr_atl_file "${boost_out_ptr_atl_dir}/atl_test.cpp")
-file(GENERATE OUTPUT ${boost_out_ptr_atl_file}
-CONTENT "#include <atlbase.h>
+file(MAKE_DIRECTORY ${boost_out_ptr_atl_dir})
+file(MAKE_DIRECTORY ${boost_out_ptr_atl_bin_dir})
+file(WRITE ${boost_out_ptr_atl_file}
+"#include <atlbase.h>
 int main (int, char*[]) { return 0; }")
 try_run(boost_out_ptr_examples_has_atl_run boost_out_ptr_examples_has_atl_compile 
-	${boost_out_ptr_atl_dir} ${boost_out_ptr_atl_file}
+	${boost_out_ptr_atl_bin_dir} ${boost_out_ptr_atl_file}
 	CMAKE_FLAGS "CMAKE_CXX_FLAGS:${CMAKE_CXX_FLAGS}" "CMAKE_C_FLAGS:${CMAKE_C_FLAGS}"
 	"CMAKE_C_COMPILER:${CMAKE_C_COMPILER}" "CMAKE_CXX_COMPILER:${CMAKE_CXX_COMPILER}"
 )
