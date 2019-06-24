@@ -23,6 +23,7 @@ Additionally, `boost::out_ptr::inout_ptr` has one more additional requirement:
 Therefore, if you have a `.get()` and `.reset()` call, alongside a `.release()` for `inout_ptr`, you are completely fine with the default implementation.
 
 
+[[customization.point]]
 ## Changing the Defaults
 
 A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<reference/out_ptr.adoc#ref.out_ptr.class, `boost::out_ptr::out_ptr_t`>> or <<reference/inout_ptr.adoc#ref.inout_ptr.class, `boost::out_ptr::inout_ptr_t`>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
@@ -63,7 +64,7 @@ namespace phd {
 } // namespace phd
 ```
 
-This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). A user may _(partially) template specialize_ the customize `boost::out_ptr::out_ptr_t` and `boost::out_ptr::inout_ptr_t`. Here is an example for `out_ptr_t`:
+This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). A user may _(partially) template specialize_ the customized `boost::out_ptr::out_ptr_t` and `boost::out_ptr::inout_ptr_t`. Here is an example for `out_ptr_t`:
 
 - First, open up the `boost::out_ptr` namespace:
 ```
@@ -112,4 +113,4 @@ namespace boost { namespace out_ptr {
 
 And that is everything we need to write. A full, optimized implementation for `boost::out_ptr::out_ptr_t` and `phd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/custom.handle.cpp[this example].
 
-The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `T**` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `boost::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.
+The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `$$T**$$` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `boost::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.

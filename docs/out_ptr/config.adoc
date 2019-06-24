@@ -1,0 +1,32 @@
+////
+//  Copyright ⓒ 2018-2019 ThePhD.
+//
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
+//
+//  See http://www.boost.org/libs/out_ptr/ for documentation.
+////
+
+[[config]]
+# Configuring boost.out_ptr
+
+There are macro definitions one can employ for their project's build to change the behavior and safety of boost.out_ptr.
+
+* `BOOST_OUT_PTR_NO_CLEVERNESS`
+** When defined, will change from using an aliasing optimization for `std::unique_ptr` and `boost::movelib` to simply using the default, stock behavior of retrieving the pointer value and then calling `.reset()` to put it back.
+** This is noticeably slower (see the <<benchmarks.adoc#benchmarks, benchmarks>> for more information), but obviously safer since we are not aliasing into private members.
+** This is *not* defined by default under any circumstances.
+* `BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER`
+** If defined and not 0, this tells any clever optimizations for `unique`-style pointers (e.g. `std::unique_ptr` and `boost::movelib::unique_ptr`) that the pointer member comes first, rather than after any stored deleter.
+** To date, no standard library has been found to have this class layout.
+** This is *not* defined by default under any circumstances.
+* `BOOST_OUT_PTR_USE_CLEVER_OUT_PTR`
+** This applies specifically to `boost::out_ptr::out_ptr` and not to `boost::out_ptr::inout_ptr`.
+** If defined and not 0, switches the implementation for `out_ptr` to be an unsafe clever version.
+** This is *dangerous*: many C APIs do not modify the parameter on return, making it impossible to directly reseat the value inside the pointer properly!
+** This is *not* defined by default under any circumstances.
+* `BOOST_OUT_PTR_CLEVER_SANITY_CHECK`
+** If `BOOST_OUT_PTR_NO_CLEVERNESS` is not defined and this is both defined and not 0, then boost.out_ptr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
+** For debugging and sanity checking purposes.
+** This is *not* defined by default under any circumstances.

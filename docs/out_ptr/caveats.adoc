@@ -11,12 +11,12 @@
 [[caveats]]
 # Caveats and Caution
 
-There are a few places where the rules of C++ (or a poorly implemented C library) can cause problems with this abstraction and thus force you to rewrite some of your code.
+There are a few places where the rules of {cpp} (or a poorly implemented C library) can cause problems with this abstraction and thus force you to rewrite some of your code.
 
 [[caveats.if]]
 ## `if` statement ordering and temporaries
 
-`out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard C++, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
+`out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard {cpp}, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
 
 ```
 if (my_maybe_failing_C_api(boost::out_ptr::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
@@ -28,7 +28,7 @@ if (my_maybe_failing_C_api(boost::out_ptr::out_ptr(my_handle), 56, ID_SOFT_CLS) 
 
 The problem is that all temporaties -- including the one `boost::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
 
-C++17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
+{cpp}17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
 
 ```
 if (c_error_t err = my_maybe_failing_C_api(
@@ -46,15 +46,15 @@ Everywhere else in the language, temporaries stop at the semicolon: that is not 
 
 Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries do the opposite: they guarantee that the parameter will be unchanged, no matter what the incoming value is or whether or not the API suceeded or not. Defensively, you can make sure that in these cases when using <<overview.adoc#overview.inout_ptr, `out_ptr`>>, your smart pointer is already initialized with `nullptr` (as it is in the default case). If you are using a previously-allocated pointer with `out_ptr`, there is no need to worry because the default implementation will call `.reset()` on the type with a `nullptr` that was never changed. This is actually a tiny bit (but still measurable) performance drag and perhaps even a pessimization: more work is being done to try and zero-in on type of `out_ptr` that can take advantage of C APIs which will set the value to `nullptr` on failure of output in the non-reallocating case.
 
-Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `T**` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
+Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `$$T**$$` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
 
 It is impossible for this abstraction to handle such wild cases. Perhaps in the future additional types can be provided for "misbehaving" APIs, but they are thankfully few and far between so as not to cause this problem often.
 
 
 [[caveats.poor_cxx]]
-## Poorly designed C++ API
+## Poorly designed {cpp} API
 
-Note that a C++ API that takes a `T**` may throw. The API could throw after deleting / freeing the passed-in resoure, but before setting it to `nullptr`. Therefore, given a `really::terrible::api`, this can result in a double-delete:
+Note that a {cpp} API that takes a `$$T**$$` may throw. The API could throw after deleting / freeing the passed-in resoure, but before setting it to `nullptr`. Therefore, given a `really::terrible::api`, this can result in a double-delete:
 
 ```
 namespace really::terrible { // C++17 nested namespaces
@@ -80,7 +80,7 @@ The workaround is not using this kind of API and filing a bug with the person wh
 [[caveats.general_order]]
 # General Order of Evaluations problems
 
-C++ function calls are indeterminately sequenced in a non-interleaving way from left to right. (There was a paper to fix this; it was stopped at the last second in a C++ Standards Plenary meeting for inertia and platform specific reasons. Thusly, we are in a situation wherethat mouthful of an opening sentence is the best "guarantee" you'll get about general function calls.
+{cpp} function calls are indeterminately sequenced in a non-interleaving way from left to right. (There was a paper to fix this; it was stopped at the last second in a {cpp} Standards Plenary meeting for inertia and platform specific reasons. Thusly, we are in a situation wherethat mouthful of an opening sentence is the best "guarantee" you'll get about general function calls.
 
 As such, you must ensure that construction of the smart pointer and checking for things like whether the smart pointer's contained pointer is the same (with a `== nullptr` or `explicit operator bool` conversion) or whether or not the function finished successfully are in separate expressions. Normal usage makes this a hard pit to fall into: please try not to be creative with your <<caveats.adoc#caveats.if, if statements>> and usage of this.
 
