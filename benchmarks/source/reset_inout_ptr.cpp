@@ -6,7 +6,7 @@
 //
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
-#include <benchmarks/statistics.hpp >
+#include <benchmarks/statistics.hpp>
 
 #include <benchmark/benchmark.h>
 
