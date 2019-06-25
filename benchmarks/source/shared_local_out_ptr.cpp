@@ -34,6 +34,7 @@ std::shared_ptr<ficapi::opaque> out_ptr_shared_allocate() {
 static void manual_inline_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::shared_ptr<ficapi::opaque> p(nullptr, ficapi::handle_no_alloc_deleter());
 		ficapi_opaque_handle temp_p = NULL;
 
@@ -55,6 +56,7 @@ BENCHMARK(manual_inline_shared_local_out_ptr)
 static void manual_inline_no_reset_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		ficapi_opaque_handle temp_p = NULL;
 		ficapi_handle_no_alloc_create(&temp_p);
 		std::shared_ptr<ficapi::opaque> p(temp_p, ficapi::handle_no_alloc_deleter());
@@ -76,6 +78,7 @@ BENCHMARK(manual_inline_no_reset_shared_local_out_ptr)
 static void manual_rvo_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::shared_ptr<ficapi::opaque> p = rvo_shared_allocate();
 		x += ficapi_handle_get_data(p.get());
 	}
@@ -94,6 +97,7 @@ BENCHMARK(manual_rvo_shared_local_out_ptr)
 static void manual_return_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::shared_ptr<ficapi::opaque> p = shared_allocate();
 		x += ficapi_handle_get_data(p.get());
 	}
@@ -111,6 +115,7 @@ BENCHMARK(manual_return_shared_local_out_ptr)
 static void return_out_ptr_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::shared_ptr<ficapi::opaque> p = out_ptr_shared_allocate();
 		x += ficapi_handle_get_data(p.get());
 	}
@@ -128,6 +133,7 @@ BENCHMARK(return_out_ptr_shared_local_out_ptr)
 static void inline_out_ptr_shared_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::shared_ptr<ficapi::opaque> p(nullptr, ficapi::handle_no_alloc_deleter());
 		ficapi_handle_no_alloc_create(boost::out_ptr::detail::clever_out_ptr(p, ficapi::handle_no_alloc_deleter()));
 		x += ficapi_handle_get_data(p.get());

@@ -39,7 +39,7 @@ namespace detail {
 
 	public:
 		base_inout_ptr_impl(Smart& ptr, Args&& args) noexcept
-		: base_t(ptr, std::move(args), ptr.get()) {
+		: base_t(ptr, std::move(args), static_cast<Pointer>(ptr.get())) {
 			static_assert(is_releasable<Smart>::value, "You cannot use an inout pointer with something that cannot release() its pointer!");
 		}
 
