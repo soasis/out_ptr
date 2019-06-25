@@ -67,8 +67,6 @@ NOTE: It is typically a user error to reset a `shared_ptr` without specifying a 
 - Effects: initializes `s` with `addressof(smart)`, `a` with `std::forward<Args>(args)...`, and initializes `p` to its value initialization.
 
 
-NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to use values meaningful to the smart pointer and implementation. The program may not be able to depend on or observe the value of `p` through the conversion operator defined below.
-
 `out_ptr_t(out_ptr&& rhs) noexcept;`
 
 - Effects: initializes `s` with `std::move(rhs.s)`, `a` with `std::move(args)...`, and `p` with `std::move(rhs.p)`. Then sets `rhs.p` to `nullptr`.
