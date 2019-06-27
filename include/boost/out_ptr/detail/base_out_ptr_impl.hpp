@@ -40,11 +40,11 @@ namespace detail {
 	}
 
 	template <typename Smart, typename Pointer, typename Args, typename List>
-	struct base_out_ptr_impl;
+	class base_out_ptr_impl;
 
 	template <typename Smart, typename Pointer, typename Base, std::size_t... Indices>
-	struct base_out_ptr_impl<Smart, Pointer, Base, boost::mp11::index_sequence<Indices...>>
-	: Base {
+	class base_out_ptr_impl<Smart, Pointer, Base, boost::mp11::index_sequence<Indices...>>
+	: protected Base {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 		using can_reset	 = detail::is_resetable<Smart,

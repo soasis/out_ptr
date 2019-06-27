@@ -78,7 +78,7 @@ namespace detail {
 	};
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
-	struct clever_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
+	class clever_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
 	private:
 		using base_t = base_inout_ptr_impl<Smart, Pointer, Args, List>;
 
@@ -88,12 +88,12 @@ namespace detail {
 
 	// defer to unique optimization, if possible
 	template <typename T, typename D, typename Pointer>
-	struct clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	class clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
 		typename std::enable_if<
 			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
 			|| std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
 			|| !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value>::type>
-	: unique_optimization<std::unique_ptr<T, D>, T, D, Pointer> {
+	: public unique_optimization<std::unique_ptr<T, D>, T, D, Pointer> {
 	private:
 		using base_t = unique_optimization<std::unique_ptr<T, D>, T, D, Pointer>;
 
@@ -102,12 +102,12 @@ namespace detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	struct clever_inout_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	class clever_inout_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
 		typename std::enable_if<
 			std::is_same<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
 			|| std::is_base_of<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
 			|| !std::is_convertible<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value>::type>
-	: unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
+	: public unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
 	private:
 		using base_t = unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;
 
