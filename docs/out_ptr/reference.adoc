@@ -39,7 +39,7 @@ The following are definitions for some meta-functions done on types. If you see 
 [[ref.syn]]
 ## Synopsis
 
-The contents of the library are in namespace `boost::out_ptr`. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions: `out_ptr_t` and `inout_ptr_t`:
+The contents of the library are in namespace Boost.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions: `out_ptr_t` and `inout_ptr_t`:
 
 ```
 namespace boost { namespace out_ptr {

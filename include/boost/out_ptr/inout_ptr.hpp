@@ -18,14 +18,13 @@ namespace boost {
 namespace out_ptr {
 
 	namespace detail {
-#if defined(_LIBCPP_VERSION) || (defined(BOOST_OUT_PTR_NO_CLEVERNESS) && BOOST_OUT_PTR_NO_CLEVERNESS != 0)
-		// libc++ segfaults so hard because of the UB from aliasing optimizations
-		template <typename Smart, typename Pointer, typename... Args>
-		using core_inout_ptr_t = simple_inout_ptr_t<Smart, Pointer, Args...>;
-#else
+#if (defined(BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR) && BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR != 0)
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_inout_ptr_t = clever_inout_ptr_t<Smart, Pointer, Args...>;
-#endif // BOOST_OUT_PTR_NO_CLEVERNESS
+#else
+		template <typename Smart, typename Pointer, typename... Args>
+		using core_inout_ptr_t = simple_inout_ptr_t<Smart, Pointer, Args...>;
+#endif // BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR
 
 	} // namespace detail
 

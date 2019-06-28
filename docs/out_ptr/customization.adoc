@@ -66,7 +66,7 @@ namespace phd {
 
 This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). A user may _(partially) template specialize_ the customized `boost::out_ptr::out_ptr_t` and `boost::out_ptr::inout_ptr_t`. Here is an example for `out_ptr_t`:
 
-- First, open up the `boost::out_ptr` namespace:
+- First, open up the Boost.OutPtr namespace:
 ```
 namespace boost { namespace out_ptr {
 

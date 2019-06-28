@@ -75,7 +75,7 @@ namespace detail {
 		}
 
 		base_out_ptr_impl(base_out_ptr_impl&& right) noexcept
-		: Base(std::move(*this)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
+		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
 			right.m_smart_ptr = nullptr;
 		}
 		base_out_ptr_impl& operator=(base_out_ptr_impl&& right) noexcept {

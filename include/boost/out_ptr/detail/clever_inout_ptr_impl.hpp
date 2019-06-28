@@ -26,7 +26,7 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	struct unique_optimization {
+	struct inout_unique_fast {
 	public:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
@@ -36,41 +36,59 @@ namespace detail {
 
 		Pointer* m_target_ptr;
 
-		unique_optimization(std::true_type, Smart& ptr) noexcept
+		inout_unique_fast(std::true_type, Smart& ptr) noexcept
 		: m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(ptr)))) {
 			// we can assume things are cleaner here
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-			BOOST_ASSERT_MSG(*this->m_target_ptr == static_cast<Pointer>(ptr.get()), "clever UB-based optimization did not properly retrieve the pointer value");
+			BOOST_ASSERT_MSG(*this->m_target_ptr == static_cast<Pointer>(ptr.get()), "clever UB-based optimization did not properly retrieve the pointer value, consider turning it off for your platform");
 #endif // Clever Sanity Checks
 		}
 
-		unique_optimization(std::false_type, Smart& ptr) noexcept {
+		inout_unique_fast(std::false_type, Smart& ptr) noexcept {
 			// analysis necessary
-#if defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
-			// implementation has Pointer as first member: alias directly
-			void* target = static_cast<void*>(ptr);
+			if (is_specialization_of<Smart, boost::movelib::unique_ptr>::value) {
+				// boost::movelib::unique_ptr
+#if defined(BOOST_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
+				// implementation has Pointer as first member: alias directly
+				void* target = static_cast<void*>(ptr);
 #else
-			// implementation has Pointer as second member: shift, align, alias
-			constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
-			std::size_t max_space				 = sizeof(Smart) - memory_start;
-			void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
-			void* target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+				// implementation has Pointer as second member: shift, align, alias
+				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
+				std::size_t max_space				 = sizeof(Smart) - memory_start;
+				void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
+				void* target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
 #endif
-			// get direct Pointer
-			this->m_target_ptr = static_cast<Pointer*>(target);
+				// get direct Pointer
+				this->m_target_ptr = static_cast<Pointer*>(target);
+			}
+			else {
+				// std::unique_ptr
+#if defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
+				// implementation has Pointer as first member: alias directly
+				void* target = static_cast<void*>(ptr);
+#else
+				// implementation has Pointer as second member: shift, align, alias
+				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
+				std::size_t max_space				 = sizeof(Smart) - memory_start;
+				void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
+				void* target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+#endif
+				// get direct Pointer
+				this->m_target_ptr = static_cast<Pointer*>(target);
+			}
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-			BOOST_ASSERT_MSG(*this->m_target_ptr == static_cast<Pointer>(ptr.get()), "clever UB-based optimization did not properly retrieve the pointer value");
+			BOOST_ASSERT_MSG(*this->m_target_ptr == static_cast<Pointer>(ptr.get()), "clever UB-based optimization did not properly retrieve the pointer value, consider turning it off for your platform");
 #endif // Clever Sanity Checks
 		}
 
 	public:
-		unique_optimization(Smart& ptr, std::tuple<>&&) noexcept
-		: unique_optimization(can_aliasing_optimization(), ptr) {
+		inout_unique_fast(Smart& ptr, std::tuple<>&&) noexcept
+		: inout_unique_fast(can_aliasing_optimization(), ptr) {
 		}
-		unique_optimization(unique_optimization&& right) noexcept = default;
-		unique_optimization& operator=(unique_optimization&& right) noexcept = default;
-		unique_optimization(const unique_optimization&)				    = delete;
-		unique_optimization& operator=(const unique_optimization&) = delete;
+		inout_unique_fast(inout_unique_fast&& right) noexcept = default;
+		inout_unique_fast& operator=(inout_unique_fast&& right) noexcept = default;
+		inout_unique_fast(const inout_unique_fast&)					= delete;
+		inout_unique_fast& operator=(const inout_unique_fast&) = delete;
 
 		operator Pointer*() const noexcept {
 			return const_cast<Pointer*>(this->m_target_ptr);
@@ -93,9 +111,9 @@ namespace detail {
 			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
 			|| std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
 			|| !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value>::type>
-	: public unique_optimization<std::unique_ptr<T, D>, T, D, Pointer> {
+	: public inout_unique_fast<std::unique_ptr<T, D>, T, D, Pointer> {
 	private:
-		using base_t = unique_optimization<std::unique_ptr<T, D>, T, D, Pointer>;
+		using base_t = inout_unique_fast<std::unique_ptr<T, D>, T, D, Pointer>;
 
 	public:
 		using base_t::base_t;
@@ -107,9 +125,9 @@ namespace detail {
 			std::is_same<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
 			|| std::is_base_of<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
 			|| !std::is_convertible<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value>::type>
-	: public unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
+	: public inout_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
 	private:
-		using base_t = unique_optimization<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;
+		using base_t = inout_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;
 
 	public:
 		using base_t::base_t;

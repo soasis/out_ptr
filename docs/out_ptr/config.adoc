@@ -9,9 +9,9 @@
 ////
 
 [[config]]
-# Configuring boost.out_ptr
+# Configuring Boost.OutPtr
 
-There are macro definitions one can employ for their project's build to change the behavior and safety of boost.out_ptr.
+There are macro definitions one can employ for their project's build to change the behavior and safety of Boost.OutPtr.
 
 * `BOOST_OUT_PTR_NO_CLEVERNESS`
 ** When defined, will change from using an aliasing optimization for `std::unique_ptr` and `boost::movelib` to simply using the default, stock behavior of retrieving the pointer value and then calling `.reset()` to put it back.
@@ -27,6 +27,6 @@ There are macro definitions one can employ for their project's build to change t
 ** This is *dangerous*: many C APIs do not modify the parameter on return, making it impossible to directly reseat the value inside the pointer properly!
 ** This is *not* defined by default under any circumstances.
 * `BOOST_OUT_PTR_CLEVER_SANITY_CHECK`
-** If `BOOST_OUT_PTR_NO_CLEVERNESS` is not defined and this is both defined and not 0, then boost.out_ptr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
+** If `BOOST_OUT_PTR_NO_CLEVERNESS` is not defined and this is both defined and not 0, then Boost.OutPtr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
 ** For debugging and sanity checking purposes.
 ** This is *not* defined by default under any circumstances.

@@ -19,22 +19,37 @@ There are a few places where the rules of {cpp} (or a poorly implemented C libra
 `out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard {cpp}, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
 
 ```
-if (my_maybe_failing_C_api(boost::out_ptr::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
-&& my_handle) {
-	// do something here if the function returns success (0) 
-	// and "my_handle" is non-null
+using bop = boost:out_ptr;
+// ...
+if (my_maybe_failing_C_api(
+	bop::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
+	&& my_handle) {
+		// do something here if the function returns success (0) 
+		// and "my_handle" is non-null
 }
 ```
 
 The problem is that all temporaties -- including the one `boost::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
 
+It is still safe to use such a construct with if statements if you will check the return value only, and not check the actual pointer itself in the same if statement:
+
+```
+using bop = boost:out_ptr;
+// ...
+if (SQLITE_OK != sqlite3_open("test.db", 
+	bop::out_ptr(database, sqlite3_close))) {
+	// this usage is just fine
+}
+```
+
 {cpp}17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
 
 ```
+using bop = boost:out_ptr;
 if (c_error_t err = my_maybe_failing_C_api(
-boost::out_ptr::out_ptr(my_handle), 56, ID_SOFT_CLS); 
-err == 0 && my_handle) {
-	// still wrong
+	bop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
+	err == 0 && my_handle) {
+		// still wrong
 }
 ```
 
@@ -44,7 +59,7 @@ Everywhere else in the language, temporaries stop at the semicolon: that is not 
 [[caveats.poor_c]]
 ## Poorly designed C APIs
 
-Almost all well-designed C APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries do the opposite: they guarantee that the parameter will be unchanged, no matter what the incoming value is or whether or not the API suceeded or not. Defensively, you can make sure that in these cases when using <<overview.adoc#overview.inout_ptr, `out_ptr`>>, your smart pointer is already initialized with `nullptr` (as it is in the default case). If you are using a previously-allocated pointer with `out_ptr`, there is no need to worry because the default implementation will call `.reset()` on the type with a `nullptr` that was never changed. This is actually a tiny bit (but still measurable) performance drag and perhaps even a pessimization: more work is being done to try and zero-in on type of `out_ptr` that can take advantage of C APIs which will set the value to `nullptr` on failure of output in the non-reallocating case.
+ManyC APIs will set the user-provided output pointer argument to `NULL`/`nullptr` upon invalid parameters or failure to complete its designated task. However, some C libraries do the opposite: they guarantee that the parameter will be unchanged, no matter what the incoming value is or whether or not the API suceeded or not. Defensively, you can make sure that in these cases when using <<overview.adoc#overview.inout_ptr, `out_ptr`>>, your smart pointer is already initialized with `nullptr` (as it is in the default case). If you are using a previously-allocated pointer with `out_ptr`, there is no need to worry because the default implementation will call `.reset()` on the type with a `nullptr` that was never changed. This is actually a tiny bit (but still measurable) performance drag and perhaps even a pessimization: more work is being done to try and zero-in on type of `out_ptr` that can take advantage of C APIs which will set the value to `nullptr` on failure of output in the non-reallocating case.
 
 Worse, some re-allocating APIs (for use with <<overview.adoc#overview.inout_ptr, `inout_ptr`>>) will delete the pointer but not set the input `$$T**$$` argument to `nullptr`, leaving the abstraction and smart pointer to believe that it needs to delete the value once more.
 
@@ -90,7 +105,7 @@ As such, you must ensure that construction of the smart pointer and checking for
 
 Because `boost::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
 
-For `boost.out_ptr`, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
+For Boost.OutPtr, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
 
 For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
 

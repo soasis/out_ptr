@@ -8,7 +8,7 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 ////
 
-# `boost.out_ptr` at a glance
+# Boost.OutPtr at a glance
 
 Have you ever wanted to pass a smart pointer like `std::unique_ptr` or `boost::shared_ptr` or `boost::intrusive_ptr` to a C API?
 
@@ -42,7 +42,7 @@ This works, but you need to call `.reset(...)` with the raw pointer and set ever
 
 ### Let's make it simple and easy!
 
-With `boost.out_ptr`, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
+With Boost.OutPtr, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
 
 ```
 using bop = boost::out_ptr;
@@ -57,11 +57,11 @@ if (err != MLL_SUCESS) {
 
 No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers that stores the deleter.
 
-Welcome to `boost.out_ptr`, the present and future of C API interoperation. This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `$$T**$$`.
+Welcome to Boost.OutPtr, the present and future of C API interoperation. This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `$$T**$$`.
 
 - Use <<reference/out_ptr.adoc#ref.out_ptr.function, `boost::out_ptr::out_ptr`>> when you just need to call `.reset()`, or use <<reference/inout_ptr.adoc#ref.inout_ptr.function, `boost::out_ptr::inout_ptr`>>, when you need to call `.release()` and then `.reset()` (e.g., for a reallocating C function).
 - Get started with the <<examples.adoc#examples,examples>>.
-- Understand the pitfalls and problems that come with {cpp} and `boost.out_ptr` by reading <<caveats.adoc#caveats, the Caveats>>.
+- Understand the pitfalls and problems that come with {cpp} and Boost.OutPtr by reading <<caveats.adoc#caveats, the Caveats>>.
 - Read up on how to use it with your <<customization.adoc#customization, custom smart pointers>>, if you do not have a conforming interface!
 - The exact interface requirements on the desired smart pointers can be seen in the <<reference.adoc#ref.api, reference documentation for the types produced by the factory functions>>.
 - Peruse & use the advanced <<config.adoc#config, configuration options>> for safety, sanity checking, and speed!
