@@ -106,8 +106,6 @@ namespace detail {
 			right.m_old_ptr    = nullptr;
 			return *this;
 		}
-		out_unique_fast(const out_unique_fast&) = delete;
-		out_unique_fast& operator=(const out_unique_fast&) = delete;
 
 		operator Pointer*() const noexcept {
 			return const_cast<Pointer*>(this->m_target_ptr);

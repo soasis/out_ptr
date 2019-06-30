@@ -40,9 +40,6 @@ namespace detail {
 		base_inout_ptr_impl& operator=(base_inout_ptr_impl&& right) noexcept {
 			static_cast<base_t&>(*this) = std::move(right);
 		}
-
-		base_inout_ptr_impl(const base_inout_ptr_impl&) = delete;
-		base_inout_ptr_impl& operator=(const base_inout_ptr_impl&) = delete;
 	};
 
 }}} // namespace boost::out_ptr::detail

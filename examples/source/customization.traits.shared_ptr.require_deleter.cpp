@@ -50,6 +50,7 @@ namespace boost { namespace out_ptr {
 
 		template <typename... Args>
 		void reset(Smart& s, Pointer& pointer, Args&&... args) {
+			static_assert(sizeof...(Args) > 0, "you forgot to pass the deleter that is supposed to come along with this type!");
 			s.reset(pointer, std::forward<Args>(args)...);
 		}
 	};

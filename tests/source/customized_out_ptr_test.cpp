@@ -54,8 +54,6 @@ namespace boost { namespace out_ptr {
 			right.m_old_ptr    = nullptr;
 			return *this;
 		}
-		out_ptr_t(const out_ptr_t&) = delete;
-		out_ptr_t& operator=(const out_ptr_t&) = delete;
 
 		operator Pointer*() const noexcept {
 			return const_cast<Pointer*>(this->m_target_ptr);

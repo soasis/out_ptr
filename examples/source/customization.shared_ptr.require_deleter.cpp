@@ -7,6 +7,7 @@
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 #include <boost/out_ptr.hpp>
+#include <boost/core/empty_value.hpp>
 #include <boost/smart_ptr/local_shared_ptr.hpp>
 
 #include <avformat.h>
@@ -37,17 +38,51 @@ namespace boost { namespace out_ptr {
 	// require all out_ptr calls to need
 	// a deleter argument to make it
 	// safer to use
-	template <typename T, typename Pointer>
-	class out_ptr_traits<my_company_shared_ptr<T>, Pointer> {
-		template <typename... Args>
-		Pointer construct(Smart&, Args&&...) {
-			static_assert(sizeof...(Args) > 0, "you forgot to pass the deleter that is supposed to come along with this type!");
-			return Pointer{};
+	template <typename T, typename D, typename Pointer, typename... Args>
+	class out_ptr_t<my_company_shared_ptr<T, D>, Pointer, Args...> : boost::empty_value<std::tuple<Args...>> {
+	private:
+		using Smart		 = my_company_shared_ptr<T>;
+		using source_pointer = pointer_of_or_t<Smart, Pointer>;
+		using ArgsTuple	 = std::tuple<Args...>;
+		using Base		 = boost::empty_value<ArgsTuple>;
+
+		static_assert(sizeof...(Args) > 0, "you forgot to pass a deleter: it will (most likely) be reset to the wrong one!");
+
+		Smart* m_smart_ptr;
+		Pointer m_target_ptr;
+
+	public:
+		out_ptr_t(Smart& s, Args... args) noexcept
+		: Base(empty_init_t(), std::forward<Args>(args)...), m_smart_ptr(std::addressof(s)), m_old_ptr(s.get()), m_target_ptr() {
 		}
 
-		template <typename... Args>
-		void reset(Smart& s, Pointer& pointer, Args&&... args) {
-			s.reset(pointer, std::forward<Args>(args)...);
+		out_ptr_t(out_ptr_t&& right) noexcept
+		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_old_ptr(right.m_old_ptr), m_target_ptr(right.m_target_ptr) {
+			right.m_old_ptr = nullptr;
+		}
+		out_ptr_t& operator=(out_ptr_t&& right) noexcept {
+			Base::operator	=(std::move(right));
+			this->m_smart_ptr  = std::move(right.m_smart_ptr);
+			this->m_target_ptr = std::move(right.m_target_ptr);
+			right.m_smart_ptr  = nullptr;
+			return *this;
+		}
+
+		operator Pointer*() const noexcept {
+			return const_cast<Pointer*>(this->m_target_ptr);
+		}
+
+		~out_ptr_t() noexcept {
+			reset(boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>());
+		}
+
+	private:
+		template <std::size_t I0, std::size_t... I>
+		void reset(boost::mp11::index_sequence<I0, I...>) {
+			if (this->m_smart_ptr != nullptr) {
+				Base&& base = static_cast<Base&&>(*this);
+				this->m_smart_ptr->reset(static_cast<source_pointer>(this->m_target_ptr, std::get<I0>(std::move(base)), std::get<I>(std::move(base))...));
+			}
 		}
 	};
 

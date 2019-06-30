@@ -76,8 +76,6 @@ namespace detail {
 			right.m_smart_ptr		 = nullptr;
 			return *this;
 		}
-		base_out_ptr_impl(const base_out_ptr_impl&) = delete;
-		base_out_ptr_impl& operator=(const base_out_ptr_impl&) = delete;
 
 		operator Pointer*() const noexcept {
 			using has_get_call = std::integral_constant<bool, has_traits_get_call<traits_t>::value>;

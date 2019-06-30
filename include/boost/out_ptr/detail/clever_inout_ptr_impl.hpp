@@ -87,8 +87,6 @@ namespace detail {
 		}
 		inout_unique_fast(inout_unique_fast&& right) noexcept = default;
 		inout_unique_fast& operator=(inout_unique_fast&& right) noexcept = default;
-		inout_unique_fast(const inout_unique_fast&)					= delete;
-		inout_unique_fast& operator=(const inout_unique_fast&) = delete;
 
 		operator Pointer*() const noexcept {
 			return const_cast<Pointer*>(this->m_target_ptr);
