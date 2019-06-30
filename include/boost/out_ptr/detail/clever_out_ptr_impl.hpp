@@ -82,9 +82,9 @@ namespace detail {
 				std::size_t max_space				 = sizeof(Smart) - memory_start;
 				void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(this->m_smart_ptr)) + memory_start);
 				void* target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+#endif
 				// get direct Pointer
 				this->m_target_ptr = static_cast<Pointer*>(target);
-#endif
 			}
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
 			BOOST_ASSERT_MSG(*this->m_target_ptr == this->m_old_ptr, "clever UB-based optimization did not properly retrieve the pointer value");
