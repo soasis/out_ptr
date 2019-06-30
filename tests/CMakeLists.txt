@@ -53,6 +53,7 @@ target_include_directories(boost.out_ptr.tests
 target_link_libraries(boost.out_ptr.tests 
 	PRIVATE 
 
+	Boost::assert
 	Boost::config
 	Boost::core
 	Boost::mp11
