@@ -13,9 +13,6 @@
 #include <catch2/catch.hpp>
 
 
-#ifndef _LIBCPP_VERSION
-// libc++ breaks pretty hardcore with UB optimizations, which is why it's off-by-default on libc++
-
 TEST_CASE("clever_inout_ptr/basic", "clever_inout_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);
@@ -101,5 +98,3 @@ TEST_CASE("clever_inout_ptr/reused", "clever_inout_ptr type properly deletes non
 		}
 	}
 }
-
-#endif // libc++
