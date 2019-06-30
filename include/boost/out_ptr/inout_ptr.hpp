@@ -11,6 +11,8 @@
 #ifndef BOOST_OUT_PTR_INOUT_PTR_HPP
 #define BOOST_OUT_PTR_INOUT_PTR_HPP
 
+#include <cstddef>
+
 #if !defined(BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR)
 #if defined(_LIBCPP_VERSION) || defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
 #define BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR 1
