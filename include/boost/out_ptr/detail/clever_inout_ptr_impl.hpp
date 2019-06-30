@@ -25,6 +25,19 @@
 #include <tuple>
 #include <utility>
 
+#if defined(_LIBCPP_VERSION)
+// Why is their __compressed_pair <pointer, deleter>
+// and not <deleter, pointer>? It still seems to optimize the bases correctly,
+// so maybe this is more so my own hubris as a libstdc++ baby
+#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER)
+#define BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
+#endif // std::unique_ptr
+
+#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER)
+#define BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER 1
+#endif // boost::movelib::unique_ptr
+#endif // Libc++ does pointer first...!
+
 namespace boost {
 namespace out_ptr {
 namespace detail {
