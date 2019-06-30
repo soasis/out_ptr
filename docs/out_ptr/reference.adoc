@@ -30,25 +30,27 @@ The following are definitions for some meta-functions done on types. If you see 
 * `T::pointer` if the qualified-id `T::pointer` is valid and denotes a type, or
 * otherwise, `typename T::element_type*` if the qualified-id `T::element_type` is valid and denotes a type,
 * otherwise, `U`.
+* This is defined as `boost::out_ptr::pointer_of_or` and `boost::out_ptr::pointer_of_or_t`
 
 
 [[ref.def.pointer_of]]
 - Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
+* This is defined as `boost::out_ptr::pointer_of` and `boost::out_ptr::pointer_of_t`
 
 
 [[ref.syn]]
 ## Synopsis
 
-The contents of the library are in namespace Boost.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions: `out_ptr_t` and `inout_ptr_t`:
+The contents of the library are in namespace Boost.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions, `out_ptr_t` and `inout_ptr_t`:
 
 ```
 namespace boost { namespace out_ptr {
 	
 	template <class Smart, class Pointer, class... Args>
-	struct out_ptr_t;
+	class out_ptr_t;
 
 	template <class Smart, class Pointer, class... Args>
-	struct inout_ptr_t;
+	class inout_ptr_t;
 	
 	template <class Pointer, class Smart, class... Args>
 	out_ptr_t<Smart, Pointer, Args...> out_ptr(Smart& s, Args&&... args) noexcept;
@@ -64,20 +66,36 @@ namespace boost { namespace out_ptr {
 }} // namespace boost::out_ptr
 ```
 
+There are also 2 traits types which can be specialized, `out_ptr_traits` and `inout_ptr_traits`:
+
+```
+namespace boost { namespace out_ptr {
+	
+	template <class Smart, class Pointer>
+	class out_ptr_traits;
+
+	template <class Smart, class Pointer>
+	class inout_ptr_traits;
+	
+}} // namespace boost::out_ptr
+```
+
+You can read about each of these, below.
+
 [[ref.api]]
 ## API Reference
 
 :leveloffset: +1
 
 ifdef::env-github[]
-link:reference/out_ptr.adoc[`out_ptr` and `out_ptr_t`]
+link:reference/out_ptr.adoc[`out_ptr`, `out_ptr_trats`, and `out_ptr_t`]
 endif::[]
 ifndef::env-github[]
 include::reference/out_ptr.adoc[]
 endif::[]
 
 ifdef::env-github[]
-link:reference/inout_ptr.adoc[`inout_ptr` and `inout_ptr_t`]
+link:reference/inout_ptr.adoc[`inout_ptr`, `inout_ptr_trats`, and `inout_ptr_t`]
 endif::[]
 ifndef::env-github[]
 include::reference/inout_ptr.adoc[]

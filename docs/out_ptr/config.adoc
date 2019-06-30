@@ -31,7 +31,10 @@ There are macro definitions one can employ for their project's build to change t
 ** This applies specifically to `boost::out_ptr::inout_ptr` and not to `boost::out_ptr::out_ptr`.
 ** If defined and not 0, switches the implementation for `inout_ptr` to be an unsafe clever version.
 ** This is *dangerous*: aliasing memory to access private members is UB!
-** This is *not* defined by default under any circumstances.
+** This **is turned on** by default for when the following standard library version macros are present and it has not already been defined:
+*** - `_LIBCPP_VERSION`: works with libc++, which uses the "pointer first, deleter second" layout. As such, if `BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER` and `BOOST_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER` are defined.
+*** - `__GLIBC__`: works with libstdc++, which uses the "deleter first, pointer second" layout.
+*** - `_YVALS` or `_CPPLIB_VER`: works with Visual C++'s standard library, which uses the "deleter first, pointer second" layout.
 * `BOOST_OUT_PTR_CLEVER_SANITY_CHECK`
 ** If either of the `BOOST_OUT_PTR_USE_CLEVER*` defined and not equal to zero, and this is both defined and not 0, then Boost.OutPtr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
 ** For debugging and sanity checking purposes.

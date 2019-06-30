@@ -13,6 +13,7 @@
 
 #include <boost/out_ptr/detail/simple_out_ptr.hpp>
 #include <boost/out_ptr/detail/clever_out_ptr.hpp>
+#include <boost/out_ptr/detail/out_ptr_traits.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
@@ -38,7 +39,7 @@ namespace boost { namespace out_ptr {
 	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class out_ptr_t : public detail::core_out_ptr_t<Smart, Pointer, Args...> {
+	class BOOST_OUT_PTR_TRIVIAL_ABI out_ptr_t : public detail::core_out_ptr_t<Smart, Pointer, Args...> {
 	private:
 		using base_t = detail::core_out_ptr_t<Smart, Pointer, Args...>;
 

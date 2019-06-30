@@ -14,6 +14,7 @@
 #include <boost/out_ptr/pointer_of.hpp>
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
 #include <boost/out_ptr/detail/customization_forward.hpp>
+#include <boost/out_ptr/detail/inout_ptr_traits.hpp>
 
 #include <boost/mp11/integer_sequence.hpp>
 
@@ -25,34 +26,28 @@
 #include <utility>
 #include <tuple>
 
+// Only defined for clang version 7 and above
+#if defined(__clang__) && __clang__ >= 7
+#define BOOST_OUT_PTR_TRIVIAL_ABI __attribute__((trivial_abi))
+#else
+#define BOOST_OUT_PTR_TRIVIAL_ABI
+#endif // Clang or otherwise
+
 namespace boost {
 namespace out_ptr {
 namespace detail {
 
-	template <typename Smart, typename... Args>
-	void reset_or_create(std::true_type, Smart& s, Args&&... args) noexcept(noexcept(s.reset(std::forward<Args>(args)...))) {
-		s.reset(std::forward<Args>(args)...);
-	}
+	template <typename Smart, typename Pointer, typename Traits, typename Args, typename List>
+	class BOOST_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl;
 
-	template <typename Smart, typename... Args>
-	void reset_or_create(std::false_type, Smart& s, Args&&... args) noexcept(noexcept(s = Smart(std::forward<Args>(args)...))) {
-		s = Smart(std::forward<Args>(args)...);
-	}
-
-	template <typename Smart, typename Pointer, typename Args, typename List>
-	class base_out_ptr_impl;
-
-	template <typename Smart, typename Pointer, typename Base, std::size_t... Indices>
-	class base_out_ptr_impl<Smart, Pointer, Base, boost::mp11::index_sequence<Indices...>>
+	template <typename Smart, typename Pointer, typename Traits, typename Base, std::size_t... Indices>
+	class BOOST_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, boost::mp11::index_sequence<Indices...>>
 	: protected Base {
 	protected:
-		using source_pointer = pointer_of_or_t<Smart, Pointer>;
-		using can_reset	 = detail::is_resetable<Smart,
-			source_pointer,
-			typename std::tuple_element<Indices, Base>::type...>;
-
+		using traits_t = Traits;
+		using storage  = pointer_of_or_t<traits_t, Pointer>;
 		Smart* m_smart_ptr;
-		Pointer m_target_ptr;
+		storage m_target_ptr;
 
 		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::boost::shared_ptr>::value)
 				|| (sizeof...(Indices) > 0), // clang-format hack
@@ -61,27 +56,23 @@ namespace detail {
 			"initialized, otherwise the deleter will be defaulted "
 			"by the shared_ptr<T>::reset() call!");
 
-		base_out_ptr_impl(Smart& ptr, Base&& args, Pointer initial) noexcept
+		base_out_ptr_impl(Smart& ptr, Base&& args, storage initial) noexcept
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {
-		}
-
-		base_out_ptr_impl(Smart& ptr, Base&& args, detail::disambiguate_) noexcept
-		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr() {
 		}
 
 	public:
 		base_out_ptr_impl(Smart& ptr, Base&& args) noexcept
-		: base_out_ptr_impl(ptr, std::move(args), detail::disambiguate_()) {
+		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(traits_t::construct(ptr, std::get<Indices>(static_cast<Base&>(*this))...)) {
 		}
 
 		base_out_ptr_impl(base_out_ptr_impl&& right) noexcept
-		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(right.m_target_ptr) {
+		: Base(std::move(right)), m_smart_ptr(right.m_smart_ptr), m_target_ptr(std::move(right.m_target_ptr)) {
 			right.m_smart_ptr = nullptr;
 		}
 		base_out_ptr_impl& operator=(base_out_ptr_impl&& right) noexcept {
 			static_cast<Base&>(*this) = std::move(right);
-			this->m_smart_ptr		 = right.m_smart_ptr;
-			this->m_target_ptr		 = right.m_target_ptr;
+			this->m_smart_ptr		 = std::move(right.m_smart_ptr);
+			this->m_target_ptr		 = std::move(right.m_target_ptr);
 			right.m_smart_ptr		 = nullptr;
 			return *this;
 		}
@@ -89,14 +80,15 @@ namespace detail {
 		base_out_ptr_impl& operator=(const base_out_ptr_impl&) = delete;
 
 		operator Pointer*() const noexcept {
-			return const_cast<Pointer*>(std::addressof(this->m_target_ptr));
+			using has_get_call = std::integral_constant<bool, has_traits_get_call<traits_t>::value>;
+			return call_traits_get<traits_t>(has_get_call(), *const_cast<Smart*>(this->m_smart_ptr), const_cast<storage&>(this->m_target_ptr));
 		}
 
-		~base_out_ptr_impl() noexcept(noexcept(reset_or_create(can_reset(), std::declval<Smart&>(), static_cast<source_pointer>(nullptr), std::get<Indices>(std::move(std::declval<Base&>()))...))) {
-			if (m_smart_ptr) {
+		~base_out_ptr_impl() noexcept(noexcept(traits_t::reset(std::declval<Smart&>(), std::declval<storage&>(), std::get<Indices>(std::move(std::declval<Base&>()))...))) {
+			if (this->m_smart_ptr) {
 				Base&& args = std::move(static_cast<Base&>(*this));
 				(void)args; // unused if "Indices" is empty
-				reset_or_create(can_reset(), *this->m_smart_ptr, static_cast<source_pointer>(this->m_target_ptr), std::get<Indices>(std::move(args))...);
+				traits_t::reset(*this->m_smart_ptr, this->m_target_ptr, std::get<Indices>(std::move(args))...);
 			}
 		}
 	};

@@ -20,6 +20,10 @@ template <std::size_t I>
 struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
 
 namespace boost { namespace out_ptr {
+
+	// we have null-returning functions in these tests,
+	// so we can test this theoretical optimized smart pointer, which is identical to the
+	// clever_out_ptr implementation
 	template <typename T, typename D, typename Pointer, typename... Args>
 	class out_ptr_t<phd::handle<T, D>, Pointer, Args...> : boost::empty_value<std::tuple<Args...>> {
 	private:
@@ -30,12 +34,12 @@ namespace boost { namespace out_ptr {
 
 
 		Smart* m_smart_ptr;
-		Pointer m_old_ptr;
+		source_pointer m_old_ptr;
 		Pointer* m_target_ptr;
 
 	public:
-		out_ptr_t(Smart& ptr, Args... args) noexcept
-		: Base(empty_init_t(), std::forward<Args>(args)...), m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(std::addressof(this->m_smart_ptr->get())))) {
+		out_ptr_t(Smart& s, Args... args) noexcept
+		: Base(empty_init_t(), std::forward<Args>(args)...), m_smart_ptr(std::addressof(s)), m_old_ptr(s.get()), m_target_ptr(reinterpret_cast<Pointer*>(std::addressof(this->m_smart_ptr->get()))) {
 		}
 
 		out_ptr_t(out_ptr_t&& right) noexcept
@@ -64,7 +68,7 @@ namespace boost { namespace out_ptr {
 	private:
 		void reset(boost::mp11::index_sequence<>) {
 			if (this->m_old_ptr != nullptr) {
-				this->m_smart_ptr->get_deleter()(static_cast<source_pointer>(this->m_old_ptr));
+				this->m_smart_ptr->get_deleter()(this->m_old_ptr);
 			}
 		}
 

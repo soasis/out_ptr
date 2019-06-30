@@ -11,8 +11,15 @@
 #ifndef BOOST_OUT_PTR_INOUT_PTR_HPP
 #define BOOST_OUT_PTR_INOUT_PTR_HPP
 
+#if !defined(BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR)
+#if defined(_LIBCPP_VERSION) || defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
+#define BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR 1
+#endif // Checked with VC++ lib/Dinkumware, libstdc++, and libc++
+#endif // To use the clever optimization or not
+
 #include <boost/out_ptr/detail/clever_inout_ptr.hpp>
 #include <boost/out_ptr/detail/simple_inout_ptr.hpp>
+#include <boost/out_ptr/detail/inout_ptr_traits.hpp>
 
 namespace boost {
 namespace out_ptr {
@@ -29,7 +36,7 @@ namespace out_ptr {
 	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class inout_ptr_t : public detail::core_inout_ptr_t<Smart, Pointer, Args...> {
+	class BOOST_OUT_PTR_TRIVIAL_ABI inout_ptr_t : public detail::core_inout_ptr_t<Smart, Pointer, Args...> {
 	private:
 		using base_t = detail::core_inout_ptr_t<Smart, Pointer, Args...>;
 

@@ -30,6 +30,65 @@ namespace boost { namespace out_ptr {
 * The second overload is Equivalent to: `return out_ptr_t<Smart, POINTER_OF(Smart), Args...>(s, std::forward<Args>(args)...);`
 
 
+[[ref.inout_ptr.traits]]
+### class template `boost::out_ptr::out_ptr_traits`
+
+```
+namespace boost { namespace out_ptr {
+
+	template <class Pointer, class Smart>
+	class out_ptr_traits {
+	public:
+		// if program-specialized, optional
+		using pointer = POINTER_OF_OR(Smart, Pointer);
+
+		template <typename... Args>
+		static pointer construct(Smart& s, Args&&... args) noexcept;
+
+		// if program-specialized, optional
+		static pointer* get(Smart& s, pointer& p) noexcept;
+
+		template <typename... Args>
+		static void reset(Smart& s, pointer& p, Args&&... args) noexcept(see-below);
+	};
+
+}}
+```
+
+### Member Types
+
+`using pointer = POINTER_OF_OR(Smart, Pointer);`
+
+`pointer` is the type of object returned from `construct`, passed in to `get`, and passed in to `reset`.
+
+- Mandates: https://en.cppreference.com/w/cpp/language/move_constructor[MoveConstructible], be https://en.cppreference.com/w/cpp/language/implicit_conversion[(explicitly) contextually convertible to boolean], and be assignable to from a `std::nullptr_t` object.
+
+- Remarks: If the program specializes `out_ptr_traits`, then the `pointer` member type is optional.
+
+### Static Member Functions
+
+`static pointer construct(Smart&, Args&&...) noexcept;`
+
+- Returns: a value initialization of `pointer`.
+
+`static pointer* get(Smart& smart, pointer& p) noexcept;`
+
+- Returns: `addressof(p)`.
+
+- Remarks: If the program specializes this trait, then this function is optional so long as `addressof(p)` produces an object implicitly convertible to `Pointer*`.
+
+`static void reset(Smart& smart, pointer& p, Args&&... args) noexcept;`
+
+- Effects: Equivalent to:
+* `smart.reset( static_cast<SP>(p), std::forward<Args>(args)... );` if `reset` is a valid member function on `Smart`
+* otherwise `smart = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`.
+
+- Throws:
+* no exceptions and is `noexcept` if `std::is_pointer_v<Smart>` is true;
+* any exceptions and is conditionally `noexcept` from `smart.reset( static_cast<SP>(p), std::forward<Args>(args)... );` if the expression `s->reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed;
+* otherwise, any exceptions and is conditionally `noexcept` from `smart = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`;
+
+
 [[ref.out_ptr.class]]
 ### class template `boost::out_ptr::out_ptr_t`
 
@@ -38,6 +97,7 @@ namespace boost { namespace out_ptr {
 
 	template <class Smart, class Pointer, class... Args>
 	class out_ptr_t {
+	public:
 		out_ptr_t(Smart&, Args...) noexcept;
 		out_ptr_t(out_ptr_t&&) noexcept;
 
@@ -48,24 +108,27 @@ namespace boost { namespace out_ptr {
 		operator Pointer*() const noexcept;
 
 	private:
+		using traits_type = out_ptr_traits<Smart, Pointer>; // exposition only
+		using pointer = POINTER_OF_OR(traits_type, Pointer); // exposition only
+
 		Smart* s; // exposition only
 		tuple<Args...> a; // exposition only
-		Pointer p; // exposition only
+		pointer p; // exposition only
 	};
 	
 }}
 ```
 
-IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared_ptr`; and, `sizeof...(Args) == 0`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]]
+IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared_ptr`; and, `sizeof...(Args) == 0`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]], unless this type is program specialized.
 
 NOTE: It is typically a user error to reset a `shared_ptr` without specifying a deleter, as `std::shared_ptr` will replace a custom deleter with the default deleter upon usage of `.reset(...)`, as specified in http://eel.is/c++draft/util.smartptr.shared.mod[[**util.smartptr.shared.mod**]]
+
 
 ### Constructors
 
 `out_ptr_t(Smart& smart, Args&&... args) noexcept;`
 
-- Effects: initializes `s` with `addressof(smart)`, `a` with `std::forward<Args>(args)...`, and initializes `p` to its value initialization.
-
+- Effects: initializes `s` with `addressof(smart)`, `a` with `std::forward<Args>(args)...`, and initializes `p` with `traits_type::construct(smart, a_args...)`, where `a_args...` are references to the arguments stored in `a`.
 
 `out_ptr_t(out_ptr&& rhs) noexcept;`
 
@@ -81,7 +144,7 @@ NOTE: It is typically a user error to reset a `shared_ptr` without specifying a 
 s = std::move(rhs.s); 
 a = std::move(rhs.a); 
 p = std::move(rhs.p);
-rhs.p = nullptr;
+rhs.s = nullptr;
 return *this;
 ```
 
@@ -94,22 +157,14 @@ return *this;
 
 - Requires: `noexcept(true)` if the evaluation of the Effects is `noexcept`. Otherwise, `noexcept(false)`.
 
-- Effects: Equivalent to:
-* `if (p != nullptr) { s->reset( static_cast<SP>(p), std::forward<Args>(args)... ); }` if `reset` is a valid member function on `Smart`
-* otherwise `if (p != nullptr) { *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... ); }`.
+- Effects: Equivalent to: `if (s != nullptr) { traits_type::reset(*s, p, std::forward<Args>(args)...); }`, where `Args` are stored in `a`.
 
-where `Args` are the arguments stored in `a`.
+- Throws: anything thrown by the evaluation of the Effects.
 
-- Throws:
-* no exceptions and is `noexcept` if `std::is_pointer_v<Smart>` is true;
-* any exceptions and is conditionally `noexcept` from `s->reset( static_cast<SP>(p), std::forward<Args>(args)... );` if the expression `s->reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed;
-* otherwise, any exceptions and is conditionally `noexcept` from `*s = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`;
-
-where `Args` are the arguments stored in `a`.
 
 
 ### Conversions
 
 `operator Pointer*() const noexcept;`
 
-- Effects: returns a pointer to `p`.
+- Effects: Equivalent to: `return traits_type::get(*s, p)`.

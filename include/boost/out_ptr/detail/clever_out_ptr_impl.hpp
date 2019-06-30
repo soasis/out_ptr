@@ -18,12 +18,25 @@
 
 #include <memory>
 
+#if defined(_LIBCPP_VERSION)
+// Why is their __compressed_pair <pointer, deleter>
+// and not <deleter, pointer>? It still seems to optimize the bases correctly,
+// so maybe this is more so my own hubris as a libstdc++ baby
+#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER)
+#define BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
+#endif // std::unique_ptr
+
+#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER)
+#define BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER 1
+#endif // boost::movelib::unique_ptr
+#endif // Libc++ does pointer first...!
+
 namespace boost {
 namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	class out_unique_fast {
+	class BOOST_OUT_PTR_TRIVIAL_ABI out_unique_fast {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
@@ -31,11 +44,11 @@ namespace detail {
 		using can_aliasing_optimization = std::integral_constant<bool,
 			sizeof(std::unique_ptr<T, D>) <= sizeof(Pointer) && sizeof(std::unique_ptr<T, D>) <= sizeof(source_pointer)>;
 		Smart* m_smart_ptr;
-		Pointer m_old_ptr;
+		source_pointer m_old_ptr;
 		Pointer* m_target_ptr;
 
 		out_unique_fast(std::true_type, Smart& ptr) noexcept
-		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(this->m_smart_ptr))) {
+		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(ptr.get()), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(this->m_smart_ptr))) {
 			// we can assume things are cleaner here
 #if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
 			BOOST_ASSERT_MSG(*this->m_target_ptr == this->m_old_ptr, "clever UB-based optimization did not properly retrieve the pointer value");
@@ -108,17 +121,19 @@ namespace detail {
 	};
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
-	class clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, Args, List> {
+	class BOOST_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List> {
 	private:
-		using base_t = base_out_ptr_impl<Smart, Pointer, Args, List>;
+		using base_t = base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List>;
 
 	public:
 		using base_t::base_t;
 	};
 
 	template <typename T, typename D, typename Pointer>
-	class clever_out_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	class BOOST_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl<std::unique_ptr<T, D>,
+		Pointer, std::tuple<>, boost::mp11::index_sequence<>,
 		typename std::enable_if<std::is_same<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| detail::has_unspecialized_marker<out_ptr_traits<std::unique_ptr<T, D>, Pointer>>::value
 			|| std::is_base_of<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
 			|| !std::is_convertible<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value>::type>
 	: public out_unique_fast<std::unique_ptr<T, D>, T, D, Pointer> {
@@ -130,8 +145,10 @@ namespace detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	struct clever_out_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	struct clever_out_ptr_impl<boost::movelib::unique_ptr<T, D>,
+		Pointer, std::tuple<>, boost::mp11::index_sequence<>,
 		typename std::enable_if<std::is_same<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| detail::has_unspecialized_marker<out_ptr_traits<boost::movelib::unique_ptr<T, D>, Pointer>>::value
 			|| std::is_base_of<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
 			|| !std::is_convertible<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value>::type>
 	: public out_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {

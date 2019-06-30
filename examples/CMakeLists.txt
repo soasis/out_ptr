@@ -21,7 +21,8 @@ find_package(Threads REQUIRED)
 
 # # Examples
 set(boost_out_ptr_example_sources
-	"custom.handle.cpp"
+	"customization.handle.cpp"
+	"customization.traits.handle.cpp"
 	"std.custom_unique_ptr.cpp"
 	"std.shared_ptr.cpp"
 	"std.unique_ptr.cpp"
@@ -53,7 +54,8 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 		Boost::core
 		Boost::mp11
 		Boost::out_ptr
-		
+		Boost::smart_ptr
+
 		ficapi
 		
 		${CMAKE_DL_LIBS}

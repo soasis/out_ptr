@@ -21,46 +21,45 @@ struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
 
 namespace boost { namespace out_ptr {
 
-	template <typename T, typename D, typename Pointer, typename... Args>
-	class inout_ptr_t<phd::handle<T, D>, Pointer, Args...> : boost::empty_value<std::tuple<Args...>> {
+	// this is the simple customization point
+	// you don't get access to the underlying storage,
+	// but you can utilize the ::pointer typedef to
+	// cutsomize the state utilized
+	template <typename T, typename D, typename Pointer>
+	class inout_ptr_traits<phd::handle<T, D>, Pointer> {
 	private:
 		using Smart		 = phd::handle<T, D>;
-		using source_pointer = pointer_of_or_t<Smart, Pointer>;
-		using ArgsTuple	 = std::tuple<Args...>;
-		using Base		 = boost::empty_value<ArgsTuple>;
+		using source_pointer = pointer_of_or_t<phd::handle<T, D>, Pointer>;
 
-		Pointer* m_target_ptr;
+		struct optimized_pointer_state {
+			Pointer* target;
+
+			optimized_pointer_state(Pointer* target_ptr) noexcept
+			: target(target_ptr) {
+			}
+
+			optimized_pointer_state(optimized_pointer_state&& right) noexcept
+			: target(right.target) {
+			}
+
+			optimized_pointer_state& operator=(optimized_pointer_state&& right) noexcept {
+				target = std::move(right.target);
+			}
+		};
 
 	public:
-		inout_ptr_t(Smart& s, Args... args) noexcept
-		: Base(empty_init_t(), std::forward<Args>(args)...), m_target_ptr(reinterpret_cast<Pointer*>(std::addressof(s.get()))) {
+		using pointer = optimized_pointer_state;
+
+		static pointer construct(Smart& s) {
+			return pointer(reinterpret_cast<Pointer*>(std::addressof(s.get())));
 		}
 
-		inout_ptr_t(inout_ptr_t&& right) noexcept
-		: Base(std::move(right)), m_target_ptr(right.m_target_ptr) {
-		}
-		inout_ptr_t& operator=(inout_ptr_t&& right) noexcept {
-			Base::operator	=(std::move(right));
-			this->m_target_ptr = right.m_target_ptr;
-			return *this;
+		static Pointer* get(Smart&, pointer& state) noexcept {
+			return state.target;
 		}
 
-		operator Pointer*() const noexcept {
-			return const_cast<Pointer*>(this->m_target_ptr);
-		}
-
-		~inout_ptr_t() noexcept {
-			reset(boost::mp11::make_index_sequence<std::tuple_size<ArgsTuple>::value>());
-		}
-
-	private:
-		void reset(boost::mp11::index_sequence<>) {
-			// no need for destructor: aliasing directly, and realloc
-		}
-
-		template <std::size_t I0, std::size_t... I>
-		void reset(boost::mp11::index_sequence<I0, I...>) {
-			static_assert(always_false_index<I0>::value, "you cannot reset the deleter for handle<T, Deleter>!: it only takes one argument!");
+		static void reset(Smart& s, pointer& state) noexcept {
+			// value already written directly into the pointer
 		}
 	};
 

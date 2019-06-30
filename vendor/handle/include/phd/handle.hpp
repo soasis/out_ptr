@@ -162,9 +162,10 @@ namespace phd {
 		}
 
 		handle& operator=(const handle&) noexcept = delete;
-		handle& operator					  =(handle&& right) noexcept {
-			 this->reset(right.release());
-			 return *this;
+
+		handle& operator=(handle&& right) noexcept {
+			this->reset(right.release());
+			return *this;
 		}
 		handle& operator=(pointer right) noexcept {
 			this->reset(right);
@@ -182,12 +183,22 @@ namespace phd {
 		pointer get_null() const noexcept {
 			pointer p;
 			const deleter_type& deleter = this->get_deleter();
-			deleter.write_null(p);
+			detail::write_null(deleter, p);
+			return p;
+		}
+
+		static pointer get_null(const deleter_type& deleter) noexcept {
+			pointer p;
+			detail::write_null(deleter, p);
 			return p;
 		}
 
 		bool is_null() const noexcept {
 			const deleter_type& deleter = this->get_deleter();
+			return detail::is_null(deleter, res);
+		}
+
+		static bool is_null(const deleter_type& deleter, pointer& res) noexcept {
 			return detail::is_null(deleter, res);
 		}
 

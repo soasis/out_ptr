@@ -53,12 +53,15 @@ We observe that the usage of `const_cast` here to enable returning a plain `Poin
 Yes. The primary motivation behind this is due to generic wrapper functions. Passing in a raw pointer should simply be identical to using the `&ptr`: doing something different and making certain function calls explode and break for users does not seem like a valuable trade off for something that can be supported for essentially free.
 
 
-## Why the customization point structs?
+## Why the customization point structs in addition to the other structure at the lowest levels?
 
 These are extensible because benchmarking and user input has proven that being able to override the functionality for their own pointers and their own performance is necessary. See the <<benchmarks.adoc#benchmarks, benchmarks>> for more information.
 
 We did not choose ADL because there is a wide plethora of problems with the ADL pattern for functions which take an infinity of arguments. In dealing with pointers and smart pointer-like types, it becomes incredibly easy to trap one call with another due to conversion rules, especially since many individuals are fond of making standard smart pointers and similar their publicly accessible base types. See https://youtu.be/aZNhSOIvv1Q?t=3452[10 or so minutes of this (timestamp-linked) video for details].
 
+A policy type (as in `std::char_traits`) would just revinvent the boilerplate already on the class in the policy type in order to implement the customizations necessary; the struct being customizable itself is a superset of the functionality provided by a customization point structure in the first place.
+
+The traits type (as in `std::allocator_traits`, not `std::char_trats`) customization point makes it fairly difficult to properly control the storage and write optimization layers, but works well for simple specializations. See the <<customization.adoc, customizations page>> for examples on using the struct and traits speclizations.
 
 
 ## noexcept destructors, or ...?

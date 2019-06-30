@@ -26,7 +26,7 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	struct inout_unique_fast {
+	struct BOOST_OUT_PTR_TRIVIAL_ABI inout_unique_fast {
 	public:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
@@ -96,7 +96,7 @@ namespace detail {
 	};
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
-	class clever_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
+	class BOOST_OUT_PTR_TRIVIAL_ABI clever_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
 	private:
 		using base_t = base_inout_ptr_impl<Smart, Pointer, Args, List>;
 
@@ -106,9 +106,10 @@ namespace detail {
 
 	// defer to unique optimization, if possible
 	template <typename T, typename D, typename Pointer>
-	class clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	class BOOST_OUT_PTR_TRIVIAL_ABI clever_inout_ptr_impl<std::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
 		typename std::enable_if<
 			std::is_same<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
+			|| detail::has_unspecialized_marker<out_ptr_traits<std::unique_ptr<T, D>, Pointer>>::value
 			|| std::is_base_of<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value
 			|| !std::is_convertible<pointer_of_t<std::unique_ptr<T, D>>, Pointer>::value>::type>
 	: public inout_unique_fast<std::unique_ptr<T, D>, T, D, Pointer> {
@@ -120,9 +121,10 @@ namespace detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	class clever_inout_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	class BOOST_OUT_PTR_TRIVIAL_ABI clever_inout_ptr_impl<boost::movelib::unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>,
 		typename std::enable_if<
 			std::is_same<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
+			|| detail::has_unspecialized_marker<out_ptr_traits<boost::movelib::unique_ptr<T, D>, Pointer>>::value
 			|| std::is_base_of<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value
 			|| !std::is_convertible<pointer_of_t<boost::movelib::unique_ptr<T, D>>, Pointer>::value>::type>
 	: public inout_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
