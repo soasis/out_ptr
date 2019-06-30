@@ -16,6 +16,10 @@
 
 #include <boost/mp11/integer_sequence.hpp>
 
+#if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
+#include <boost/assert.hpp>
+#endif // assert for sanity checks
+
 #include <memory>
 
 #if defined(_LIBCPP_VERSION)
