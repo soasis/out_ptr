@@ -67,7 +67,7 @@ namespace detail {
 				// boost::movelib::unique_ptr
 #if defined(BOOST_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 				// implementation has Pointer as first member: alias directly
-				void* target = static_cast<void*>(ptr);
+				void* target = static_cast<void*>(std::addressof(ptr));
 #else
 				// implementation has Pointer as second member: shift, align, alias
 				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
@@ -82,7 +82,7 @@ namespace detail {
 				// std::unique_ptr
 #if defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 				// implementation has Pointer as first member: alias directly
-				void* target = static_cast<void*>(ptr);
+				void* target = static_cast<void*>(std::addressof(ptr));
 #else
 				// implementation has Pointer as second member: shift, align, alias
 				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
