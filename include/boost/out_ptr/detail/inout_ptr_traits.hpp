@@ -33,16 +33,27 @@ namespace out_ptr {
 
 	template <typename Smart, typename Pointer>
 	class inout_ptr_traits {
+	public:
+		using pointer = Pointer;
+
 	private:
 		using OUT_PTR_DETAIL_UNSPECIALIZED_MARKER_ = int;
 		using defer_t						   = out_ptr_traits<Smart, Pointer>;
 
-	public:
-		using pointer = Pointer;
+		template <typename... Args>
+		static pointer construct(std::true_type, Smart& s, Args&&...) noexcept {
+			return static_cast<pointer>(s);
+		}
 
 		template <typename... Args>
-		static pointer construct(Smart& s, Args&&...) noexcept {
+		static pointer construct(std::false_type, Smart& s, Args&&...) noexcept {
 			return static_cast<pointer>(s.get());
+		}
+
+	public:
+		template <typename... Args>
+		static pointer construct(Smart& s, Args&&... args) noexcept {
+			return construct(std::is_pointer<Smart>(), s, std::forward<Args>(args)...);
 		}
 
 		static typename std::add_pointer<pointer>::type get(Smart& s, pointer& p) noexcept {

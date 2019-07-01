@@ -7,6 +7,7 @@
 #  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 set(boost_out_ptr_failure_tests_sources
+	"inout_ptr.raw.roundtrip.void.cpp"
 	"inout_ptr.roundtrip.void.cpp"
 	"inout_ptr.shared_ptr.cpp"
 	"inout_ptr.shared_ptr.deleter.cpp"

@@ -54,13 +54,13 @@ namespace boost { namespace out_ptr {
 
 		static pointer construct(Smart& s) noexcept {
 			return {
-				reinterpret_cast<Pointer*>(std::addressof(this->m_smart_ptr->get())),
+				reinterpret_cast<Pointer*>(std::addressof(s.get())),
 				s.get()
 			};
 		}
 
-		static Pointer* get() noexcept {
-			return const_cast<Pointer*>(this->m_target_ptr);
+		static Pointer* get(Smart& s, pointer& p) noexcept {
+			return p.target;
 		}
 
 		static void reset(Smart& s, pointer& p) {
@@ -72,7 +72,7 @@ namespace boost { namespace out_ptr {
 
 }} // namespace boost::out_ptr
 
-TEST_CASE("out_ptr/customization basic", "out_ptr type works with smart pointers and C-style output APIs") {
+TEST_CASE("out_ptr/customization/traits basic", "out_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("handle<void*>") {
 		phd::handle<void*, ficapi::deleter<>> p(nullptr);
 		ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
@@ -110,7 +110,7 @@ TEST_CASE("out_ptr/customization basic", "out_ptr type works with smart pointers
 	}
 }
 
-TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful deleters in smart pointers") {
+TEST_CASE("out_ptr/customization/traits stateful", "out_ptr type works with stateful deleters in smart pointers") {
 	SECTION("handle<void*, stateful_deleter>") {
 		phd::handle<void*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
@@ -145,7 +145,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 	}
 }
 
-TEST_CASE("out_ptr/customization reused", "out_ptr type properly deletes non-nullptr types from earlier") {
+TEST_CASE("out_ptr/customization/traits reused", "out_ptr type properly deletes non-nullptr types from earlier") {
 	struct reused_deleter {
 		int store = 0;
 

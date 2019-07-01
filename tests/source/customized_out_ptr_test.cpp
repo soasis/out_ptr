@@ -19,19 +19,29 @@
 template <std::size_t I>
 struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
 
+namespace phd {
+	template <typename T, typename D>
+	class special_out_customization_handle : public handle<T, D> {
+	private:
+		using base_t = handle<T, D>;
+
+	public:
+		using base_t::base_t;
+	};
+} // namespace phd
+
 namespace boost { namespace out_ptr {
 
 	// we have null-returning functions in these tests,
 	// so we can test this theoretical optimized smart pointer, which is identical to the
 	// clever_out_ptr implementation
 	template <typename T, typename D, typename Pointer, typename... Args>
-	class out_ptr_t<phd::handle<T, D>, Pointer, Args...> : boost::empty_value<std::tuple<Args...>> {
+	class out_ptr_t<phd::special_out_customization_handle<T, D>, Pointer, Args...> : boost::empty_value<std::tuple<Args...>> {
 	private:
-		using Smart		 = phd::handle<T, D>;
+		using Smart		 = phd::special_out_customization_handle<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 		using ArgsTuple	 = std::tuple<Args...>;
 		using Base		 = boost::empty_value<ArgsTuple>;
-
 
 		Smart* m_smart_ptr;
 		source_pointer m_old_ptr;
@@ -80,35 +90,35 @@ namespace boost { namespace out_ptr {
 
 TEST_CASE("out_ptr/customization basic", "out_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("handle<void*>") {
-		phd::handle<void*, ficapi::deleter<>> p(nullptr);
+		phd::special_out_customization_handle<void*, ficapi::deleter<>> p(nullptr);
 		ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
 	}
 	SECTION("handle<int*>") {
-		phd::handle<int*, ficapi::int_deleter> p(nullptr);
+		phd::special_out_customization_handle<int*, ficapi::int_deleter> p(nullptr);
 		ficapi_int_create(boost::out_ptr::out_ptr(p));
 		int* rawp = p.get();
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
 	}
 	SECTION("handle<ficapi::opaque*>") {
-		phd::handle<ficapi::opaque*, ficapi::handle_deleter> p(nullptr);
+		phd::special_out_customization_handle<ficapi::opaque*, ficapi::handle_deleter> p(nullptr);
 		ficapi_handle_create(boost::out_ptr::out_ptr(p));
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
 	SECTION("handle<ficapi::opaque*>, void out_ptr") {
-		phd::handle<ficapi::opaque*, ficapi::handle_deleter> p(nullptr);
+		phd::special_out_customization_handle<ficapi::opaque*, ficapi::handle_deleter> p(nullptr);
 		ficapi_create(boost::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
 	SECTION("handle<void*>, ficapi::opaque_handle out_ptr") {
-		phd::handle<void*, ficapi::deleter<ficapi_type::ficapi_type_opaque>> p(nullptr);
+		phd::special_out_customization_handle<void*, ficapi::deleter<ficapi_type::ficapi_type_opaque>> p(nullptr);
 		ficapi_create(boost::out_ptr::out_ptr(p), ficapi::type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p.get());
 		REQUIRE(rawp != nullptr);
@@ -118,7 +128,7 @@ TEST_CASE("out_ptr/customization basic", "out_ptr type works with smart pointers
 
 TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful deleters in smart pointers") {
 	SECTION("handle<void*, stateful_deleter>") {
-		phd::handle<void*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
+		phd::special_out_customization_handle<void*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
@@ -126,7 +136,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 		REQUIRE(p.get_deleter().state() == 0x12345678);
 	}
 	SECTION("handle<int*, stateful_deleter>") {
-		phd::handle<int*, ficapi::stateful_int_deleter> p(nullptr, ficapi::stateful_int_deleter{ 0x12345678 });
+		phd::special_out_customization_handle<int*, ficapi::stateful_int_deleter> p(nullptr, ficapi::stateful_int_deleter{ 0x12345678 });
 		ficapi_int_create(boost::out_ptr::out_ptr(p));
 		int* rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -134,7 +144,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 		REQUIRE(p.get_deleter().state() == 0x12345678);
 	}
 	SECTION("handle<ficapi::opaque*, stateful_handle_deleter>") {
-		phd::handle<ficapi::opaque*, ficapi::stateful_handle_deleter> p(nullptr, ficapi::stateful_handle_deleter{ 0x12345678 });
+		phd::special_out_customization_handle<ficapi::opaque*, ficapi::stateful_handle_deleter> p(nullptr, ficapi::stateful_handle_deleter{ 0x12345678 });
 		ficapi_handle_create(boost::out_ptr::out_ptr(p));
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -142,7 +152,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 		REQUIRE(p.get_deleter().state() == 0x12345678);
 	}
 	SECTION("handle<ficapi::opaque*, stateful_deleter>, void out_ptr") {
-		phd::handle<ficapi::opaque*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
+		phd::special_out_customization_handle<ficapi::opaque*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_create(boost::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -169,7 +179,7 @@ TEST_CASE("out_ptr/customization reused", "out_ptr type properly deletes non-nul
 		}
 	};
 	SECTION("handle<void*, stateful_deleter>") {
-		phd::handle<void*, reused_deleter> p(nullptr, reused_deleter{});
+		phd::special_out_customization_handle<void*, reused_deleter> p(nullptr, reused_deleter{});
 
 		ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 		{
@@ -194,7 +204,7 @@ TEST_CASE("out_ptr/customization reused", "out_ptr type properly deletes non-nul
 		}
 	}
 	SECTION("handle<int*, stateful_deleter>") {
-		phd::handle<int*, reused_int_deleter> p(nullptr, reused_int_deleter{});
+		phd::special_out_customization_handle<int*, reused_int_deleter> p(nullptr, reused_int_deleter{});
 
 		ficapi_int_create(boost::out_ptr::out_ptr(p));
 		{

@@ -14,18 +14,21 @@ set(boost.out_ptr.tests_sources
 	"source/simple_out_ptr_test.cpp"
 	"source/out_ptr_test.cpp"
 	"source/raw_out_ptr_test.cpp"
-	"source/customized_out_ptr_test.cpp"
-	"source/custom_unique_deleter_test.cpp"
-
-	"source/exceptions_inout_ptr_test.cpp"
 	"source/exceptions_out_ptr_test.cpp"
+	"source/customized_out_ptr_test.cpp"
+	"source/customized_traits_out_ptr_test.cpp"
+	"source/custom_unique_deleter_test.cpp"
 
 	"source/clever_inout_ptr_test.cpp"
 	"source/simple_inout_ptr_test.cpp"
 	"source/inout_ptr_test.cpp"
+	"source/raw_inout_ptr_test.cpp"
+	"source/exceptions_inout_ptr_test.cpp"
 	"source/customized_inout_ptr_test.cpp"
+	"source/customized_traits_inout_ptr_test.cpp"
 
 	"source/footguns.cpp"
+	"source/const_test.cpp"
 
 	"source/out_ptr_tests_main.cpp"
 )

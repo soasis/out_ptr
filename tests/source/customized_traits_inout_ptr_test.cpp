@@ -65,7 +65,7 @@ namespace boost { namespace out_ptr {
 
 }} // namespace boost::out_ptr
 
-TEST_CASE("inout_ptr/customization basic", "inout_ptr type works with smart pointers and C-style output APIs") {
+TEST_CASE("inout_ptr/customization/traits basic", "inout_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("handle<void*>") {
 		phd::handle<void*, ficapi::deleter<>> p(nullptr);
 		ficapi_re_create(boost::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
@@ -105,7 +105,7 @@ TEST_CASE("inout_ptr/customization basic", "inout_ptr type works with smart poin
 #endif
 }
 
-TEST_CASE("inout_ptr/customization stateful", "inout_ptr type works with stateful deleters in smart pointers") {
+TEST_CASE("inout_ptr/customization/traits stateful", "inout_ptr type works with stateful deleters in smart pointers") {
 	SECTION("handle<void*, stateful_deleter>") {
 		phd::handle<void*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_re_create(boost::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
@@ -140,7 +140,7 @@ TEST_CASE("inout_ptr/customization stateful", "inout_ptr type works with statefu
 	}
 }
 
-TEST_CASE("inout_ptr/customization reused", "inout_ptr type properly deletes non-nullptr types from earlier") {
+TEST_CASE("inout_ptr/customization/traits reused", "inout_ptr type properly deletes non-nullptr types from earlier") {
 	struct reused_deleter {
 		int store = 0;
 
