@@ -56,14 +56,14 @@ namespace out_ptr {
 			return construct(std::is_pointer<Smart>(), s, std::forward<Args>(args)...);
 		}
 
-		static typename std::add_pointer<pointer>::type get(Smart& s, pointer& p) noexcept {
+		static typename std::add_pointer<pointer>::type get(Smart&, pointer& p) noexcept {
 			return std::addressof(p);
 		}
 
 		template <typename... Args>
-		static void reset(Smart& s, pointer p, Args&&... args) noexcept {
+		static void reset(Smart& s, pointer& p, Args&&... args) noexcept {
 			detail::call_release(detail::is_releasable<Smart>(), s);
-			defer_t::reset(s, std::move(p), std::forward<Args>(args)...);
+			defer_t::reset(s, p, std::forward<Args>(args)...);
 		}
 	};
 
