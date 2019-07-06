@@ -13,7 +13,9 @@
 
 #include <boost/out_ptr/detail/base_inout_ptr_impl.hpp>
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
+#include <boost/out_ptr/detail/voidpp_op.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
+
 
 #include <boost/mp11/integer_sequence.hpp>
 
@@ -33,9 +35,6 @@
 #define BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
 #endif // std::unique_ptr
 
-#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER)
-#define BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER 1
-#endif // boost::movelib::unique_ptr
 #endif // Libc++ does pointer first...!
 
 namespace boost {
@@ -43,7 +42,7 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	struct BOOST_OUT_PTR_TRIVIAL_ABI inout_unique_fast {
+	struct BOOST_OUT_PTR_TRIVIAL_ABI inout_unique_fast : voidpp_op<inout_unique_fast<Smart, T, D, Pointer>, Pointer> {
 	public:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 

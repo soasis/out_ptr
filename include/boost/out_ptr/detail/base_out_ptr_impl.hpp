@@ -11,10 +11,11 @@
 #ifndef BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 #define BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 
-#include <boost/out_ptr/pointer_of.hpp>
 #include <boost/out_ptr/detail/is_specialization_of.hpp>
 #include <boost/out_ptr/detail/customization_forward.hpp>
 #include <boost/out_ptr/detail/inout_ptr_traits.hpp>
+#include <boost/out_ptr/detail/voidpp_op.hpp>
+#include <boost/out_ptr/pointer_of.hpp>
 
 #include <boost/mp11/integer_sequence.hpp>
 
@@ -42,7 +43,7 @@ namespace detail {
 
 	template <typename Smart, typename Pointer, typename Traits, typename Base, std::size_t... Indices>
 	class BOOST_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, boost::mp11::index_sequence<Indices...>>
-	: protected Base {
+	: public voidpp_op<base_out_ptr_impl<Smart, Pointer, Traits, Base, boost::mp11::index_sequence<Indices...>>, Pointer>, protected Base {
 	protected:
 		using traits_t = Traits;
 		using storage  = pointer_of_or_t<traits_t, Pointer>;

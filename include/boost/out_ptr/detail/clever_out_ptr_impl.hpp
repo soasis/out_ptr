@@ -13,6 +13,7 @@
 
 #include <boost/out_ptr/detail/base_out_ptr_impl.hpp>
 #include <boost/out_ptr/detail/customization_forward.hpp>
+#include <boost/out_ptr/detail/voidpp_op.hpp>
 
 #include <boost/mp11/integer_sequence.hpp>
 
@@ -30,9 +31,6 @@
 #define BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
 #endif // std::unique_ptr
 
-#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER)
-#define BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER 1
-#endif // boost::movelib::unique_ptr
 #endif // Libc++ does pointer first...!
 
 namespace boost {
@@ -40,13 +38,13 @@ namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	class BOOST_OUT_PTR_TRIVIAL_ABI out_unique_fast {
+	class BOOST_OUT_PTR_TRIVIAL_ABI out_unique_fast : voidpp_op<out_unique_fast<Smart, T, D, Pointer>, Pointer> {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
 	private:
 		using can_aliasing_optimization = std::integral_constant<bool,
-			sizeof(std::unique_ptr<T, D>) <= sizeof(Pointer) && sizeof(std::unique_ptr<T, D>) <= sizeof(source_pointer)>;
+			sizeof(Smart) <= sizeof(Pointer) && sizeof(Smart) <= sizeof(source_pointer)>;
 		Smart* m_smart_ptr;
 		source_pointer m_old_ptr;
 		Pointer* m_target_ptr;

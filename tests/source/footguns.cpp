@@ -13,8 +13,6 @@
 #include <catch2/catch.hpp>
 
 
-#include <c_api.hpp>
-
 #if 0
 TEST_CASE("out_ptr/footgun", "footguns") {
 	SECTION("if") {

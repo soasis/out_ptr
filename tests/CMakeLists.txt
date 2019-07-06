@@ -30,7 +30,7 @@ set(boost.out_ptr.tests_sources
 	"source/footguns.cpp"
 	"source/const_test.cpp"
 
-	"source/out_ptr_tests_main.cpp"
+	"source/main.cpp"
 )
 
 add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
