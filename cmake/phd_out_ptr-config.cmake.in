@@ -7,10 +7,10 @@
 
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/boost/boost_out_ptr-targets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/phd/phd_out_ptr-targets.cmake")
 
 get_target_property(PHD_OUT_PTR_INCLUDE_DIRS
-	Boost::out_ptr INTERFACE_INCLUDE_DIRECTORIES)
+	phd::out_ptr INTERFACE_INCLUDE_DIRECTORIES)
 
 set_and_check(PHD_OUT_PTR_INCLUDE_DIRS "${PHD_OUT_PTR_INCLUDE_DIRS}")
-set(PHD_OUT_PTR_LIBRARIES Boost::out_ptr)
+set(PHD_OUT_PTR_LIBRARIES phd::out_ptr)

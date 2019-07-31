@@ -126,9 +126,9 @@ namespace phd { namespace out_ptr {
 }}
 ```
 
-IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `phd::shared_ptr`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]], unless this type is program specialized.
+IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared_ptr`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]], unless this type is program specialized.
 
-NOTE: It is impossible to properly release the managed resource from a `std::shared_ptr` or `phd::shared_ptr` given its shared ownership model.
+NOTE: It is impossible to properly release the managed resource from a `std::shared_ptr` or `boost::shared_ptr` given its shared ownership model.
 
 ### Constructors
 

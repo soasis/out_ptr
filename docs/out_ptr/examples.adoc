@@ -31,7 +31,7 @@ if (ret != 0) {
 DeleteBusInterface(obj, obj_size);
 ----
 
-And turn it into something that would be usable with C++ smart pointers. With Boost.OutPtr, interfacing with this is fairly okay to do:
+And turn it into something that would be usable with C++ smart pointers. With phd.out_ptr, interfacing with this is fairly okay to do:
 
 .out_ptr.createbus
 [source,cpp]
@@ -141,7 +141,7 @@ endif::[]
 
 ## Prevents errors with `shared_ptr` resetting the deleter.
 
-If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). Boost.OutPtr prevents that from happening by giving a strong, compile-time warning when you forget:
+If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). phd.out_ptr prevents that from happening by giving a strong, compile-time warning when you forget:
 
 ifdef::env-github[]
 link:../../examples/source/std.shared_ptr.cpp[std.shared_ptr.cpp]

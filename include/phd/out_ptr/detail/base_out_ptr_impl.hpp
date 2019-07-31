@@ -47,7 +47,7 @@ namespace detail {
 		Smart* m_smart_ptr;
 		storage m_target_ptr;
 
-		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::phd::shared_ptr>::value)
+		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::boost::shared_ptr>::value)
 				|| (sizeof...(Indices) > 0), // clang-format hack
 			"shared_ptr<T> must pass a deleter in alongside the out_ptr "
 			"so when reset is called the deleter can be properly "

@@ -119,7 +119,7 @@ namespace phd { namespace out_ptr {
 }}
 ```
 
-IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `phd::shared_ptr`; and, `sizeof...(Args) == 0`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]], unless this type is program specialized.
+IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared_ptr`; and, `sizeof...(Args) == 0`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]], unless this type is program specialized.
 
 NOTE: It is typically a user error to reset a `shared_ptr` without specifying a deleter, as `std::shared_ptr` will replace a custom deleter with the default deleter upon usage of `.reset(...)`, as specified in http://eel.is/c++draft/util.smartptr.shared.mod[[**util.smartptr.shared.mod**]]
 

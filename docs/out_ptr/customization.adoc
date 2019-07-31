@@ -72,7 +72,7 @@ This type may require special support. For example, this might represent a handl
 
 A user may _(partially) template specialize_ the `phd::out_ptr::out_ptr_traits` and the `phd::out_ptr::inout_ptr_traits`. These types offer less control over the layout and internals of the RAII structures that are used to power the abstraction, while giving users the benefit of only having to override a small select portion of functionality. To use this traits type:
 
-- First, open up the Boost.OutPtr namespace:
+- First, open up the phd.out_ptr namespace:
 ```
 namespace phd { namespace out_ptr {
 
@@ -117,7 +117,7 @@ By using overloading, you can write as many or as little `construct` functions a
 
 A user may _(partially) template specialize_ the customized `phd::out_ptr::out_ptr_t` and `phd::out_ptr::inout_ptr_t`. It allows the user to control what gets stored and how simple it is. Here is an example for `inout_ptr_t`:
 
-- First, open up the Boost.OutPtr namespace:
+- First, open up the phd.out_ptr namespace:
 ```
 namespace phd { namespace out_ptr {
 

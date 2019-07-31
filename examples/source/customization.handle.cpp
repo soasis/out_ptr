@@ -51,7 +51,7 @@ namespace phd { namespace out_ptr {
 		}
 
 		~inout_ptr_t() noexcept {
-			static_assert(sizeof(Args) < 1, "you cannot reset the deleter or pass more arguments for handle<T, Deleter>!: it only takes one argument!");
+			static_assert(sizeof...(Args) < 1, "you cannot reset the deleter or pass more arguments for handle<T, Deleter>!: it only takes one argument!");
 			reset();
 		}
 

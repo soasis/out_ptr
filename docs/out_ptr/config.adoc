@@ -9,16 +9,16 @@
 ////
 
 [[config]]
-# Configuring Boost.OutPtr
+# Configuring phd.out_ptr
 
-There are macro definitions one can employ for their project's build to change the behavior and safety of Boost.OutPtr.
+There are macro definitions one can employ for their project's build to change the behavior and safety of phd.out_ptr.
 
 * `PHD_OUT_PTR_NO_CLEVERNESS`
-** When defined, will change from using an aliasing optimization for `std::unique_ptr` and `phd::movelib` to simply using the default, stock behavior of retrieving the pointer value and then calling `.reset()` to put it back.
+** When defined, will change from using an aliasing optimization for `std::unique_ptr` and `boost::movelib` to simply using the default, stock behavior of retrieving the pointer value and then calling `.reset()` to put it back.
 ** This is noticeably slower (see the <<benchmarks.adoc#benchmarks, benchmarks>> for more information), but obviously safer since we are not aliasing into private members.
 ** This is *not* defined by default under any circumstances.
 * `PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER` / `PHD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER`
-** If defined and not 0, this tells any clever optimizations for `unique`-style pointers (e.g. `std::unique_ptr` and `phd::movelib::unique_ptr`) that the pointer member comes first, rather than after any stored deleter.
+** If defined and not 0, this tells any clever optimizations for `unique`-style pointers (e.g. `std::unique_ptr` and `boost::movelib::unique_ptr`) that the pointer member comes first, rather than after any stored deleter.
 ** To date, no standard library has been found to have this class layout. But future ones may.
 ** This is *not* defined by default under any circumstances.
 * `PHD_OUT_PTR_USE_CLEVER_OUT_PTR`
@@ -36,6 +36,6 @@ There are macro definitions one can employ for their project's build to change t
 *** - `__GLIBC__`: works with libstdc++, which uses the "deleter first, pointer second" layout.
 *** - `_YVALS` or `_CPPLIB_VER`: works with Visual C++'s standard library, which uses the "deleter first, pointer second" layout.
 * `PHD_OUT_PTR_CLEVER_SANITY_CHECK`
-** If either of the `PHD_OUT_PTR_USE_CLEVER*` defined and not equal to zero, and this is both defined and not 0, then Boost.OutPtr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
+** If either of the `PHD_OUT_PTR_USE_CLEVER*` defined and not equal to zero, and this is both defined and not 0, then phd.out_ptr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
 ** For debugging and sanity checking purposes.
 ** This is *not* defined by default under any circumstances.

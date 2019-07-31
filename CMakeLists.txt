@@ -7,7 +7,7 @@
 #  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 cmake_minimum_required(VERSION 3.5)
-project(boost.out_ptr VERSION 1.0.0 DESCRIPTION "A library for having output pointers in C-like functions work well with C++ smart pointer types." LANGUAGES C CXX)
+project(phd.out_ptr VERSION 1.0.0 DESCRIPTION "A library for having output pointers in C-like functions work well with C++ smart pointer types." LANGUAGES C CXX)
 
 # # Inclusion Work
 include(CMakePackageConfigHelpers)
@@ -47,10 +47,10 @@ option(PHD_OUT_PTR_BENCHMARKS "Enable build of benchmarks" OFF)
 
 
 # # Targets
-add_library(boost_out_ptr INTERFACE)
-add_library(Boost::out_ptr ALIAS boost_out_ptr)
+add_library(phd_out_ptr INTERFACE)
+add_library(phd::out_ptr ALIAS phd_out_ptr)
 
-target_include_directories(boost_out_ptr INTERFACE 
+target_include_directories(phd_out_ptr INTERFACE 
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
 	$<INSTALL_INTERFACE:include>
 )
@@ -58,7 +58,7 @@ target_include_directories(boost_out_ptr INTERFACE
 # # Config / Version packaging
 # Version configurations
 configure_package_config_file(
-	cmake/boost_out_ptr-config.cmake.in
+	cmake/phd_out_ptr-config.cmake.in
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config.cmake"
 	INSTALL_DESTINATION lib/cmake/phd/out_ptr
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
@@ -67,9 +67,9 @@ write_basic_package_version_file(
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config-version.cmake"
 	COMPATIBILITY AnyNewerVersion)
 
-export(TARGETS boost_out_ptr FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-targets.cmake")
+export(TARGETS phd_out_ptr FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-targets.cmake")
 
-set(boost_out_ptr_sources 
+set(phd_out_ptr_sources 
 	"include/phd/out_ptr.hpp"
 	"include/phd/out_ptr/out_ptr.hpp"
 	"include/phd/out_ptr/inout_ptr.hpp"
@@ -79,20 +79,20 @@ set(boost_out_ptr_sources
 	"include/phd/out_ptr/clever_inout_ptr.hpp"
 )
 
-#target_sources(boost_out_ptr INTERFACE 
-#	$<BUILD_INTERFACE:${boost_out_ptr_sources}>  
-#	$<INSTALL_INTERFACE:${boost_out_ptr_sources}>
+#target_sources(phd_out_ptr INTERFACE 
+#	$<BUILD_INTERFACE:${phd_out_ptr_sources}>  
+#	$<INSTALL_INTERFACE:${phd_out_ptr_sources}>
 #)
-set_target_properties(boost_out_ptr
+set_target_properties(phd_out_ptr
 	PROPERTIES
-	EXPORT_NAME Boost::out_ptr
+	EXPORT_NAME phd::out_ptr
 )
 
-#install(TARGETS boost_out_ptr
-#	EXPORT boost_out_ptr)
+#install(TARGETS phd_out_ptr
+#	EXPORT phd_out_ptr)
 
-#install(EXPORT boost_out_ptr
-#	FILE boost_out_ptr-targets.cmake
+#install(EXPORT phd_out_ptr
+#	FILE phd_out_ptr-targets.cmake
 #	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/phd/out_ptr")
 
 #install(DIRECTORY "include/phd/out_ptr"
@@ -108,7 +108,6 @@ if (PHD_OUT_PTR_BENCHMARKS OR PHD_OUT_PTR_TESTS OR PHD_OUT_PTR_EXAMPLES)
 	add_subdirectory(vendor/boost/config)
 	add_subdirectory(vendor/boost/core)
 	add_subdirectory(vendor/boost/assert)
-	add_subdirectory(vendor/boost/mp11)
 	add_subdirectory(vendor/ficapi)
 endif()
 

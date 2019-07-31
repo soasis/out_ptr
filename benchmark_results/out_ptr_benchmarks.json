@@ -2,7 +2,7 @@
   "context": {
     "date": "06/11/19 14:02:57",
     "host_name": "DERPICANE",
-    "executable": "C:\\Users\\Derpstorm\\Dropbox\\Cross\\out_ptr\\build\\x64\\bin\\boost.out_ptr.benchmarks.exe",
+    "executable": "C:\\Users\\Derpstorm\\Dropbox\\Cross\\out_ptr\\build\\x64\\bin\\phd.out_ptr.benchmarks.exe",
     "num_cpus": 8,
     "mhz_per_cpu": 2592,
     "cpu_scaling_enabled": false,

@@ -6,15 +6,15 @@
 #
 #  See http://www.boost.org/libs/out_ptr/ for documentation.
 
-set(boost_out_ptr_failure_tests_sources
+set(phd_out_ptr_failure_tests_sources
 	"inout_ptr.shared_ptr.cpp"
 	"inout_ptr.shared_ptr.deleter.cpp"
 	"out_ptr.shared_ptr.deleter.cpp"
 )
 
-foreach (test_name ${boost_out_ptr_failure_tests_sources})
+foreach (test_name ${phd_out_ptr_failure_tests_sources})
 	set(test_file source/${test_name})
-	set(test_target boost.out_ptr.fail.${test_name})
+	set(test_target phd.out_ptr.fail.${test_name})
 	add_executable(${test_target} ${test_file} "source/main.cpp")
 	if (MSVC)
 	else()
@@ -38,7 +38,7 @@ foreach (test_name ${boost_out_ptr_failure_tests_sources})
 		Boost::config
 		Boost::core
 		Boost::mp11
-		Boost::out_ptr 
+		phd::out_ptr 
 		
 		Catch2::Catch2 
 		

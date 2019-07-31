@@ -9,7 +9,7 @@
 # Test dependency: catch2
 add_subdirectory(../vendor/catch2 "vendor/catch2")
 
-set(boost.out_ptr.tests_sources
+set(phd.out_ptr.tests_sources
 	"source/clever_out_ptr_test.cpp"
 	"source/simple_out_ptr_test.cpp"
 	"source/out_ptr_test.cpp"
@@ -33,34 +33,34 @@ set(boost.out_ptr.tests_sources
 	"source/main.cpp"
 )
 
-add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
+add_executable(phd.out_ptr.tests ${phd.out_ptr.tests_sources})
 set_target_properties(${example_target} PROPERTIES
 	CXX_STANDARD 11
 	CXX_STANDARD_REQUIRED TRUE
 	CXX_EXTENSIONS FALSE
 )
-target_compile_definitions(boost.out_ptr.tests
+target_compile_definitions(phd.out_ptr.tests
 	PRIVATE PHD_OUT_PTR_CLEVER_SANITY_CHECK=1)
 if (MSVC)
-	target_compile_options(boost.out_ptr.tests
+	target_compile_options(phd.out_ptr.tests
 		PRIVATE /W4)
 else()
-	target_compile_options(boost.out_ptr.tests
+	target_compile_options(phd.out_ptr.tests
 		PRIVATE -Wpedantic -Wall -Werror)
 endif()
-target_include_directories(boost.out_ptr.tests
+target_include_directories(phd.out_ptr.tests
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 	"../vendor/handle/include"
 )
-target_link_libraries(boost.out_ptr.tests 
+target_link_libraries(phd.out_ptr.tests 
 	PRIVATE 
 
 	Boost::assert
 	Boost::config
 	Boost::core
 	Boost::mp11
-	Boost::out_ptr 
+	phd::out_ptr 
 	
 	Catch2::Catch2 
 	
@@ -68,7 +68,7 @@ target_link_libraries(boost.out_ptr.tests
 	
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME boost.out_ptr.tests COMMAND boost.out_ptr.tests)
+add_test(NAME phd.out_ptr.tests COMMAND phd.out_ptr.tests)
 
 # # failure tests
 add_subdirectory(failure)

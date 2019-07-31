@@ -56,7 +56,7 @@ namespace detail {
 		out_unique_fast(std::false_type, Smart& ptr) noexcept
 		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())) {
 			// analysis necessary
-			if (is_specialization_of<Smart, phd::movelib::unique_ptr>::value) {
+			if (is_specialization_of<Smart, boost::movelib::unique_ptr>::value) {
 #if defined(PHD_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER) && PHD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 				// implementation has Pointer as first member: alias directly
 				void* target = static_cast<void*>(this->m_smart_ptr);
@@ -141,15 +141,15 @@ namespace detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	struct clever_out_ptr_impl<phd::movelib::unique_ptr<T, D>,
+	struct clever_out_ptr_impl<boost::movelib::unique_ptr<T, D>,
 		Pointer, std::tuple<>, phd::out_ptr::detail::index_sequence<>,
-		typename std::enable_if<std::is_same<pointer_of_or_t<phd::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
-			|| detail::has_unspecialized_marker<out_ptr_traits<phd::movelib::unique_ptr<T, D>, Pointer>>::value
-			|| std::is_base_of<pointer_of_or_t<phd::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
-			|| !std::is_convertible<pointer_of_or_t<phd::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value>::type>
-	: public out_unique_fast<phd::movelib::unique_ptr<T, D>, T, D, Pointer> {
+		typename std::enable_if<std::is_same<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| detail::has_unspecialized_marker<out_ptr_traits<boost::movelib::unique_ptr<T, D>, Pointer>>::value
+			|| std::is_base_of<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| !std::is_convertible<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value>::type>
+	: public out_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
 	private:
-		using base_t = out_unique_fast<phd::movelib::unique_ptr<T, D>, T, D, Pointer>;
+		using base_t = out_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;
 
 	public:
 		using base_t::base_t;

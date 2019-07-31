@@ -20,7 +20,7 @@ set(BENCHMARK_DOWNLOAD_DEPENDENCIES OFF CACHE INTERNAL "Allow the downloading an
 set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE INTERNAL "Enable building the unit tests which depend on gtest" FORCE)
 add_subdirectory("../vendor/benchmark" "vendor/benchmark")
 
-set(boost_out_ptr_benchmarks_sources
+set(phd_out_ptr_benchmarks_sources
 	"include/benchmarks/statistics.hpp"
 	"source/statistics.cpp"
 
@@ -36,24 +36,20 @@ set(boost_out_ptr_benchmarks_sources
 	"source/out_ptr_benchmarks_main.cpp"
 )
 
-add_executable(boost.out_ptr.benchmarks ${boost_out_ptr_benchmarks_sources})
-target_include_directories(boost.out_ptr.benchmarks PRIVATE
+add_executable(phd.out_ptr.benchmarks ${phd_out_ptr_benchmarks_sources})
+target_include_directories(phd.out_ptr.benchmarks PRIVATE
 	"include")
 if (MSVC)
-	target_compile_options(boost.out_ptr.benchmarks
+	target_compile_options(phd.out_ptr.benchmarks
 		PRIVATE /W4)
 else()
-	target_compile_options(boost.out_ptr.benchmarks
+	target_compile_options(phd.out_ptr.benchmarks
 		PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
 endif()
-target_link_libraries(boost.out_ptr.benchmarks
+target_link_libraries(phd.out_ptr.benchmarks
 	PRIVATE 
 	
-	Boost::config
-	Boost::core
-	Boost::assert
-	Boost::mp11
-	Boost::out_ptr 
+	phd::out_ptr 
 	
 	ficapi 
 	
@@ -75,26 +71,26 @@ set(PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUT
 set(PHD_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
 file(MAKE_DIRECTORY "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}")
 
-set(boost_out_ptr_benchmarks_categories shared_local_out_ptr shared_reset_out_ptr local_out_ptr reset_out_ptr local_inout_ptr reset_inout_ptr)
+set(phd_out_ptr_benchmarks_categories shared_local_out_ptr shared_reset_out_ptr local_out_ptr reset_out_ptr local_inout_ptr reset_inout_ptr)
 
 add_custom_command(
 	OUTPUT "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
-	COMMAND boost.out_ptr.benchmarks 
+	COMMAND phd.out_ptr.benchmarks 
 		"--benchmark_out=${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}" 
 		"--benchmark_out_format=${PHD_OUT_PTR_BENCHMARKS_FORMAT}" 
 		"--benchmark_repetitions=${PHD_OUT_PTR_BENCHMARKS_REPETITIONS}"
-	DEPENDS boost.out_ptr.benchmarks
+	DEPENDS phd.out_ptr.benchmarks
 	COMMENT "Executing Benchmarks and outputting to '${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}'"
 )
 
 if (Python3_Interpreter_FOUND)
-	add_custom_target(boost.out_ptr.benchmarks_graphs_generator
+	add_custom_target(phd.out_ptr.benchmarks_graphs_generator
 		COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/benchmarks/tools/generate_graphs.py" 
 			"--input=${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 			"--input_format=${PHD_OUT_PTR_BENCHMARKS_FORMAT}"
 			"--output_dir=${PHD_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR}"
-			--categories ${boost_out_ptr_benchmarks_categories}
-		DEPENDS boost.out_ptr.benchmarks "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
+			--categories ${phd_out_ptr_benchmarks_categories}
+		DEPENDS phd.out_ptr.benchmarks "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 		COMMENT "Graphing '${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}' data to '${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}'"
 	)
 endif()

@@ -28,24 +28,12 @@
 [submodule "vendor/ficapi"]
 	path = vendor/ficapi
 	url = https://github.com/ThePhD/ficapi.git
-[submodule "vendor/boost/mp11"]
-	path = vendor/boost/mp11
-	url = https://github.com/boostorg/mp11
 [submodule "vendor/boost/predef"]
 	path = vendor/boost/predef
 	url = https://github.com/boostorg/predef.git
-[submodule "vendor/boost/move"]
-	path = vendor/boost/move
-	url = https://github.com/boostorg/move.git
-[submodule "vendor/boost/type_traits"]
-	path = vendor/boost/type_traits
-	url = https://github.com/boostorg/type_traits.git
 [submodule "vendor/boost/static_assert"]
 	path = vendor/boost/static_assert
 	url = https://github.com/boostorg/static_assert.git
 [submodule "vendor/boost/throw_exception"]
 	path = vendor/boost/throw_exception
 	url = https://github.com/boostorg/throw_exception.git
-[submodule "vendor/boost/test"]
-	path = vendor/boost/test
-	url = https://github.com/boostorg/test.git

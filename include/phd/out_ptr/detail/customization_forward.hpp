@@ -11,7 +11,7 @@
 #ifndef PHD_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
 #define PHD_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
 
-namespace phd {
+namespace boost {
 
 	namespace movelib {
 		template <typename, typename>

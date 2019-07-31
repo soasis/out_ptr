@@ -20,7 +20,7 @@ add_subdirectory(../vendor/boost/smart_ptr "vendor/boost/smart_ptr")
 find_package(Threads REQUIRED)
 
 # # Examples
-set(boost_out_ptr_example_sources
+set(phd_out_ptr_example_sources
 	"customization.handle.cpp"
 	"customization.traits.handle.cpp"
 	"std.custom_unique_ptr.cpp"
@@ -28,9 +28,9 @@ set(boost_out_ptr_example_sources
 	"std.unique_ptr.cpp"
 )
 
-foreach (example_source_name ${boost_out_ptr_example_sources})
+foreach (example_source_name ${phd_out_ptr_example_sources})
 	set(example_source_file source/${example_source_name})
-	set(example_target boost.out_ptr.${example_source_name})
+	set(example_target phd.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
 	set_target_properties(${example_target} PROPERTIES
 		CXX_STANDARD 11
@@ -50,10 +50,11 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 		
 		Threads::Threads
 
+		phd::out_ptr
+
 		Boost::config
 		Boost::core
 		Boost::mp11
-		Boost::out_ptr
 		Boost::smart_ptr
 
 		ficapi
@@ -69,23 +70,23 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 	endif()
 endforeach()
 
-set(boost_out_ptr_atl_dir "${CMAKE_BINARY_DIR}/boost.out_ptr.test_atl_include")
-set(boost_out_ptr_atl_bin_dir "${boost_out_ptr_atl_dir}/bin")
-set(boost_out_ptr_atl_file "${boost_out_ptr_atl_dir}/atl_test.cpp")
-file(MAKE_DIRECTORY ${boost_out_ptr_atl_dir})
-file(MAKE_DIRECTORY ${boost_out_ptr_atl_bin_dir})
-file(WRITE ${boost_out_ptr_atl_file}
+set(phd_out_ptr_atl_dir "${CMAKE_BINARY_DIR}/phd.out_ptr.test_atl_include")
+set(phd_out_ptr_atl_bin_dir "${phd_out_ptr_atl_dir}/bin")
+set(phd_out_ptr_atl_file "${phd_out_ptr_atl_dir}/atl_test.cpp")
+file(MAKE_DIRECTORY ${phd_out_ptr_atl_dir})
+file(MAKE_DIRECTORY ${phd_out_ptr_atl_bin_dir})
+file(WRITE ${phd_out_ptr_atl_file}
 "#include <atlbase.h>
 int main (int, char*[]) { return 0; }")
-try_run(boost_out_ptr_examples_has_atl_run boost_out_ptr_examples_has_atl_compile 
-	${boost_out_ptr_atl_bin_dir} ${boost_out_ptr_atl_file}
+try_run(phd_out_ptr_examples_has_atl_run phd_out_ptr_examples_has_atl_compile 
+	${phd_out_ptr_atl_bin_dir} ${phd_out_ptr_atl_file}
 	CMAKE_FLAGS "CMAKE_CXX_FLAGS:${CMAKE_CXX_FLAGS}" "CMAKE_C_FLAGS:${CMAKE_C_FLAGS}"
 	"CMAKE_C_COMPILER:${CMAKE_C_COMPILER}" "CMAKE_CXX_COMPILER:${CMAKE_CXX_COMPILER}"
 )
-if (boost_out_ptr_examples_has_atl_run)
+if (phd_out_ptr_examples_has_atl_run)
 	set(example_source_name "com.intrusive_ptr.cpp")
 	set(example_source_file source/${example_source_name})
-	set(example_target boost.out_ptr.${example_source_name})
+	set(example_target phd.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
 	set_target_properties(${example_target} PROPERTIES
 		CXX_STANDARD 11
@@ -108,7 +109,7 @@ if (boost_out_ptr_examples_has_atl_run)
 		Boost::config
 		Boost::core
 		Boost::mp11
-		Boost::out_ptr 
+		phd::out_ptr 
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}
@@ -124,7 +125,7 @@ endif()
 if (CMAKE_USE_PTHREADS_INIT)
 	set(example_source_name "pthread.cpp")
 	set(example_source_file source/${example_source_name})
-	set(example_target boost.out_ptr.${example_source_name})
+	set(example_target phd.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
 	set_target_properties(${example_target} PROPERTIES
 		CXX_STANDARD 11
@@ -147,7 +148,7 @@ if (CMAKE_USE_PTHREADS_INIT)
 		Boost::config
 		Boost::core
 		Boost::mp11
-		Boost::out_ptr 
+		phd::out_ptr 
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}

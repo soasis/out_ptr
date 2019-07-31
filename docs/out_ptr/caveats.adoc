@@ -105,7 +105,7 @@ As such, you must ensure that construction of the smart pointer and checking for
 
 Because `phd::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
 
-For Boost.OutPtr, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
+For phd.out_ptr, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
 
 For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
 

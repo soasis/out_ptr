@@ -23,7 +23,7 @@ The specification is done in terms of calling `.reset()` with an optional `.rele
 
 ## Easier to express safety and prevent errors with C APIs
 
-There are times when individuals who call ``std::shared_ptr``/``phd::shared_ptr``'s reset function forget that it will reset the deleter. When using it with a C APIs -- which always have their own create and destroy functions -- it is paramount that the user is warned when they attempt to use a `.reset(ptr)` without also specifying the deleter. Boost.OutPtr loudly warns a user at compile-time when they make such a mistake. Reducing such missteps eliminates hard-to-track-down bugs or subtle leaks of otherwise important resources and data.
+There are times when individuals who call ``std::shared_ptr``/``boost::shared_ptr``'s reset function forget that it will reset the deleter. When using it with a C APIs -- which always have their own create and destroy functions -- it is paramount that the user is warned when they attempt to use a `.reset(ptr)` without also specifying the deleter. phd.out_ptr loudly warns a user at compile-time when they make such a mistake. Reducing such missteps eliminates hard-to-track-down bugs or subtle leaks of otherwise important resources and data.
 
 Furthermore, there are places where trying to do a `.release()` and then `.reset()` are not compatible.
 
@@ -66,6 +66,6 @@ The traits type (as in `std::allocator_traits`, not `std::char_trats`) customiza
 
 ## noexcept destructors, or ...?
 
-This library has conditionally `noexcept` destructors. They were originally noexcept, implying that failure to `.reset()` (as would be the case for, say, a `std::shared_ptr` or `phd::shared_ptr`) would result in termination. Many saw this as a step back from progress. Therefore, the design was modified to be novel and introduce potentially throwing destructors.
+This library has conditionally `noexcept` destructors. They were originally noexcept, implying that failure to `.reset()` (as would be the case for, say, a `std::shared_ptr` or `boost::shared_ptr`) would result in termination. Many saw this as a step back from progress. Therefore, the design was modified to be novel and introduce potentially throwing destructors.
 
 If the class type used with `phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr` is noexcept, then the destructor is `noexcept`. Otherwise, it is not. This allows exceptions to be thrown out of failed `.reset()` calls and into the function's regular scope, rather than just immediately terminating inside of the `out_ptr`/`inout_ptr` destructor.
