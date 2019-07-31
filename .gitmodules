@@ -10,6 +10,9 @@
 [submodule "vendor/catch2"]
 	path = vendor/catch2
 	url = https://github.com/catchorg/Catch2.git
+[submodule "vendor/type_traits"]
+	path = vendor/boost/type_traits
+	url = https://github.com/boostorg/type_traits.git
 [submodule "vendor/detail"]
 	path = vendor/boost/detail
 	url = https://github.com/boostorg/detail.git
@@ -22,6 +25,12 @@
 [submodule "vendor/boost/smart_ptr"]
 	path = vendor/boost/smart_ptr
 	url = https://github.com/boostorg/smart_ptr
+[submodule "vendor/boost/move"]
+	path = vendor/boost/move
+	url = https://github.com/boostorg/move
+[submodule "vendor/boost/type_traits"]
+	path = vendor/boost/type_traits
+	url = https://github.com/boostorg/type_traits
 [submodule "vendor/ficapi"]
 	path = vendor/ficapi
 	url = https://github.com/ThePhD/ficapi.git
