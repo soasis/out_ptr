@@ -24,10 +24,10 @@ use(ptr);
 
 ```cpp
 // After
-using bop = phd::out_ptr;
+using pop = phd::out_ptr;
 std::unique_ptr<Obj, ObjDeleter> ptr;
 
-if (!c_api_get_obj(bop::inout_ptr(ptr), ...)) {
+if (!c_api_get_obj(pop::inout_ptr(ptr), ...)) {
   throw std::runtime_error(...);
 }
 

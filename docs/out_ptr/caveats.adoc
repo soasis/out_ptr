@@ -19,10 +19,10 @@ There are a few places where the rules of {cpp} (or a poorly implemented C libra
 `out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard {cpp}, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
 
 ```
-using bop = boost:out_ptr;
+using pop = boost:out_ptr;
 // ...
 if (my_maybe_failing_C_api(
-	bop::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
+	pop::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
 	&& my_handle) {
 		// do something here if the function returns success (0) 
 		// and "my_handle" is non-null
@@ -34,10 +34,10 @@ The problem is that all temporaties -- including the one `phd::out_ptr::out_ptr`
 It is still safe to use such a construct with if statements if you will check the return value only, and not check the actual pointer itself in the same if statement:
 
 ```
-using bop = boost:out_ptr;
+using pop = boost:out_ptr;
 // ...
 if (SQLITE_OK != sqlite3_open("test.db", 
-	bop::out_ptr(database, sqlite3_close))) {
+	pop::out_ptr(database, sqlite3_close))) {
 	// this usage is just fine
 }
 ```
@@ -45,9 +45,9 @@ if (SQLITE_OK != sqlite3_open("test.db",
 {cpp}17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
 
 ```
-using bop = boost:out_ptr;
+using pop = boost:out_ptr;
 if (c_error_t err = my_maybe_failing_C_api(
-	bop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
+	pop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
 	err == 0 && my_handle) {
 		// still wrong
 }
@@ -83,9 +83,9 @@ namespace really::terrible { // C++17 nested namespaces
 }
 
 int main () {
-	using bop = phd::out_ptr;
+	using pop = phd::out_ptr;
 	// leaks because of do_something_that_throws
-	auto result = really::terrible::api(bop::inout_ptr(my_smart));
+	auto result = really::terrible::api(pop::inout_ptr(my_smart));
 }
 ```
 

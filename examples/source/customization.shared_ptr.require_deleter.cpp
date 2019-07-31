@@ -98,18 +98,18 @@ struct av_format_context_deleter {
 using av_format_context_ptr = my_company_shared_ptr<AVFormatContext>;
 
 int main(int, char* argv[]) {
-	using bop = phd::out_ptr;
+	using pop = phd::out_ptr;
 
 	av_format_context_ptr context(avformat_alloc_context());
 
 	// cannot use it with inout_ptr
-	//if (0 != avformat_open_input(bop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
+	//if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
 
 	// cannot use it wihout a deleter
-	//if (0 != avformat_open_input(bop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
+	//if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
 
 	// this is the only way to use it properly!
-	if (0 != avformat_open_input(bop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) {
+	if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) {
 		std::stringstream ss;
 		ss << "ffmpeg_image_loader could not open file '"
 		   << path << "'";

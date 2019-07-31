@@ -45,10 +45,10 @@ This works, but you need to call `.reset(...)` with the raw pointer and set ever
 With phd.out_ptr, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
 
 ```
-using bop = phd::out_ptr;
+using pop = phd::out_ptr;
 
 boost::shared_ptr<mll_driver> axis_driver(nullptr);
-mll_errno err = mll_driver_init(bop::out_ptr(axis_driver, mll_driver_free), 
+mll_errno err = mll_driver_init(pop::out_ptr(axis_driver, mll_driver_free), 
 	/* additional args ...*/);
 if (err != MLL_SUCESS) {
 	// ...

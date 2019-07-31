@@ -44,11 +44,11 @@ struct SizedDeleter {
     }
 };
 
-using bop = phd::out_ptr;
+using pop = phd::out_ptr;
 
 size_t& size_ref = p_obj.get_deleter().size;
 std::unique_ptr<Interface, SizedDeleter> obj;
-int ret = CreateBusInterface(..., bop::out_ptr(obj), &size_ref);
+int ret = CreateBusInterface(..., pop::out_ptr(obj), &size_ref);
 if (ret != 0) {
      throw std::runtime_error("deep sadness");
 }
@@ -79,11 +79,11 @@ upNumf.reset((Numf*)pNumf);
 .out_ptr.posix_memalign
 [source,cpp]
 ----
-using bop = phd::out_ptr;
+using pop = phd::out_ptr;
 
 std::unique_ptr<Numf, DoFree> upNumf;
 /* some work... */
-int ret = posix_memalign(bop::out_ptr<void*>(upNumf), 64, nNumf);
+int ret = posix_memalign(pop::out_ptr<void*>(upNumf), 64, nNumf);
 if (ret != 0) {
      throw std::runtime_error("something went wrong and posix_memalign failed!");
 }
