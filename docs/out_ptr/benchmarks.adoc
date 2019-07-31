@@ -24,7 +24,7 @@ The nomenclature for the bar graphs is as follows:
 * "manual": uses a smart pointer, but supplies a raw pointer to the call and then manually calls `.reset(...)`
 * "c_code": written using plain C code
 * "clever": a flavor of out_ptr using struct-aliasing UB to grab the private pointer sitting interally in the `unique_ptr`
-* "friendly": a flavor of out_ptr that is used with a directly-copied implementation of the libstdc++/libc++/VC++ and directly friended, avoiding the struct-aliasing UB
+* "friendly": a flavor of out_ptr that is used with a directly-copied implementation of the libstdc++/libc++/V{cpp} and directly friended, avoiding the struct-aliasing UB
 * "simple": the by-the-book implementation of out_ptr consisting of a call to `.reset(...)` and `.release(...)`, naively
 * "inline": the allocation and deallocation functions were left to be inlined by removing the DLL barrier
 * "rvo": constructs the type directly in the return statement, triggering RVO

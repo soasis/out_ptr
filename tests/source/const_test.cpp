@@ -35,7 +35,7 @@ TEST_CASE("out_ptr/const wrappers", "out_ptr works with const APIs") {
 	}
 }
 
-TEST_CASE("inout_ptr/const wrappers", "out_ptr works with const APIs") {
+TEST_CASE("inout_ptr/const wrappers", "inout_ptr works with const APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);
 		cxx_03_re_wrapper_function(boost::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);

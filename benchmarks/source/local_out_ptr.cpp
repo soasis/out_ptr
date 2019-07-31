@@ -24,6 +24,7 @@
 static void c_code_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		ficapi_opaque_handle p = NULL;
 		ficapi_handle_no_alloc_create(&p);
 		x += ficapi_handle_get_data(p);
@@ -43,6 +44,7 @@ BENCHMARK(c_code_local_out_ptr)
 static void manual_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 		ficapi_opaque_handle temp_p = NULL;
 
@@ -64,6 +66,7 @@ BENCHMARK(manual_local_out_ptr)
 static void simple_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 		ficapi_handle_no_alloc_create(boost::out_ptr::detail::simple_out_ptr(p));
 		x += ficapi_handle_get_data(p.get());
@@ -82,6 +85,7 @@ BENCHMARK(simple_local_out_ptr)
 static void clever_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 		ficapi_handle_no_alloc_create(boost::out_ptr::detail::clever_out_ptr(p));
 		x += ficapi_handle_get_data(p.get());
@@ -102,6 +106,7 @@ BENCHMARK(clever_local_out_ptr)
 static void friendly_local_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	for (auto _ : state) {
+		(void)_;
 		std::friendly_unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 		ficapi_handle_no_alloc_create(boost::out_ptr::friendly_out_ptr(p));
 		x += ficapi_handle_get_data(p.get());

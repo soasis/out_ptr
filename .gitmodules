@@ -46,3 +46,6 @@
 [submodule "vendor/boost/throw_exception"]
 	path = vendor/boost/throw_exception
 	url = https://github.com/boostorg/throw_exception.git
+[submodule "vendor/boost/test"]
+	path = vendor/boost/test
+	url = https://github.com/boostorg/test.git

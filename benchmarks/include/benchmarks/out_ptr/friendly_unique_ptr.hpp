@@ -248,7 +248,7 @@ namespace std {
 		};
 
 #ifndef _LIBCPP_CXX03_LANG
-		typedef __friendly_unique_ptr_deleter_sfinae<_Dp> _DeleterSFINAE;
+		typedef __unique_ptr_deleter_sfinae<_Dp> _DeleterSFINAE;
 
 		template <bool _Dummy>
 		using _LValRefType =

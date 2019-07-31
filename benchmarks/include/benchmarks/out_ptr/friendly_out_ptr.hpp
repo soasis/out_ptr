@@ -26,14 +26,19 @@ namespace boost { namespace out_ptr {
 
 	namespace detail {
 		template <typename Smart, typename Pointer, typename Args, typename List>
-		class friendly_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, Args, List> {
+		class friendly_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List> {
 		private:
-			using base_t = base_out_ptr_impl<Smart, Pointer, Args, List>;
+			using base_t = base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List>;
 
 		public:
 			using base_t::base_t;
 		};
 
+#if 0
+		// We cannot rely on this since it will double-free in cases where the pointers isn't maintained
+		// our benchmarks have a pointer that goes in nullptr all the time,
+		// so there's a use case for this that enables the speed,
+		// but in the general case the optimization can't be turned on...!
 		template <typename T, typename D, typename Pointer>
 		struct friendly_out_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>> {
 		public:
@@ -74,6 +79,8 @@ namespace boost { namespace out_ptr {
 				}
 			}
 		};
+#endif // no way to optimized out_ptr, but inout_ptr is still game
+
 	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>

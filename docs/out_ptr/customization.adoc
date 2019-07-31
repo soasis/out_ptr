@@ -23,6 +23,7 @@ Additionally, `boost::out_ptr::inout_ptr` has one more additional requirement:
 Therefore, if you have a `.get()` and `.reset()` call, alongside a `.release()` for `inout_ptr`, you are completely fine with the default implementation.
 
 
+[[customization.point]]
 ## Changing the Defaults
 
 A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<reference/out_ptr.adoc#ref.out_ptr.class, `boost::out_ptr::out_ptr_t`>> or <<reference/inout_ptr.adoc#ref.inout_ptr.class, `boost::out_ptr::inout_ptr_t`>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
@@ -63,9 +64,60 @@ namespace phd {
 } // namespace phd
 ```
 
-This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). A user may _(partially) template specialize_ the customize `boost::out_ptr::out_ptr_t` and `boost::out_ptr::inout_ptr_t`. Here is an example for `out_ptr_t`:
+This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). There are 2 levels of customization support: one for specializing a struct to control every detail, and one to control just a few static free functions within a traits type (similary to how `std::allocator_traits` behaves). A user may control one, or the other. The struct specialization has more control and is lower-level, and is checked in precedence and the customization point using traits. The traits customization point can be simpler and take less lines to write.
 
-- First, open up the `boost::out_ptr` namespace:
+
+[[customization.point.traits]]
+## Customization: High-Level Traits Specialization
+
+A user may _(partially) template specialize_ the `boost::out_ptr::out_ptr_traits` and the `boost::out_ptr::inout_ptr_traits`. These types offer less control over the layout and internals of the RAII structures that are used to power the abstraction, while giving users the benefit of only having to override a small select portion of functionality. To use this traits type:
+
+- First, open up the Boost.OutPtr namespace:
+```
+namespace boost { namespace out_ptr {
+
+}} // namespace boost::out_ptr
+```
+
+- Then, create a _partial template specialization_:
+```
+namespace boost { namespace out_ptr {
+	
+	template <typename T, typename Del, typename Pointer>
+	class inout_ptr_traits<phd::handle<T, Del>, Pointer> {
+		/* ... */
+	};
+
+}} // namespace boost::out_ptr
+```
+
+- Now, we need to create a handful of **required** functions. We need... 
+* a `construct` function that takes the smart pointer (the handle) and all the Arguments that were stored from the initial call to `boost::out_ptr::inout_ptr( ... )`;
+* and, a `reset()` that takes all the necessary arguments and calls `.reset()`.
+
+```
+namespace boost { namespace out_ptr {
+	
+	template <typename T, typename Del, typename Pointer>
+	class inout_ptr_traits<phd::handle<T, Del>, Pointer> {
+		using Smart = phd::handle<T, Del>;
+
+	public:
+		static Pointer construct (Smart& s) noexcept;
+		static Pointer construct (Smart& s) noexcept;
+	};
+
+}} // namespace boost::out_ptr
+```
+
+By using overloading, you can write as many or as little `construct` functions as you want that assert that a certain number or certain types of arguments are present:
+
+[[customization.point.struct]]
+## Customization: Low-Level Struct Specialization
+
+A user may _(partially) template specialize_ the customized `boost::out_ptr::out_ptr_t` and `boost::out_ptr::inout_ptr_t`. It allows the user to control what gets stored and how simple it is. Here is an example for `inout_ptr_t`:
+
+- First, open up the Boost.OutPtr namespace:
 ```
 namespace boost { namespace out_ptr {
 
@@ -77,39 +129,43 @@ namespace boost { namespace out_ptr {
 namespace boost { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer, typename... Args>
-	class out_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
+	class inout_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
 		/* ... */
 	};
 
 }} // namespace boost::out_ptr
 ```
 
-- Now, we need to create a family of required functions (4 types, 5 implementations). We need... 
+- Now, we need to create a family of required functions (4 functions). We need... 
 * a constructor that takes the smart pointer (the handle) and all the Arguments that need to be stored for use later;
 * a move constructor to transfer over all of the data
 * a conversion operator to the `Pointer*`;
-* and, a destructor that calls .reset().
+* and, a destructor that calls `.reset()`.
 
 ```
 namespace boost { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer, typename... Args>
-	class out_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
+	class inout_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
 
-		out_ptr_t(Smart& ptr, Args... args) noexcept;
+		inout_ptr_t(Smart& ptr, Args... args) noexcept;
 
-		out_ptr_t(out_ptr_t&& right) noexcept;
+		inout_ptr_t(inout_ptr_t&& right) noexcept;
 
-		out_ptr_t& operator=(out_ptr_t&& right) noexcept;
+		inout_ptr_t& operator=(inout_ptr_t&& right) noexcept;
 		
 		operator Pointer*() const noexcept;
 
-		~out_ptr_t() noexcept;
+		~inout_ptr_t() noexcept;
 	}
 
 }} // namespace boost::out_ptr
 ```
 
-And that is everything we need to write. A full, optimized implementation for `boost::out_ptr::out_ptr_t` and `phd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/custom.handle.cpp[this example].
 
-The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `T**` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `boost::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.
+### And That's it!
+
+Either way you choose to specialize, that is everything you need to write. A full, optimized implementation for `boost::out_ptr::inout_ptr_t` and `phd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/customization.handle.cpp[this example].
+
+The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `$$T**$$` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `boost::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.
+

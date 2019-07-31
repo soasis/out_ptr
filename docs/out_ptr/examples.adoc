@@ -13,11 +13,88 @@
 
 Here are a few examples of the more powerful features of `boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr`.
 
-## ALL Smart Pointers, with Casting Support
+[[examples.size_create]]
+## Parameters with Size
 
-The whole world of smart pointers is available to you. Taking advantage of the consistent `.reset()`, `.release()` and `.get()` set of functions almost all smart pointers have, `boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr` work with more than just the typical standard pointers. They also know how to interop with legacy codebases which communicate through base class ``IUnknown**`` or ``void**``!
+Sometimes, you are working with a C API that requires you to handle both the pointer and some other parameters. It would be useful if we could take the following:
 
-You can add a template parameter `out_ptr<T>()` to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
+.out_ptr.createbus.raw
+[source,cpp]
+----
+Interface* obj;
+size_t obj_size;
+int ret = CreateBusInterface(&obj, &obj_size);
+if (ret != 0) {
+	throw std::runtime_error("failed to create the bus interface");
+}
+/* use obj... */
+DeleteBusInterface(obj, obj_size);
+----
+
+And turn it into something that would be usable with C++ smart pointers. With Boost.OutPtr, interfacing with this is fairly okay to do:
+
+.out_ptr.createbus
+[source,cpp]
+----
+struct SizedDeleter {
+    size_t size = 0;
+    
+    void operator()(Interface* obj) const {
+	    DeleteBusInterface(obj, size);
+    }
+};
+
+using bop = boost::out_ptr;
+
+size_t& size_ref = p_obj.get_deleter().size;
+std::unique_ptr<Interface, SizedDeleter> obj;
+int ret = CreateBusInterface(..., bop::out_ptr(obj), &size_ref);
+if (ret != 0) {
+     throw std::runtime_error("deep sadness");
+}
+/* use obj ...*/
+----
+
+Notice how with the `std::uniqe_ptr` there is now complete safety. If an error is thrown in the space of the `use_obj ...` comment then the unique_ptr's destructor will take care of it. We also get the benefit of having a nice way to push the pointer into the `unique_ptr` without needing to maintain a raw pointer and maybe do it ourselves later, manually.
+
+
+[[examples.posix_memalign]]
+## With posix_memalign
+
+Normally, one could use POSIX's memalign function like so:
+
+.out_ptr.posix_memalign.raw
+[source,cpp]
+----
+std::unique_ptr<Numf, DoFree> upNumf;
+/* some work... */
+void* pNumf;
+int ret = posix_memalign(&pNumf, 64, nNumf);
+if (ret != 0) {
+     throw std::runtime_error("something went wrong and posix_memalign failed!");
+}
+upNumf.reset((Numf*)pNumf);
+----
+
+.out_ptr.posix_memalign
+[source,cpp]
+----
+using bop = boost::out_ptr;
+
+std::unique_ptr<Numf, DoFree> upNumf;
+/* some work... */
+int ret = posix_memalign(bop::out_ptr<void*>(upNumf), 64, nNumf);
+if (ret != 0) {
+     throw std::runtime_error("something went wrong and posix_memalign failed!");
+}
+----
+
+
+## IntrusivePtr with COM and base-class / void** with Casting Support
+
+`boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr` work with more than just the typical standard pointers. They also know how to interop with legacy codebases which communicate through base class ``IUnknown**`` or ``void**``!
+
+You can add a template parameter `T` in an `boost::out_ptr::out_ptr` call to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
 
 ifdef::env-github[]
 link:../../examples/source/com.intrusive_ptr.cpp[com.intrusive_ptr.cpp]
@@ -61,9 +138,10 @@ include::../../examples/source/pthread.cpp[lines=8..-1]
 ----
 endif::[]
 
+
 ## Prevents errors with `shared_ptr` resetting the deleter.
 
-If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). `boost::out_ptr` prevents that from happening by giving a strong, compile-time warning when you forget:
+If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). Boost.OutPtr prevents that from happening by giving a strong, compile-time warning when you forget:
 
 ifdef::env-github[]
 link:../../examples/source/std.shared_ptr.cpp[std.shared_ptr.cpp]

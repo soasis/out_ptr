@@ -12,9 +12,7 @@
 
 #include <catch2/catch.hpp>
 
-
-#include <c_api.hpp>
-
+#include <boost/out_ptr/test/c_api.hpp>
 
 TEST_CASE("out_ptr/basic", "out_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("unique_ptr<void>") {
@@ -226,24 +224,61 @@ TEST_CASE("out_ptr/reused", "out_ptr type properly deletes non-nullptr types fro
 }
 
 TEST_CASE("out_ptr/simple-bases", "out_ptr will work with statically-castable base/derived relationships") {
-	SECTION("base to derived cast") {
-		std::unique_ptr<base1> p(nullptr);
-		int err = init_derived2(boost::out_ptr::out_ptr<derived2*>(p), false);
+	SECTION("base1 to derived cast") {
+		std::unique_ptr<boost::out_ptr::test::base1> p(nullptr);
+		int err = init_derived2(boost::out_ptr::out_ptr<boost::out_ptr::test::derived2*>(p), false);
 		REQUIRE(err == 0);
-		REQUIRE(p.get() != nullptr);
+		boost::out_ptr::test::derived2* rawp = static_cast<boost::out_ptr::test::derived2*>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(boost::out_ptr::test::check_derived2(*rawp));
+	}
+	SECTION("base2 to derived cast") {
+		std::unique_ptr<boost::out_ptr::test::base2> p(nullptr);
+		int err = init_derived2(boost::out_ptr::out_ptr<boost::out_ptr::test::derived2*>(p), false);
+		REQUIRE(err == 0);
+		boost::out_ptr::test::derived2* rawp = static_cast<boost::out_ptr::test::derived2*>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(boost::out_ptr::test::check_derived2(*rawp));
+	}
+	SECTION("base to derived1 to void cast") {
+		std::unique_ptr<boost::out_ptr::test::base1> p(nullptr);
+		int err = erased_init_derived1(boost::out_ptr::out_ptr<boost::out_ptr::test::derived1*>(p), false);
+		REQUIRE(err == 0);
+		boost::out_ptr::test::derived1* rawp = static_cast<boost::out_ptr::test::derived1*>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(boost::out_ptr::test::check_derived1(*rawp));
+	}
+	SECTION("base to derived2 to void cast") {
+		std::unique_ptr<boost::out_ptr::test::base2> p(nullptr);
+		int err = erased_init_derived2(boost::out_ptr::out_ptr<boost::out_ptr::test::derived2*>(p), false);
+		REQUIRE(err == 0);
+		boost::out_ptr::test::derived2* rawp = static_cast<boost::out_ptr::test::derived2*>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(boost::out_ptr::test::check_derived2(*rawp));
+	}
+	SECTION("DANGER: base2 to void** that is supposed to be derived2**") {
+		std::unique_ptr<boost::out_ptr::test::base2> p(nullptr);
+		int err = erased_init_derived2(boost::out_ptr::out_ptr<void*>(p), false);
+		REQUIRE(err == 0);
+		boost::out_ptr::test::derived2* rawp = static_cast<boost::out_ptr::test::derived2*>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE_FALSE(boost::out_ptr::test::check_derived2(*rawp));
 	}
 }
 
-TEST_CASE("out_ptr/fail", "out_ptr type will static assert various bad usages") {
-	// This will fail complication when uncommencted
-	// EXPECTED: COMPILE FAIL
-	/*
-	SECTION("shared without deleter") {
-		std::shared_ptr<void> p(nullptr);
-		ficapi_create(boost::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
-		int* rawp = static_cast<int*>(p.get());
+TEST_CASE("out_ptr/roundtrip", "out_ptr should not allow round-tripping from void** to Pointer* and then void** if specific Pointer template arugment is used") {
+	SECTION("unique_ptr<void>, ficapi::opaque_handle out_ptr") {
+		std::unique_ptr<void, ficapi::deleter<ficapi_type::ficapi_type_opaque>> p(nullptr);
+		ficapi_create(boost::out_ptr::out_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
+		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p.get());
 		REQUIRE(rawp != nullptr);
-		REQUIRE(*rawp == ficapi_get_dynamic_data());
+		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 	}
-	*/
+	SECTION("shared_ptr<void>") {
+		std::shared_ptr<void> p(nullptr);
+		ficapi_create(boost::out_ptr::out_ptr<ficapi::opaque_handle>(p, ficapi::deleter<ficapi_type::ficapi_type_opaque>()), ficapi_type::ficapi_type_opaque);
+		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p.get());
+		REQUIRE(rawp != nullptr);
+		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
+	}
 }

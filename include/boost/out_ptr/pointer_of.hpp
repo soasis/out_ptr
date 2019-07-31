@@ -19,9 +19,6 @@ namespace out_ptr {
 
 	namespace detail {
 
-		struct disambiguate_ {
-		};
-
 		template <typename... Ts>
 		struct make_void { typedef void type; };
 		template <typename... Ts>

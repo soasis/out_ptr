@@ -13,7 +13,7 @@
 #include <catch2/catch.hpp>
 
 
-TEST_CASE("inout_ptr/basic", "inout_ptr type works with smart pointers and C-style output APIs") {
+TEST_CASE("inout_ptr/raw", "inout_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("void*") {
 		void* p(nullptr);
 		ficapi_re_create(boost::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
@@ -46,6 +46,9 @@ TEST_CASE("inout_ptr/basic", "inout_ptr type works with smart pointers and C-sty
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
 		ficapi_delete(p, ficapi_type::ficapi_type_opaque);
 	}
+}
+
+TEST_CASE("inout_ptr/raw/void roundtrip", "esnure raw pointers can be roundtripped through the void conversion") {
 	SECTION("void*, ficapi::opaque_handle inout_ptr") {
 		void* p(nullptr);
 		ficapi_re_create(boost::out_ptr::inout_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);

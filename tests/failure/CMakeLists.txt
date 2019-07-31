@@ -7,18 +7,15 @@
 #  See http://www.boost.org/libs/out_ptr/ for documentation.
 
 set(boost_out_ptr_failure_tests_sources
-	"inout_ptr.roundtrip.shared_ptr.void.cpp"
 	"inout_ptr.shared_ptr.cpp"
 	"inout_ptr.shared_ptr.deleter.cpp"
-	"out_ptr.roundtrip.shared.void.cpp"
-	"out_ptr.roundtrip.unique.void.cpp"
 	"out_ptr.shared_ptr.deleter.cpp"
 )
 
 foreach (test_name ${boost_out_ptr_failure_tests_sources})
 	set(test_file source/${test_name})
 	set(test_target boost.out_ptr.fail.${test_name})
-	add_executable(${test_target} ${test_file})
+	add_executable(${test_target} ${test_file} "source/main.cpp")
 	if (MSVC)
 	else()
 		target_compile_options(${test_target} 
@@ -36,6 +33,7 @@ foreach (test_name ${boost_out_ptr_failure_tests_sources})
 	)
 	target_link_libraries(${test_target}
 		PRIVATE 
+		
 		Boost::assert
 		Boost::config
 		Boost::core

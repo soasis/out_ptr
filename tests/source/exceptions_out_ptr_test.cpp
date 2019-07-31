@@ -13,8 +13,6 @@
 #include <catch2/catch.hpp>
 
 
-#include <c_api.hpp>
-
 TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullptr types from earlier") {
 	struct reused_deleter {
 		int store = 0;

@@ -14,20 +14,23 @@ set(boost.out_ptr.tests_sources
 	"source/simple_out_ptr_test.cpp"
 	"source/out_ptr_test.cpp"
 	"source/raw_out_ptr_test.cpp"
-	"source/customized_out_ptr_test.cpp"
-	"source/custom_unique_deleter_test.cpp"
-
-	"source/exceptions_inout_ptr_test.cpp"
 	"source/exceptions_out_ptr_test.cpp"
+	"source/customized_out_ptr_test.cpp"
+	"source/customized_traits_out_ptr_test.cpp"
+	"source/custom_unique_deleter_test.cpp"
 
 	"source/clever_inout_ptr_test.cpp"
 	"source/simple_inout_ptr_test.cpp"
 	"source/inout_ptr_test.cpp"
+	"source/raw_inout_ptr_test.cpp"
+	"source/exceptions_inout_ptr_test.cpp"
 	"source/customized_inout_ptr_test.cpp"
+	"source/customized_traits_inout_ptr_test.cpp"
 
 	"source/footguns.cpp"
+	"source/const_test.cpp"
 
-	"source/out_ptr_tests_main.cpp"
+	"source/main.cpp"
 )
 
 add_executable(boost.out_ptr.tests ${boost.out_ptr.tests_sources})
@@ -36,6 +39,8 @@ set_target_properties(${example_target} PROPERTIES
 	CXX_STANDARD_REQUIRED TRUE
 	CXX_EXTENSIONS FALSE
 )
+target_compile_definitions(boost.out_ptr.tests
+	PRIVATE BOOST_OUT_PTR_CLEVER_SANITY_CHECK=1)
 if (MSVC)
 	target_compile_options(boost.out_ptr.tests
 		PRIVATE /W4)
@@ -51,6 +56,7 @@ target_include_directories(boost.out_ptr.tests
 target_link_libraries(boost.out_ptr.tests 
 	PRIVATE 
 
+	Boost::assert
 	Boost::config
 	Boost::core
 	Boost::mp11

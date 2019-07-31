@@ -23,13 +23,13 @@ The specification is done in terms of calling `.reset()` with an optional `.rele
 
 ## Easier to express safety and prevent errors with C APIs
 
-There are times when individuals who call ``std::shared_ptr``/``boost::shared_ptr``'s reset function forget that it will reset the deleter. When using it with a C APIs -- which always have their own create and destroy functions -- it is paramount that the user is warned when they attempt to use a `.reset(ptr)` without also specifying the deleter. `boost::out_ptr` loudly warns a user at compile-time when they make such a mistake. Reducing such missteps eliminates hard-to-track-down bugs or subtle leaks of otherwise important resources and data.
+There are times when individuals who call ``std::shared_ptr``/``boost::shared_ptr``'s reset function forget that it will reset the deleter. When using it with a C APIs -- which always have their own create and destroy functions -- it is paramount that the user is warned when they attempt to use a `.reset(ptr)` without also specifying the deleter. Boost.OutPtr loudly warns a user at compile-time when they make such a mistake. Reducing such missteps eliminates hard-to-track-down bugs or subtle leaks of otherwise important resources and data.
 
 Furthermore, there are places where trying to do a `.release()` and then `.reset()` are not compatible.
 
 ## Why not a Class Template Argument Deduction (CTAD)-based design?
 
-A design where the class itself is called `out_ptr` and https://en.cppreference.com/w/cpp/language/class_template_argument_deduction[Class Template Argument Deduction (CTAD)] is relied on means that the casting version of the factory function present in this iteration -- `boost::out_ptr::out_ptr<IUnknown>(my_derived_smart_ptr);` -- would not work. It means that you would need to write a second version, `boost::out_ptr::out_ptr_cast<IUnknown>(my_derived_smart_ptr)`. This does not improve the interface at all: you need to remember 2 functions. It also means you could never supply template arguments to `boost::out_ptr::out_ptr(my_derived_smart_ptr)`. We believe the factory function is a superior design, and works further back than just C++17.
+A design where the class itself is called `out_ptr` and https://en.cppreference.com/w/cpp/language/class_template_argument_deduction[Class Template Argument Deduction (CTAD)] is relied on means that the casting version of the factory function present in this iteration -- `boost::out_ptr::out_ptr<IUnknown>(my_derived_smart_ptr);` -- would not work. It means that you would need to write a second version, `boost::out_ptr::out_ptr_cast<IUnknown>(my_derived_smart_ptr)`. This does not improve the interface at all: you need to remember 2 functions. It also means you could never supply template arguments to `boost::out_ptr::out_ptr(my_derived_smart_ptr)`. We believe the factory function is a superior design, and works further back than just {cpp}17.
 
 
 ## Move Constructible? Move Assignable?!
@@ -38,12 +38,12 @@ The class is move constructible to enable it to be properly returned and placed 
 
 This is also {cpp}11, where copy elision is not guaranteed. In a {cpp}17 library, the move constructor may be less likely. The move assignment comes along for the ride because a type that is move constructible but not move assignable is not properly sussed out in the Standard or in Boost. There is still ongoing work on "what is a parameter-only type meant to look like and how much does it interplay with the rest of the {cpp} ecosystem"; we leave the final determination on the question to the pundits.
 
-There is little harm in having it move assignable at the moment, and the semantics for such are well-defined. Individuals who write the specification for the C++ Standard have also expressed an interest in leaving it move assignable.
+There is little harm in having it move assignable at the moment, and the semantics for such are well-defined. Individuals who write the specification for the {cpp} Standard have also expressed an interest in leaving it move assignable.
 
 
-## `const` conversion `operator`?
+## const-qualified conversion operator?
 
-The conversion operator is `const` to accommodate old code that takes parameters by `const T&`. This was the default for a lot of C++03 code, and it will be hard to justify breaking the users who wrote those wrappers (especially for C-like types going into C APIs, which by definition are value-based types and therefore do not care about wrapper functions that take things by `const T&` for efficiency).
+The conversion operator is `const` to accommodate old code that takes parameters by `const T&`. This was the default for a lot of {cpp}03 code, and it will be hard to justify breaking the users who wrote those wrappers (especially for C-like types going into C APIs, which by definition are value-based types and therefore do not care about wrapper functions that take things by `const T&` for efficiency).
 
 We observe that the usage of `const_cast` here to enable returning a plain `Pointer*` rather than a `Pointer const*` does not trigger Undefined Behavior due to how it is read and used by the underlying function. This means that while the implementation must use a `const_cast` in order to return the `Pointer*`, it is still a safe `const_cast`.
 
@@ -53,6 +53,19 @@ We observe that the usage of `const_cast` here to enable returning a plain `Poin
 Yes. The primary motivation behind this is due to generic wrapper functions. Passing in a raw pointer should simply be identical to using the `&ptr`: doing something different and making certain function calls explode and break for users does not seem like a valuable trade off for something that can be supported for essentially free.
 
 
-## Why the customization point structs?
+## Why the customization point structs in addition to the other structure at the lowest levels?
 
 These are extensible because benchmarking and user input has proven that being able to override the functionality for their own pointers and their own performance is necessary. See the <<benchmarks.adoc#benchmarks, benchmarks>> for more information.
+
+We did not choose ADL because there is a wide plethora of problems with the ADL pattern for functions which take an infinity of arguments. In dealing with pointers and smart pointer-like types, it becomes incredibly easy to trap one call with another due to conversion rules, especially since many individuals are fond of making standard smart pointers and similar their publicly accessible base types. See https://youtu.be/aZNhSOIvv1Q?t=3452[10 or so minutes of this (timestamp-linked) video for details].
+
+A policy type (as in `std::char_traits`) would just revinvent the boilerplate already on the class in the policy type in order to implement the customizations necessary; the struct being customizable itself is a superset of the functionality provided by a customization point structure in the first place.
+
+The traits type (as in `std::allocator_traits`, not `std::char_trats`) customization point makes it fairly difficult to properly control the storage and write optimization layers, but works well for simple specializations. See the <<customization.adoc, customizations page>> for examples on using the struct and traits speclizations.
+
+
+## noexcept destructors, or ...?
+
+This library has conditionally `noexcept` destructors. They were originally noexcept, implying that failure to `.reset()` (as would be the case for, say, a `std::shared_ptr` or `boost::shared_ptr`) would result in termination. Many saw this as a step back from progress. Therefore, the design was modified to be novel and introduce potentially throwing destructors.
+
+If the class type used with `boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr` is noexcept, then the destructor is `noexcept`. Otherwise, it is not. This allows exceptions to be thrown out of failed `.reset()` calls and into the function's regular scope, rather than just immediately terminating inside of the `out_ptr`/`inout_ptr` destructor.

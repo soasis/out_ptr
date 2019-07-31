@@ -22,6 +22,7 @@ static void manual_shared_reset_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	std::shared_ptr<ficapi::opaque> p(nullptr, ficapi::handle_no_alloc_deleter());
 	for (auto _ : state) {
+		(void)_;
 		ficapi_opaque_handle temp_p = NULL;
 		ficapi_handle_no_alloc_create(&temp_p);
 		p.reset(temp_p, ficapi::handle_no_alloc_deleter());
@@ -42,6 +43,7 @@ static void out_ptr_shared_reset_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	std::shared_ptr<ficapi::opaque> p(nullptr, ficapi::handle_no_alloc_deleter());
 	for (auto _ : state) {
+		(void)_;
 		ficapi_handle_no_alloc_create(boost::out_ptr::detail::clever_out_ptr(p, ficapi::handle_no_alloc_deleter()));
 		x += ficapi_handle_get_data(p.get());
 	}

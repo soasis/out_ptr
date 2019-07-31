@@ -13,6 +13,7 @@
 
 #include <boost/out_ptr/detail/simple_out_ptr.hpp>
 #include <boost/out_ptr/detail/clever_out_ptr.hpp>
+#include <boost/out_ptr/detail/out_ptr_traits.hpp>
 #include <boost/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
@@ -22,21 +23,23 @@ namespace boost { namespace out_ptr {
 
 	namespace detail {
 
-#if 1 //defined(BOOST_OUT_PTR_NO_CLEVERNESS) && BOOST_OUT_PTR_NO_CLEVERNESS != 0
-
-		// we can never use the clever version because many C APIs do not set the pointer to null on parameter failure
-		template <typename Smart, typename Pointer, typename... Args>
-		using core_out_ptr_t = simple_out_ptr_t<Smart, Pointer, Args...>;
-#else
-		// TODO: a separate out_ptr factory function for non-modifying C functions?
+#if defined(BOOST_OUT_PTR_USE_CLEVER_OUT_PTR) && BOOST_OUT_PTR_USE_CLEVER_OUT_PTR != 0
+		// One must opt into this specifically because it is unsafe for a large
+		// variety of APIs
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_out_ptr_t = clever_out_ptr_t<Smart, Pointer, Args...>;
-#endif // BOOST_OUT_PTR_NO_CLEVERNESS
+#else
+		// we can never use the clever version by default
+		// because many C APIs do not set
+		// the pointer to null on parameter failure
+		template <typename Smart, typename Pointer, typename... Args>
+		using core_out_ptr_t = simple_out_ptr_t<Smart, Pointer, Args...>;
+#endif // BOOST_OUT_PTR_USE_CLEVER_OUT_PTR
 
 	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class out_ptr_t : public detail::core_out_ptr_t<Smart, Pointer, Args...> {
+	class BOOST_OUT_PTR_TRIVIAL_ABI out_ptr_t : public detail::core_out_ptr_t<Smart, Pointer, Args...> {
 	private:
 		using base_t = detail::core_out_ptr_t<Smart, Pointer, Args...>;
 
