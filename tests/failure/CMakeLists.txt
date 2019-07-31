@@ -34,10 +34,6 @@ foreach (test_name ${phd_out_ptr_failure_tests_sources})
 	target_link_libraries(${test_target}
 		PRIVATE 
 		
-		Boost::assert
-		Boost::config
-		Boost::core
-		Boost::mp11
 		phd::out_ptr 
 		
 		Catch2::Catch2 

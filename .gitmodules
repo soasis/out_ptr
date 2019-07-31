@@ -10,9 +10,6 @@
 [submodule "vendor/catch2"]
 	path = vendor/catch2
 	url = https://github.com/catchorg/Catch2.git
-[submodule "vendor/type_traits"]
-	path = vendor/boost/type_traits
-	url = https://github.com/boostorg/type_traits.git
 [submodule "vendor/detail"]
 	path = vendor/boost/detail
 	url = https://github.com/boostorg/detail.git

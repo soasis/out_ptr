@@ -56,10 +56,6 @@ target_include_directories(phd.out_ptr.tests
 target_link_libraries(phd.out_ptr.tests 
 	PRIVATE 
 
-	Boost::assert
-	Boost::config
-	Boost::core
-	Boost::mp11
 	phd::out_ptr 
 	
 	Catch2::Catch2 

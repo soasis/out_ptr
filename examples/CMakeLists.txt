@@ -106,10 +106,11 @@ if (phd_out_ptr_examples_has_atl_run)
 		
 		Threads::Threads
 
+		phd::out_ptr 
+
 		Boost::config
 		Boost::core
 		Boost::mp11
-		phd::out_ptr 
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}
@@ -145,10 +146,11 @@ if (CMAKE_USE_PTHREADS_INIT)
 		
 		Threads::Threads
 
+		phd::out_ptr 
+
 		Boost::config
 		Boost::core
 		Boost::mp11
-		phd::out_ptr 
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}
