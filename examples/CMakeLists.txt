@@ -54,7 +54,6 @@ foreach (example_source_name ${phd_out_ptr_example_sources})
 
 		Boost::config
 		Boost::core
-		Boost::mp11
 		Boost::smart_ptr
 
 		ficapi
@@ -110,7 +109,6 @@ if (phd_out_ptr_examples_has_atl_run)
 
 		Boost::config
 		Boost::core
-		Boost::mp11
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}
@@ -150,7 +148,6 @@ if (CMAKE_USE_PTHREADS_INIT)
 
 		Boost::config
 		Boost::core
-		Boost::mp11
 		Boost::smart_ptr
 		
 		${CMAKE_DL_LIBS}
