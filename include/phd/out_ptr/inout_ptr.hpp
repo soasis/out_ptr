@@ -8,37 +8,37 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_INOUT_PTR_HPP
-#define BOOST_OUT_PTR_INOUT_PTR_HPP
+#ifndef PHD_OUT_PTR_INOUT_PTR_HPP
+#define PHD_OUT_PTR_INOUT_PTR_HPP
 
 #include <cstddef>
 
-#if !defined(BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR)
+#if !defined(PHD_OUT_PTR_USE_CLEVER_INOUT_PTR)
 #if defined(_LIBCPP_VERSION) || defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
-#define BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR 1
+#define PHD_OUT_PTR_USE_CLEVER_INOUT_PTR 1
 #endif // Checked with VC++ lib/Dinkumware, libstdc++, and libc++
 #endif // To use the clever optimization or not
 
-#include <boost/out_ptr/detail/clever_inout_ptr.hpp>
-#include <boost/out_ptr/detail/simple_inout_ptr.hpp>
-#include <boost/out_ptr/detail/inout_ptr_traits.hpp>
+#include <phd/out_ptr/detail/clever_inout_ptr.hpp>
+#include <phd/out_ptr/detail/simple_inout_ptr.hpp>
+#include <phd/out_ptr/detail/inout_ptr_traits.hpp>
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 
 	namespace detail {
-#if (defined(BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR) && BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR != 0)
+#if (defined(PHD_OUT_PTR_USE_CLEVER_INOUT_PTR) && PHD_OUT_PTR_USE_CLEVER_INOUT_PTR != 0)
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_inout_ptr_t = clever_inout_ptr_t<Smart, Pointer, Args...>;
 #else
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_inout_ptr_t = simple_inout_ptr_t<Smart, Pointer, Args...>;
-#endif // BOOST_OUT_PTR_USE_CLEVER_INOUT_PTR
+#endif // PHD_OUT_PTR_USE_CLEVER_INOUT_PTR
 
 	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class BOOST_OUT_PTR_TRIVIAL_ABI inout_ptr_t : public detail::core_inout_ptr_t<Smart, Pointer, Args...> {
+	class PHD_OUT_PTR_TRIVIAL_ABI inout_ptr_t : public detail::core_inout_ptr_t<Smart, Pointer, Args...> {
 	private:
 		using base_t = detail::core_inout_ptr_t<Smart, Pointer, Args...>;
 
@@ -59,6 +59,6 @@ namespace out_ptr {
 		return P(s, std::forward<Args>(args)...);
 	}
 
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 
-#endif // BOOST_OUT_PTR_INOUT_PTR_HPP
+#endif // PHD_OUT_PTR_INOUT_PTR_HPP

@@ -8,17 +8,17 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP
-#define BOOST_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP
+#ifndef PHD_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP
+#define PHD_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP
 
-#include <boost/out_ptr/detail/base_out_ptr_impl.hpp>
+#include <phd/out_ptr/detail/base_out_ptr_impl.hpp>
 
 #include <cstdlib>
 #include <type_traits>
 #include <memory>
 #include <utility>
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 namespace detail {
 
@@ -42,6 +42,6 @@ namespace detail {
 		}
 	};
 
-}}} // namespace boost::out_ptr::detail
+}}} // namespace phd::out_ptr::detail
 
-#endif // BOOST_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP
+#endif // PHD_OUT_PTR_DETAIL_BASE_INOUT_PTR_IMPL_HPP

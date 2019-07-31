@@ -31,11 +31,11 @@ install:
 before_build:
 - md build-debug
 - cd build-debug
-- cmake .. -DCMAKE_BUILD_TYPE=Debug -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON 
+- cmake .. -DCMAKE_BUILD_TYPE=Debug -DPHD_OUT_PTR_TESTS=ON -DPHD_OUT_PTR_EXAMPLES=ON 
 - cd ..
 - md build-release
 - cd build-release
-- cmake .. -DCMAKE_BUILD_TYPE=Release -DBOOST_OUT_PTR_TESTS=ON -DBOOST_OUT_PTR_EXAMPLES=ON 
+- cmake .. -DCMAKE_BUILD_TYPE=Release -DPHD_OUT_PTR_TESTS=ON -DPHD_OUT_PTR_EXAMPLES=ON 
 - cd ..
 
 build_script:

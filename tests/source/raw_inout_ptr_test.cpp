@@ -6,7 +6,7 @@
 //
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
-#include <boost/out_ptr/inout_ptr.hpp>
+#include <phd/out_ptr/inout_ptr.hpp>
 
 #include <ficapi/ficapi.hpp>
 
@@ -16,7 +16,7 @@
 TEST_CASE("inout_ptr/raw", "inout_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("void*") {
 		void* p(nullptr);
-		ficapi_re_create(boost::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_re_create(phd::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p);
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
@@ -24,7 +24,7 @@ TEST_CASE("inout_ptr/raw", "inout_ptr type works with smart pointers and C-style
 	}
 	SECTION("int*") {
 		int* p(nullptr);
-		ficapi_int_re_create(boost::out_ptr::inout_ptr(p));
+		ficapi_int_re_create(phd::out_ptr::inout_ptr(p));
 		int* rawp = p;
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
@@ -32,7 +32,7 @@ TEST_CASE("inout_ptr/raw", "inout_ptr type works with smart pointers and C-style
 	}
 	SECTION("ficapi::opaque*") {
 		ficapi::opaque* p(nullptr);
-		ficapi_handle_re_create(boost::out_ptr::inout_ptr(p));
+		ficapi_handle_re_create(phd::out_ptr::inout_ptr(p));
 		ficapi::opaque_handle rawp = p;
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
@@ -40,7 +40,7 @@ TEST_CASE("inout_ptr/raw", "inout_ptr type works with smart pointers and C-style
 	}
 	SECTION("ficapi::opaque*, void inout_ptr") {
 		ficapi::opaque* p(nullptr);
-		ficapi_re_create(boost::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_opaque);
+		ficapi_re_create(phd::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = p;
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());
@@ -51,7 +51,7 @@ TEST_CASE("inout_ptr/raw", "inout_ptr type works with smart pointers and C-style
 TEST_CASE("inout_ptr/raw/void roundtrip", "esnure raw pointers can be roundtripped through the void conversion") {
 	SECTION("void*, ficapi::opaque_handle inout_ptr") {
 		void* p(nullptr);
-		ficapi_re_create(boost::out_ptr::inout_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
+		ficapi_re_create(phd::out_ptr::inout_ptr<ficapi::opaque_handle>(p), ficapi::type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = static_cast<ficapi::opaque_handle>(p);
 		REQUIRE(rawp != nullptr);
 		REQUIRE(ficapi_handle_get_data(rawp) == ficapi_get_dynamic_data());

@@ -30,21 +30,21 @@ The following are definitions for some meta-functions done on types. If you see 
 * `T::pointer` if the qualified-id `T::pointer` is valid and denotes a type, or
 * otherwise, `typename T::element_type*` if the qualified-id `T::element_type` is valid and denotes a type,
 * otherwise, `U`.
-* This is defined as `boost::out_ptr::pointer_of_or` and `boost::out_ptr::pointer_of_or_t`
+* This is defined as `phd::out_ptr::pointer_of_or` and `phd::out_ptr::pointer_of_or_t`
 
 
 [[ref.def.pointer_of]]
 - Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
-* This is defined as `boost::out_ptr::pointer_of` and `boost::out_ptr::pointer_of_t`
+* This is defined as `phd::out_ptr::pointer_of` and `phd::out_ptr::pointer_of_t`
 
 
 [[ref.syn]]
 ## Synopsis
 
-The contents of the library are in namespace Boost.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions, `out_ptr_t` and `inout_ptr_t`:
+The contents of the library are in namespace phd.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions, `out_ptr_t` and `inout_ptr_t`:
 
 ```
-namespace boost { namespace out_ptr {
+namespace phd { namespace out_ptr {
 	
 	template <class Smart, class Pointer, class... Args>
 	class out_ptr_t;
@@ -63,13 +63,13 @@ namespace boost { namespace out_ptr {
 	
 	template <class Smart, class... Args>
 	inout_ptr_t<Smart, POINTER_OF(SMART), Args...> inout_ptr(Smart& s, Args&&... args) noexcept 
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 ```
 
 There are also 2 traits types which can be specialized, `out_ptr_traits` and `inout_ptr_traits`:
 
 ```
-namespace boost { namespace out_ptr {
+namespace phd { namespace out_ptr {
 	
 	template <class Smart, class Pointer>
 	class out_ptr_traits;
@@ -77,7 +77,7 @@ namespace boost { namespace out_ptr {
 	template <class Smart, class Pointer>
 	class inout_ptr_traits;
 	
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 ```
 
 You can read about each of these, below.

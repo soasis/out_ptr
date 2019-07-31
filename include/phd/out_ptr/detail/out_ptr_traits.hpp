@@ -8,15 +8,15 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
-#define BOOST_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#ifndef PHD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#define PHD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
 
-#include <boost/out_ptr/pointer_of.hpp>
+#include <phd/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
 #include <utility>
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 	namespace detail {
 
@@ -90,6 +90,6 @@ namespace out_ptr {
 		}
 	};
 
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 
-#endif // BOOST_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#endif // PHD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP

@@ -11,8 +11,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <boost/out_ptr.hpp>
-#include <boost/mp11/integer_sequence.hpp>
+#include <phd/out_ptr.hpp>
 
 #include <assert.hpp>
 
@@ -22,7 +21,7 @@
 template <std::size_t I>
 struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
 
-namespace boost { namespace out_ptr {
+namespace phd { namespace out_ptr {
 
 	// this is the simple customization point
 	// you don't get access to the underlying storage,
@@ -69,11 +68,11 @@ namespace boost { namespace out_ptr {
 			// value already written directly into the pointer
 		}
 	};
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 
 int main() {
 	phd::handle<int*, ficapi::int_deleter> p(nullptr);
-	ficapi_re_create(boost::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_int);
+	ficapi_re_create(phd::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_int);
 	int* rawp = static_cast<int*>(p.get());
 
 	OUT_PTR_C_ASSERT(rawp != nullptr);

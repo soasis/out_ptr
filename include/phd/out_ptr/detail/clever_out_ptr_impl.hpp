@@ -8,37 +8,33 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
-#define BOOST_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
+#ifndef PHD_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
+#define PHD_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
 
-#include <boost/out_ptr/detail/base_out_ptr_impl.hpp>
-#include <boost/out_ptr/detail/customization_forward.hpp>
-#include <boost/out_ptr/detail/voidpp_op.hpp>
-
-#include <boost/mp11/integer_sequence.hpp>
-
-#if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-#include <boost/assert.hpp>
-#endif // assert for sanity checks
+#include <phd/out_ptr/detail/base_out_ptr_impl.hpp>
+#include <phd/out_ptr/detail/customization_forward.hpp>
+#include <phd/out_ptr/detail/voidpp_op.hpp>
+#include <phd/out_ptr/detail/integer_sequence.hpp>
 
 #include <memory>
+#include <cassert>
 
 #if defined(_LIBCPP_VERSION)
 // Why is their __compressed_pair <pointer, deleter>
 // and not <deleter, pointer>? It still seems to optimize the bases correctly,
 // so maybe this is more so my own hubris as a libstdc++ baby
-#if !defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER)
-#define BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
+#if !defined(PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER)
+#define PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
 #endif // std::unique_ptr
 
 #endif // Libc++ does pointer first...!
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	class BOOST_OUT_PTR_TRIVIAL_ABI out_unique_fast : voidpp_op<out_unique_fast<Smart, T, D, Pointer>, Pointer> {
+	class PHD_OUT_PTR_TRIVIAL_ABI out_unique_fast : voidpp_op<out_unique_fast<Smart, T, D, Pointer>, Pointer> {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
@@ -52,16 +48,16 @@ namespace detail {
 		out_unique_fast(std::true_type, Smart& ptr) noexcept
 		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(ptr.get()), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(this->m_smart_ptr))) {
 			// we can assume things are cleaner here
-#if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-			BOOST_ASSERT_MSG(*this->m_target_ptr == this->m_old_ptr, "clever UB-based optimization did not properly retrieve the pointer value");
+#if defined(PHD_OUT_PTR_CLEVER_SANITY_CHECK) && PHD_OUT_PTR_CLEVER_SANITY_CHECK != 0
+			assert(*this->m_target_ptr == this->m_old_ptr && "clever UB-based optimization did not properly retrieve the pointer value");
 #endif // Clever Sanity Checks
 		}
 
 		out_unique_fast(std::false_type, Smart& ptr) noexcept
 		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())) {
 			// analysis necessary
-			if (is_specialization_of<Smart, boost::movelib::unique_ptr>::value) {
-#if defined(BOOST_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
+			if (is_specialization_of<Smart, phd::movelib::unique_ptr>::value) {
+#if defined(PHD_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER) && PHD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 				// implementation has Pointer as first member: alias directly
 				void* target = static_cast<void*>(this->m_smart_ptr);
 #else
@@ -75,7 +71,7 @@ namespace detail {
 				this->m_target_ptr = static_cast<Pointer*>(target);
 			}
 			else {
-#if defined(BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && BOOST_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
+#if defined(PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 				// implementation has Pointer as first member: alias directly
 				void* target = static_cast<void*>(this->m_smart_ptr);
 #else
@@ -88,8 +84,8 @@ namespace detail {
 				// get direct Pointer
 				this->m_target_ptr = static_cast<Pointer*>(target);
 			}
-#if defined(BOOST_OUT_PTR_CLEVER_SANITY_CHECK) && BOOST_OUT_PTR_CLEVER_SANITY_CHECK != 0
-			BOOST_ASSERT_MSG(*this->m_target_ptr == this->m_old_ptr, "clever UB-based optimization did not properly retrieve the pointer value");
+#if defined(PHD_OUT_PTR_CLEVER_SANITY_CHECK) && PHD_OUT_PTR_CLEVER_SANITY_CHECK != 0
+			assert(*this->m_target_ptr == this->m_old_ptr && "clever UB-based optimization did not properly retrieve the pointer value");
 #endif // Clever Sanity Checks
 		}
 
@@ -121,7 +117,7 @@ namespace detail {
 	};
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
-	class BOOST_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List> {
+	class PHD_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List> {
 	private:
 		using base_t = base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List>;
 
@@ -130,8 +126,8 @@ namespace detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	class BOOST_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl<std::unique_ptr<T, D>,
-		Pointer, std::tuple<>, boost::mp11::index_sequence<>,
+	class PHD_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl<std::unique_ptr<T, D>,
+		Pointer, std::tuple<>, phd::out_ptr::detail::index_sequence<>,
 		typename std::enable_if<std::is_same<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
 			|| detail::has_unspecialized_marker<out_ptr_traits<std::unique_ptr<T, D>, Pointer>>::value
 			|| std::is_base_of<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
@@ -145,19 +141,19 @@ namespace detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	struct clever_out_ptr_impl<boost::movelib::unique_ptr<T, D>,
-		Pointer, std::tuple<>, boost::mp11::index_sequence<>,
-		typename std::enable_if<std::is_same<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
-			|| detail::has_unspecialized_marker<out_ptr_traits<boost::movelib::unique_ptr<T, D>, Pointer>>::value
-			|| std::is_base_of<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
-			|| !std::is_convertible<pointer_of_or_t<boost::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value>::type>
-	: public out_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer> {
+	struct clever_out_ptr_impl<phd::movelib::unique_ptr<T, D>,
+		Pointer, std::tuple<>, phd::out_ptr::detail::index_sequence<>,
+		typename std::enable_if<std::is_same<pointer_of_or_t<phd::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| detail::has_unspecialized_marker<out_ptr_traits<phd::movelib::unique_ptr<T, D>, Pointer>>::value
+			|| std::is_base_of<pointer_of_or_t<phd::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value
+			|| !std::is_convertible<pointer_of_or_t<phd::movelib::unique_ptr<T, D>, Pointer>, Pointer>::value>::type>
+	: public out_unique_fast<phd::movelib::unique_ptr<T, D>, T, D, Pointer> {
 	private:
-		using base_t = out_unique_fast<boost::movelib::unique_ptr<T, D>, T, D, Pointer>;
+		using base_t = out_unique_fast<phd::movelib::unique_ptr<T, D>, T, D, Pointer>;
 
 	public:
 		using base_t::base_t;
 	};
-}}} // namespace boost::out_ptr::detail
+}}} // namespace phd::out_ptr::detail
 
-#endif // BOOST_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
+#endif // PHD_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_SIMPLE_OUT_PTR_HPP
-#define BOOST_OUT_PTR_SIMPLE_OUT_PTR_HPP
+#ifndef PHD_OUT_PTR_SIMPLE_OUT_PTR_HPP
+#define PHD_OUT_PTR_SIMPLE_OUT_PTR_HPP
 
-#include <boost/out_ptr/detail/base_out_ptr_impl.hpp>
+#include <phd/out_ptr/detail/base_out_ptr_impl.hpp>
 
 #include <cstddef>
 #include <type_traits>
@@ -19,14 +19,14 @@
 #include <utility>
 #include <tuple>
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class BOOST_OUT_PTR_TRIVIAL_ABI simple_out_ptr_t : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	class PHD_OUT_PTR_TRIVIAL_ABI simple_out_ptr_t : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, std::tuple<Args...>, phd::out_ptr::detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
-		using list_t = boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
+		using list_t = phd::out_ptr::detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
 		using core_t = base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, std::tuple<Args...>, list_t>;
 
 	public:
@@ -50,6 +50,6 @@ namespace detail {
 		return P(p, std::forward<Args>(args)...);
 	}
 
-}}} // namespace boost::out_ptr::detail
+}}} // namespace phd::out_ptr::detail
 
-#endif // BOOST_OUT_PTR_SIMPLE_OUT_PTR_HPP
+#endif // PHD_OUT_PTR_SIMPLE_OUT_PTR_HPP

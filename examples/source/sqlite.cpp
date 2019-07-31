@@ -8,7 +8,7 @@
 
 // Thanks to David Sankel for coming up with this example
 
-#include <boost/out_ptr.hpp>
+#include <phd/out_ptr.hpp>
 
 #include <sqlite3.h>
 
@@ -16,7 +16,7 @@
 #include <iostream>
 
 int main(int, char* []) {
-	using bop = boost::out_ptr;
+	using bop = phd::out_ptr;
 
 	std::shared_ptr<sqlite3> database;
 

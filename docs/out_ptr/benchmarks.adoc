@@ -50,7 +50,7 @@ image::../../benchmark_results/reset inout ptr.png[]
 image::../../benchmark_results/reset out ptr.png[]
 
 [[benchmarks.local.out_ptr.shared]]
-.Using a shared pointer in various fashions with boost::out_ptr::out_ptr or other techniques.
+.Using a shared pointer in various fashions with phd::out_ptr::out_ptr or other techniques.
 image::../../benchmark_results/shared local out ptr.png[]
 
 [[benchmarks.reset.out_ptr.shared]]

@@ -11,7 +11,7 @@
 [[examples]]
 # Examples
 
-Here are a few examples of the more powerful features of `boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr`.
+Here are a few examples of the more powerful features of `phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr`.
 
 [[examples.size_create]]
 ## Parameters with Size
@@ -44,7 +44,7 @@ struct SizedDeleter {
     }
 };
 
-using bop = boost::out_ptr;
+using bop = phd::out_ptr;
 
 size_t& size_ref = p_obj.get_deleter().size;
 std::unique_ptr<Interface, SizedDeleter> obj;
@@ -79,7 +79,7 @@ upNumf.reset((Numf*)pNumf);
 .out_ptr.posix_memalign
 [source,cpp]
 ----
-using bop = boost::out_ptr;
+using bop = phd::out_ptr;
 
 std::unique_ptr<Numf, DoFree> upNumf;
 /* some work... */
@@ -92,9 +92,9 @@ if (ret != 0) {
 
 ## IntrusivePtr with COM and base-class / void** with Casting Support
 
-`boost::out_ptr::out_ptr` and `boost::out_ptr::inout_ptr` work with more than just the typical standard pointers. They also know how to interop with legacy codebases which communicate through base class ``IUnknown**`` or ``void**``!
+`phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr` work with more than just the typical standard pointers. They also know how to interop with legacy codebases which communicate through base class ``IUnknown**`` or ``void**``!
 
-You can add a template parameter `T` in an `boost::out_ptr::out_ptr` call to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
+You can add a template parameter `T` in an `phd::out_ptr::out_ptr` call to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
 
 ifdef::env-github[]
 link:../../examples/source/com.intrusive_ptr.cpp[com.intrusive_ptr.cpp]
@@ -111,7 +111,7 @@ Notice how an extra parameter gets passed to the function:
 ifdef::env-github[]
 ```
 	HRESULT cci_result = CoCreateInstance(clsid, 0, CLSCTX_INPROC_SERVER,
-		__uuidof(IDispatch), boost::out_ptr::out_ptr<void*>(dispatch_ptr, false));
+		__uuidof(IDispatch), phd::out_ptr::out_ptr<void*>(dispatch_ptr, false));
 ```
 endif::[]
 ifndef::env-github[]

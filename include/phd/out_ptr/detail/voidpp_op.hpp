@@ -8,10 +8,10 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_VOIDPP_OP_HPP
-#define BOOST_OUT_PTR_DETAIL_VOIDPP_OP_HPP
+#ifndef PHD_OUT_PTR_DETAIL_VOIDPP_OP_HPP
+#define PHD_OUT_PTR_DETAIL_VOIDPP_OP_HPP
 
-namespace boost { namespace out_ptr { namespace detail {
+namespace phd { namespace out_ptr { namespace detail {
 
 	template <typename T, typename P>
 	class voidpp_op {
@@ -31,6 +31,6 @@ namespace boost { namespace out_ptr { namespace detail {
 	template <typename T>
 	class voidpp_op<T, const volatile void*> {};
 
-}}} // namespace boost::out_ptr::detail
+}}} // namespace phd::out_ptr::detail
 
-#endif // BOOST_OUT_PTR_DETAIL_VOIDPP_OP_HPP
+#endif // PHD_OUT_PTR_DETAIL_VOIDPP_OP_HPP

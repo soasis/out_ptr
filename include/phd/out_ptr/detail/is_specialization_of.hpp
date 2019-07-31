@@ -8,12 +8,12 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP
-#define BOOST_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP
+#ifndef PHD_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP
+#define PHD_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP
 
 #include <type_traits>
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 namespace detail {
 
@@ -30,6 +30,6 @@ namespace detail {
 	template <typename T, template <typename...> class Templ>
 	using is_specialization_of = meta_detail::is_specialization_of<typename std::remove_cv<T>::type, Templ>;
 
-}}} // namespace boost::out_ptr::detail
+}}} // namespace phd::out_ptr::detail
 
-#endif // BOOST_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP
+#endif // PHD_OUT_PTR_DETAIL_IS_SPECIALIZATION_OF_HPP

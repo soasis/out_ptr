@@ -10,7 +10,7 @@
 // https://theboostcpplibraries.com/boost.smartpointers-special-smart-pointers#ex.smartpointers_09
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/out_ptr.hpp>
+#include <phd/out_ptr.hpp>
 #include <atlbase.h>
 #include <iostream>
 #include <stdexcept>
@@ -26,13 +26,13 @@ void COM_folder_check() {
 	CLSID clsid;
 	CLSIDFromProgID(CComBSTR{ "Scripting.FileSystemObject" }, &clsid);
 
-	boost::intrusive_ptr<IDispatch> dispatch_ptr(nullptr);
+	phd::intrusive_ptr<IDispatch> dispatch_ptr(nullptr);
 	// put the return value into dispatch_ptr,
 	// along with the "false" argument to
 	// not AddRef when putting
 	// the output parameter into the intrusive_ptr
 	HRESULT cci_result = CoCreateInstance(clsid, 0, CLSCTX_INPROC_SERVER,
-		__uuidof(IDispatch), boost::out_ptr::out_ptr<void*>(dispatch_ptr, false));
+		__uuidof(IDispatch), phd::out_ptr::out_ptr<void*>(dispatch_ptr, false));
 	if (FAILED(cci_result)) {
 		throw std::runtime_error("failed to create IDispatch Instance");
 	}

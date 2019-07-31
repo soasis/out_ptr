@@ -6,7 +6,7 @@
 //
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
-#include <boost/out_ptr/out_ptr.hpp>
+#include <phd/out_ptr/out_ptr.hpp>
 
 #include <ficapi/ficapi.hpp>
 
@@ -16,14 +16,14 @@
 TEST_CASE("clever_out_ptr/basic", "clever_out_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);
-		ficapi_create(boost::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_create(phd::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
 	}
 	SECTION("unique_ptr<int>") {
 		std::unique_ptr<int, ficapi::deleter<>> p(nullptr);
-		ficapi_int_create(boost::out_ptr::detail::clever_out_ptr(p));
+		ficapi_int_create(phd::out_ptr::detail::clever_out_ptr(p));
 		int* rawp = p.get();
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
@@ -50,14 +50,14 @@ TEST_CASE("clever_out_ptr/reused", "clever_out_ptr type properly deletes non-nul
 	SECTION("unique_ptr<void, stateful_deleter>") {
 		std::unique_ptr<void, reused_deleter> p(nullptr, reused_deleter{});
 
-		ficapi_create(boost::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_create(phd::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
 		{
 			int* rawp = static_cast<int*>(p.get());
 			REQUIRE(rawp != nullptr);
 			REQUIRE(*rawp == ficapi_get_dynamic_data());
 			REQUIRE(p.get_deleter().store == 0);
 		}
-		ficapi_create(boost::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_create(phd::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
 		{
 			int* rawp = static_cast<int*>(p.get());
 			REQUIRE(rawp != nullptr);
@@ -68,14 +68,14 @@ TEST_CASE("clever_out_ptr/reused", "clever_out_ptr type properly deletes non-nul
 	SECTION("unique_ptr<int, stateful_deleter>") {
 		std::unique_ptr<int, reused_int_deleter> p(nullptr, reused_int_deleter{});
 
-		ficapi_int_create(boost::out_ptr::detail::clever_out_ptr(p));
+		ficapi_int_create(phd::out_ptr::detail::clever_out_ptr(p));
 		{
 			int* rawp = p.get();
 			REQUIRE(rawp != nullptr);
 			REQUIRE(*rawp == ficapi_get_dynamic_data());
 			REQUIRE(p.get_deleter().store == 0);
 		}
-		ficapi_int_create(boost::out_ptr::detail::clever_out_ptr(p));
+		ficapi_int_create(phd::out_ptr::detail::clever_out_ptr(p));
 		{
 			int* rawp = p.get();
 			REQUIRE(rawp != nullptr);

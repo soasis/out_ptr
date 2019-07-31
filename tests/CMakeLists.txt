@@ -40,7 +40,7 @@ set_target_properties(${example_target} PROPERTIES
 	CXX_EXTENSIONS FALSE
 )
 target_compile_definitions(boost.out_ptr.tests
-	PRIVATE BOOST_OUT_PTR_CLEVER_SANITY_CHECK=1)
+	PRIVATE PHD_OUT_PTR_CLEVER_SANITY_CHECK=1)
 if (MSVC)
 	target_compile_options(boost.out_ptr.tests
 		PRIVATE /W4)

@@ -16,13 +16,13 @@ include(GNUInstallDirs)
 # # Top Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    set(BOOST_OUT_PTR_IS_TOP_LEVEL_PROJECT true)
+    set(PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT true)
 else()
-    set(BOOST_OUT_PTR_IS_TOP_LEVEL_PROJECT false)
+    set(PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT false)
 endif()
 
 # Modify bad flags / change defaults if that is the case
-if (BOOST_OUT_PTR_IS_TOP_LEVEL_PROJECT)
+if (PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT)
 	if (CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CFG_INT_DIR}/lib")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CFG_INT_DIR}/bin")
@@ -40,10 +40,10 @@ if (BOOST_OUT_PTR_IS_TOP_LEVEL_PROJECT)
 endif()
 
 # # Options
-option(BOOST_OUT_PTR_CI "Whether or not we are in continguous integration environment" OFF)
-option(BOOST_OUT_PTR_TESTS "Enable build of tests" OFF)
-option(BOOST_OUT_PTR_EXAMPLES "Enable build of examples" OFF)
-option(BOOST_OUT_PTR_BENCHMARKS "Enable build of benchmarks" OFF)
+option(PHD_OUT_PTR_CI "Whether or not we are in continguous integration environment" OFF)
+option(PHD_OUT_PTR_TESTS "Enable build of tests" OFF)
+option(PHD_OUT_PTR_EXAMPLES "Enable build of examples" OFF)
+option(PHD_OUT_PTR_BENCHMARKS "Enable build of benchmarks" OFF)
 
 
 # # Targets
@@ -59,24 +59,24 @@ target_include_directories(boost_out_ptr INTERFACE
 # Version configurations
 configure_package_config_file(
 	cmake/boost_out_ptr-config.cmake.in
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/boost/out_ptr-config.cmake"
-	INSTALL_DESTINATION lib/cmake/boost/out_ptr
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config.cmake"
+	INSTALL_DESTINATION lib/cmake/phd/out_ptr
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/boost/out_ptr-config-version.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config-version.cmake"
 	COMPATIBILITY AnyNewerVersion)
 
-export(TARGETS boost_out_ptr FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/boost/out_ptr-targets.cmake")
+export(TARGETS boost_out_ptr FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-targets.cmake")
 
 set(boost_out_ptr_sources 
-	"include/boost/out_ptr.hpp"
-	"include/boost/out_ptr/out_ptr.hpp"
-	"include/boost/out_ptr/inout_ptr.hpp"
-	"include/boost/out_ptr/simple_out_ptr.hpp"
-	"include/boost/out_ptr/simple_inout_ptr.hpp"
-	"include/boost/out_ptr/clever_out_ptr.hpp"
-	"include/boost/out_ptr/clever_inout_ptr.hpp"
+	"include/phd/out_ptr.hpp"
+	"include/phd/out_ptr/out_ptr.hpp"
+	"include/phd/out_ptr/inout_ptr.hpp"
+	"include/phd/out_ptr/simple_out_ptr.hpp"
+	"include/phd/out_ptr/simple_inout_ptr.hpp"
+	"include/phd/out_ptr/clever_out_ptr.hpp"
+	"include/phd/out_ptr/clever_inout_ptr.hpp"
 )
 
 #target_sources(boost_out_ptr INTERFACE 
@@ -93,17 +93,17 @@ set_target_properties(boost_out_ptr
 
 #install(EXPORT boost_out_ptr
 #	FILE boost_out_ptr-targets.cmake
-#	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/boost/out_ptr")
+#	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/phd/out_ptr")
 
-#install(DIRECTORY "include/boost/out_ptr"
+#install(DIRECTORY "include/phd/out_ptr"
 #	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 #install(FILES
-#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/boost/out_ptr-config.cmake"
-#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/boost/out_ptr-config-version.cmake"
+#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config.cmake"
+#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config-version.cmake"
 #	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/boost")
 
-if (BOOST_OUT_PTR_BENCHMARKS OR BOOST_OUT_PTR_TESTS OR BOOST_OUT_PTR_EXAMPLES)
+if (PHD_OUT_PTR_BENCHMARKS OR PHD_OUT_PTR_TESTS OR PHD_OUT_PTR_EXAMPLES)
 	# test and benchmark deps
 	add_subdirectory(vendor/boost/config)
 	add_subdirectory(vendor/boost/core)
@@ -112,13 +112,13 @@ if (BOOST_OUT_PTR_BENCHMARKS OR BOOST_OUT_PTR_TESTS OR BOOST_OUT_PTR_EXAMPLES)
 	add_subdirectory(vendor/ficapi)
 endif()
 
-if (BOOST_OUT_PTR_TESTS)
+if (PHD_OUT_PTR_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
-endif(BOOST_OUT_PTR_TESTS)
-if (BOOST_OUT_PTR_BENCHMARKS)
+endif(PHD_OUT_PTR_TESTS)
+if (PHD_OUT_PTR_BENCHMARKS)
 	add_subdirectory(benchmarks)
-endif(BOOST_OUT_PTR_BENCHMARKS)
-if (BOOST_OUT_PTR_EXAMPLES)
+endif(PHD_OUT_PTR_BENCHMARKS)
+if (PHD_OUT_PTR_EXAMPLES)
 	add_subdirectory(examples)
-endif(BOOST_OUT_PTR_EXAMPLES)
+endif(PHD_OUT_PTR_EXAMPLES)

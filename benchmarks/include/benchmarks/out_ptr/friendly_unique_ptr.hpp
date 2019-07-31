@@ -8,8 +8,8 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_FRIENDLY_UNIQUE_PTR_HPP
-#define BOOST_OUT_PTR_FRIENDLY_UNIQUE_PTR_HPP
+#ifndef PHD_OUT_PTR_FRIENDLY_UNIQUE_PTR_HPP
+#define PHD_OUT_PTR_FRIENDLY_UNIQUE_PTR_HPP
 
 #include <memory>
 
@@ -21,8 +21,8 @@ namespace std {
 #define _NOEXCEPT noexcept
 #endif // MSVC's noexcept is properly boxed from the user in later releases
 
-#ifndef BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
-#define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#ifndef PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
+#define PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
 #endif
 
 	template <class _Ty,
@@ -226,8 +226,8 @@ namespace std {
 
 #elif defined(_LIBCPP_VERSION)
 
-#ifndef BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
-#define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#ifndef PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
+#define PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
 #endif
 
 	template <class _Tp, class _Dp = default_delete<_Tp>>
@@ -500,8 +500,8 @@ namespace std {
 
 #elif defined(__GLIBCXX__)
 
-#ifndef BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
-#define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#ifndef PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
+#define PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
 #endif
 
 	/// 20.7.1.2 friendly_unique_ptr for single objects.
@@ -1145,10 +1145,10 @@ namespace std {
 
 #else
 
-#define BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 0
+#define PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 0
 
 #endif // VC++ versus libc++ versus libstdc++ ...
 
 } // namespace std
 
-#endif // BOOST_OUT_PTR_FRIENDLY_UNIQUE_PTR_HPP
+#endif // PHD_OUT_PTR_FRIENDLY_UNIQUE_PTR_HPP

@@ -8,20 +8,20 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
-#define BOOST_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#ifndef PHD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#define PHD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
 
-#if defined(BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR) && BOOST_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR != 0
+#if defined(PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR) && PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR != 0
 
-#include <boost/out_ptr/detail/base_inout_ptr_impl.hpp>
-#include <boost/out_ptr/pointer_of.hpp>
+#include <phd/out_ptr/detail/base_inout_ptr_impl.hpp>
+#include <phd/out_ptr/pointer_of.hpp>
 
 #include <cstdlib>
 #include <cstddef>
 #include <type_traits>
 #include <memory>
 
-namespace boost { namespace out_ptr {
+namespace phd { namespace out_ptr {
 
 	namespace detail {
 		template <typename Smart, typename Pointer, typename Args, typename List>
@@ -34,7 +34,7 @@ namespace boost { namespace out_ptr {
 		};
 
 		template <typename T, typename D, typename Pointer>
-		struct friendly_inout_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, boost::mp11::index_sequence<>> {
+		struct friendly_inout_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, phd::out_ptr::detail::index_sequence<>> {
 		public:
 			using Smart		 = std::friendly_unique_ptr<T, D>;
 			using source_pointer = pointer_of_or_t<Smart, Pointer>;
@@ -59,9 +59,9 @@ namespace boost { namespace out_ptr {
 	} // namespace detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class friendly_inout_ptr_t : public detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	class friendly_inout_ptr_t : public detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, phd::out_ptr::detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
-		using list_t = boost::mp11::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
+		using list_t = phd::out_ptr::detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
 		using core_t = detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
@@ -81,8 +81,8 @@ namespace boost { namespace out_ptr {
 		return friendly_inout_ptr<Pointer>(p, std::forward<Args>(args)...);
 	}
 
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 
 #endif // OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 
-#endif // BOOST_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#endif // PHD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP

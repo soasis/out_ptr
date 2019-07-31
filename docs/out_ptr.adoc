@@ -19,9 +19,9 @@ ThePhD
 :table-caption: Illustration
 :docinfo: private-footer
 
-This library automates the `.reset(...)` call with `boost::out_ptr::out_ptr(...)` wrapping an argument passed to a C-style function taking a `$$T**$$` argument. Additionally, it automates the `.release(...)` and `.reset(...)` paradigm with `boost::out_ptr::inout_ptr(...)` in cases where the `T**` argument passed to the function will both delete and then allocate the resource being handled.
+This library automates the `.reset(...)` call with `phd::out_ptr::out_ptr(...)` wrapping an argument passed to a C-style function taking a `$$T**$$` argument. Additionally, it automates the `.release(...)` and `.reset(...)` paradigm with `phd::out_ptr::inout_ptr(...)` in cases where the `T**` argument passed to the function will both delete and then allocate the resource being handled.
 
-Additional optimizations are implemented within the library to ensure good performance by default for a myriad of types, including `boost::movelib:unique_ptr` and `std::unique_ptr`. It also helps catch small errors in using `shared_ptr`-types reset calls, and works out-of-the-box for many other types including the upcoming `std::retain_ptr`, `boost::intrusive_ptr`, and any other types which follow the `.reset(...)`/`.release()` paradigm (or have constructors that behave similarly).
+Additional optimizations are implemented within the library to ensure good performance by default for a myriad of types, including `phd::movelib:unique_ptr` and `std::unique_ptr`. It also helps catch small errors in using `shared_ptr`-types reset calls, and works out-of-the-box for many other types including the upcoming `std::retain_ptr`, `phd::intrusive_ptr`, and any other types which follow the `.reset(...)`/`.release()` paradigm (or have constructors that behave similarly).
 
 toc::[]
 

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
-#define BOOST_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
+#ifndef PHD_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
+#define PHD_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
 
-namespace boost {
+namespace phd {
 
 	namespace movelib {
 		template <typename, typename>
@@ -21,6 +21,6 @@ namespace boost {
 	template <typename>
 	class shared_ptr;
 
-} // namespace boost
+} // namespace phd
 
-#endif // BOOST_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP
+#endif // PHD_OUT_PTR_DETAIL_CUSTOMIZATION_FORWARD_HPP

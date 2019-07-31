@@ -29,7 +29,7 @@ if (my_maybe_failing_C_api(
 }
 ```
 
-The problem is that all temporaties -- including the one `boost::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
+The problem is that all temporaties -- including the one `phd::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
 
 It is still safe to use such a construct with if statements if you will check the return value only, and not check the actual pointer itself in the same if statement:
 
@@ -83,7 +83,7 @@ namespace really::terrible { // C++17 nested namespaces
 }
 
 int main () {
-	using bop = boost::out_ptr;
+	using bop = phd::out_ptr;
 	// leaks because of do_something_that_throws
 	auto result = really::terrible::api(bop::inout_ptr(my_smart));
 }
@@ -101,16 +101,16 @@ As such, you must ensure that construction of the smart pointer and checking for
 
 
 [[caveats.order]]
-## Order of Evaluation with `boost::out_ptr::inout_ptr`
+## Order of Evaluation with `phd::out_ptr::inout_ptr`
 
-Because `boost::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
+Because `phd::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
 
 For Boost.OutPtr, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
 
 For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
 
 ```
-my_c_api(boost::out_ptr::inout_ptr(my_smart), 
+my_c_api(phd::out_ptr::inout_ptr(my_smart), 
 	24, 
 	// unspecified into undefined behavior below: bad 
 	// implementation called .release() in constructor and

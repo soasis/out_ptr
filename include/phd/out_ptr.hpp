@@ -8,10 +8,10 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR
-#define BOOST_OUT_PTR
+#ifndef PHD_OUT_PTR
+#define PHD_OUT_PTR
 
-#include <boost/out_ptr/out_ptr.hpp>
-#include <boost/out_ptr/inout_ptr.hpp>
+#include <phd/out_ptr/out_ptr.hpp>
+#include <phd/out_ptr/inout_ptr.hpp>
 
-#endif // BOOST_OUT_PTR
+#endif // PHD_OUT_PTR

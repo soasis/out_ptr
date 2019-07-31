@@ -8,18 +8,15 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
-#define BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
+#ifndef PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
+#define PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 
-#include <boost/out_ptr/detail/is_specialization_of.hpp>
-#include <boost/out_ptr/detail/customization_forward.hpp>
-#include <boost/out_ptr/detail/inout_ptr_traits.hpp>
-#include <boost/out_ptr/detail/voidpp_op.hpp>
-#include <boost/out_ptr/pointer_of.hpp>
-
-#include <boost/mp11/integer_sequence.hpp>
-
-#include <boost/config.hpp>
+#include <phd/out_ptr/detail/is_specialization_of.hpp>
+#include <phd/out_ptr/detail/customization_forward.hpp>
+#include <phd/out_ptr/detail/inout_ptr_traits.hpp>
+#include <phd/out_ptr/detail/voidpp_op.hpp>
+#include <phd/out_ptr/pointer_of.hpp>
+#include <phd/out_ptr/detail/integer_sequence.hpp>
 
 #include <cstdlib>
 #include <type_traits>
@@ -29,28 +26,28 @@
 
 // Only defined for clang version 7 and above
 #if defined(__clang__) && __clang__ >= 7
-#define BOOST_OUT_PTR_TRIVIAL_ABI __attribute__((trivial_abi))
+#define PHD_OUT_PTR_TRIVIAL_ABI __attribute__((trivial_abi))
 #else
-#define BOOST_OUT_PTR_TRIVIAL_ABI
+#define PHD_OUT_PTR_TRIVIAL_ABI
 #endif // Clang or otherwise
 
-namespace boost {
+namespace phd {
 namespace out_ptr {
 namespace detail {
 
 	template <typename Smart, typename Pointer, typename Traits, typename Args, typename List>
-	class BOOST_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl;
+	class PHD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl;
 
 	template <typename Smart, typename Pointer, typename Traits, typename Base, std::size_t... Indices>
-	class BOOST_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, boost::mp11::index_sequence<Indices...>>
-	: public voidpp_op<base_out_ptr_impl<Smart, Pointer, Traits, Base, boost::mp11::index_sequence<Indices...>>, Pointer>, protected Base {
+	class PHD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, phd::out_ptr::detail::index_sequence<Indices...>>
+	: public voidpp_op<base_out_ptr_impl<Smart, Pointer, Traits, Base, phd::out_ptr::detail::index_sequence<Indices...>>, Pointer>, protected Base {
 	protected:
 		using traits_t = Traits;
 		using storage  = pointer_of_or_t<traits_t, Pointer>;
 		Smart* m_smart_ptr;
 		storage m_target_ptr;
 
-		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::boost::shared_ptr>::value)
+		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::phd::shared_ptr>::value)
 				|| (sizeof...(Indices) > 0), // clang-format hack
 			"shared_ptr<T> must pass a deleter in alongside the out_ptr "
 			"so when reset is called the deleter can be properly "
@@ -92,6 +89,6 @@ namespace detail {
 		}
 	};
 
-}}} // namespace boost::out_ptr::detail
+}}} // namespace phd::out_ptr::detail
 
-#endif // BOOST_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
+#endif // PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP

@@ -64,7 +64,7 @@ foreach (example_source_name ${boost_out_ptr_example_sources})
 		"../vendor/handle/include"
 		"include"
 	)
-	if (BOOST_OUT_PTR_TESTS)
+	if (PHD_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})
 	endif()
 endforeach()
@@ -116,7 +116,7 @@ if (boost_out_ptr_examples_has_atl_run)
 	target_include_directories(${example_target} PRIVATE
 		"include"
 	)
-	if (BOOST_OUT_PTR_TESTS)
+	if (PHD_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})
 	endif()
 endif()
@@ -155,7 +155,7 @@ if (CMAKE_USE_PTHREADS_INIT)
 	target_include_directories(${example_target} PRIVATE
 		"include"
 	)	
-	if (BOOST_OUT_PTR_TESTS)
+	if (PHD_OUT_PTR_TESTS)
 		add_test(NAME ${example_target} COMMAND ${example_target})
 	endif()
 endif()

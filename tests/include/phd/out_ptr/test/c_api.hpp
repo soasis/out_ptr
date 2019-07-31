@@ -8,13 +8,13 @@
 
 #pragma once
 
-#ifndef BOOST_OUT_PTR_TESTS_C_API_HPP
-#define BOOST_OUT_PTR_TESTS_C_API_HPP
+#ifndef PHD_OUT_PTR_TESTS_C_API_HPP
+#define PHD_OUT_PTR_TESTS_C_API_HPP
 
 #include <cstddef>
 #include <tuple>
 
-namespace boost { namespace out_ptr { namespace test {
+namespace phd { namespace out_ptr { namespace test {
 
 	struct base1 {
 		int a    = 0;
@@ -82,6 +82,6 @@ namespace boost { namespace out_ptr { namespace test {
 		return target == derived1{};
 	}
 
-}}} // namespace boost::out_ptr::test
+}}} // namespace phd::out_ptr::test
 
-#endif // BOOST_OUT_PTR_TESTS_C_API_HPP
+#endif // PHD_OUT_PTR_TESTS_C_API_HPP

@@ -11,8 +11,7 @@
 #ifndef PHD_HANDLE_HANDLE_HPP
 #define PHD_HANDLE_HANDLE_HPP
 
-#include <boost/out_ptr/pointer_of.hpp>
-#include <boost/core/empty_value.hpp>
+#include <phd/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
 #include <utility>
@@ -109,13 +108,13 @@ namespace phd {
 
 	template <typename T,
 		typename Dx = default_handle_deleter<T>>
-	struct handle : boost::empty_value<Dx> {
+	struct handle : Dx {
 	public:
-		using pointer	 = boost::out_ptr::pointer_type_t<T, Dx>;
+		using pointer	 = phd::out_ptr::pointer_type_t<T, Dx>;
 		using deleter_type = Dx;
 
 	private:
-		using deleter_base = boost::empty_value<deleter_type>;
+		using deleter_base = deleter_type;
 
 		pointer res;
 
@@ -133,11 +132,11 @@ namespace phd {
 		}
 
 		handle(pointer h, deleter_type d) noexcept
-		: deleter_base(boost::empty_init_t(), std::move(d)), res(h) {
+		: deleter_base(std::move(d)), res(h) {
 		}
 
 		handle(std::nullptr_t, deleter_type d) noexcept
-		: deleter_base(boost::empty_init_t(), std::move(d)) {
+		: deleter_base(std::move(d)) {
 			deleter_type& deleter = get_deleter();
 			detail::write_null(deleter, res);
 		}
@@ -237,12 +236,12 @@ namespace phd {
 		}
 
 		deleter_type& get_deleter() noexcept {
-			deleter_type& deleter = deleter_base::get();
+			deleter_type& deleter = *this;
 			return deleter;
 		}
 
 		const deleter_type& get_deleter() const noexcept {
-			const deleter_type& deleter = deleter_base::get();
+			const deleter_type& deleter = *this;
 			return deleter;
 		}
 

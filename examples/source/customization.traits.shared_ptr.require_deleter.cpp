@@ -6,7 +6,7 @@
 //
 //  See http://www.boost.org/libs/out_ptr/ for documentation.
 
-#include <boost/out_ptr.hpp>
+#include <phd/out_ptr.hpp>
 #include <boost/smart_ptr/local_shared_ptr.hpp>
 
 #include <avformat.h>
@@ -16,7 +16,7 @@
 // not used with inout_ptr
 // because ownership is not unique or releasable!
 template <typename T>
-struct my_company_shared_ptr : public boost::local_shared_ptr<T> {};
+struct my_company_shared_ptr : public phd::local_shared_ptr<T> {};
 
 // type to allow us to use static assert
 // that is not eagerly evaluated
@@ -26,7 +26,7 @@ struct dependent_type_false : std::true_type {};
 // this is the usage of the simple traits customization point
 // to achieve the same goals as above
 
-namespace boost { namespace out_ptr {
+namespace phd { namespace out_ptr {
 
 	// inout_ptr_t is illegal
 	template <typename T, typename Pointer>
@@ -55,7 +55,7 @@ namespace boost { namespace out_ptr {
 		}
 	};
 
-}} // namespace boost::out_ptr
+}} // namespace phd::out_ptr
 
 struct av_format_context_deleter {
 	void operator()(AVFormatContext* c) noexcept {
@@ -67,7 +67,7 @@ struct av_format_context_deleter {
 using av_format_context_ptr = my_company_shared_ptr<AVFormatContext>;
 
 int main(int, char* argv[]) {
-	using bop = boost::out_ptr;
+	using bop = phd::out_ptr;
 
 	av_format_context_ptr context(avformat_alloc_context());
 

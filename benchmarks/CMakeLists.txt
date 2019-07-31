@@ -62,39 +62,39 @@ target_link_libraries(boost.out_ptr.benchmarks
 	${CMAKE_DL_LIBS}
 )
 
-set(BOOST_OUT_PTR_BENCHMARKS_REPETITIONS 150
+set(PHD_OUT_PTR_BENCHMARKS_REPETITIONS 150
 	CACHE STRING "The number of times to re-rerun the benchmarks to gather additional data")
-set(BOOST_OUT_PTR_BENCHMARKS_FORMAT json 
+set(PHD_OUT_PTR_BENCHMARKS_FORMAT json 
 	CACHE STRING "The output format of the data. Must be json")
-string(TOLOWER ${BOOST_OUT_PTR_BENCHMARKS_FORMAT} BOOST_OUT_PTR_BENCHMARKS_FORMAT_LOWER)
-set(BOOST_OUT_PTR_BENCHMARKS_FORMAT ${BOOST_OUT_PTR_BENCHMARKS_FORMAT_LOWER} 
+string(TOLOWER ${PHD_OUT_PTR_BENCHMARKS_FORMAT} PHD_OUT_PTR_BENCHMARKS_FORMAT_LOWER)
+set(PHD_OUT_PTR_BENCHMARKS_FORMAT ${PHD_OUT_PTR_BENCHMARKS_FORMAT_LOWER} 
 	CACHE STRING "The output format of the data. Must be json" FORCE)
 
-set(BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
-set(BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}/out_ptr_benchmarks.${BOOST_OUT_PTR_BENCHMARKS_FORMAT}")
-set(BOOST_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
-file(MAKE_DIRECTORY "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}")
+set(PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
+set(PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}/out_ptr_benchmarks.${PHD_OUT_PTR_BENCHMARKS_FORMAT}")
+set(PHD_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR "${CMAKE_SOURCE_DIR}/benchmark_results")
+file(MAKE_DIRECTORY "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}")
 
 set(boost_out_ptr_benchmarks_categories shared_local_out_ptr shared_reset_out_ptr local_out_ptr reset_out_ptr local_inout_ptr reset_inout_ptr)
 
 add_custom_command(
-	OUTPUT "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
+	OUTPUT "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 	COMMAND boost.out_ptr.benchmarks 
-		"--benchmark_out=${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}" 
-		"--benchmark_out_format=${BOOST_OUT_PTR_BENCHMARKS_FORMAT}" 
-		"--benchmark_repetitions=${BOOST_OUT_PTR_BENCHMARKS_REPETITIONS}"
+		"--benchmark_out=${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}" 
+		"--benchmark_out_format=${PHD_OUT_PTR_BENCHMARKS_FORMAT}" 
+		"--benchmark_repetitions=${PHD_OUT_PTR_BENCHMARKS_REPETITIONS}"
 	DEPENDS boost.out_ptr.benchmarks
-	COMMENT "Executing Benchmarks and outputting to '${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}'"
+	COMMENT "Executing Benchmarks and outputting to '${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}'"
 )
 
 if (Python3_Interpreter_FOUND)
 	add_custom_target(boost.out_ptr.benchmarks_graphs_generator
 		COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/benchmarks/tools/generate_graphs.py" 
-			"--input=${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
-			"--input_format=${BOOST_OUT_PTR_BENCHMARKS_FORMAT}"
-			"--output_dir=${BOOST_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR}"
+			"--input=${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
+			"--input_format=${PHD_OUT_PTR_BENCHMARKS_FORMAT}"
+			"--output_dir=${PHD_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR}"
 			--categories ${boost_out_ptr_benchmarks_categories}
-		DEPENDS boost.out_ptr.benchmarks "${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
-		COMMENT "Graphing '${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}' data to '${BOOST_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}'"
+		DEPENDS boost.out_ptr.benchmarks "${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
+		COMMENT "Graphing '${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}' data to '${PHD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}'"
 	)
 endif()
