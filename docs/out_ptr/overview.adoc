@@ -13,14 +13,14 @@
 Have you ever wanted to pass a smart pointer like `std::unique_ptr` or `boost::shared_ptr` or `boost::intrusive_ptr` to a C API?
 
 [source,cpp]
-```
+----
 boost::shared_ptr<mll_driver> axis_driver;
 mll_errno err = mll_driver_init(&axis_driver, 
 	/* additional args ...*/);
 if (err != MLL_SUCESS) {
 	// etc. ...
 }
-```
+----
 
 The above code doesn't compile: the pointer may be "smart", but it isn't smart enough to return a `mll_driver**` when you do `&axis_driver` on it. It also makes it hard to retain the current deleter with a `shared_ptr`.
 
@@ -29,7 +29,7 @@ The above code doesn't compile: the pointer may be "smart", but it isn't smart e
 Downgrading to a raw pointer and then inserting it into the pointer works, but is more verbose:
 
 [source,cpp]
-```
+----
 boost::shared_ptr<mll_driver> axis_driver;
 mll_driver* raw_axis_driver = nullptr;
 mll_errno err = mll_driver_init(&raw_axis_driver, 
@@ -38,7 +38,7 @@ if (err != MLL_SUCESS) {
 	// etc. ...
 }
 axis_driver.reset(raw_axis_driver, mll_driver_free);
-```
+----
 
 This works, but you need to call `.reset(...)` with the raw pointer and set everything up. Plus, there could be a lot of error handling code between us and the actual initialization call. Not to mention a thrown exception between the end of that call and `axis_driver.reset(...);` means you may have a leak.
 
@@ -47,7 +47,7 @@ This works, but you need to call `.reset(...)` with the raw pointer and set ever
 With phd.out_ptr, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
 
 [source,cpp]
-```
+----
 using pop = phd::out_ptr;
 
 boost::shared_ptr<mll_driver> axis_driver(nullptr);
@@ -56,7 +56,7 @@ mll_errno err = mll_driver_init(pop::out_ptr(axis_driver, mll_driver_free),
 if (err != MLL_SUCESS) {
 	// ...
 }
-```
+----
 
 No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers that stores the deleter.
 

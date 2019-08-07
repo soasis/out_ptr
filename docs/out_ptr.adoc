@@ -22,46 +22,46 @@ ThePhD
 So, you have code that looks like this:
 
 [source,cpp]
-```
+----
 foo_t* new_foo;
 if (!create_foo(&new_foo)) {
   // etc. ...
 }
-```
+----
 
 And it's not just one bit. Hundreds, maybe even thousands of calls like this are scatted all throughout you code base. You know about smart pointers, and you want to turn it into something like this for better exception safety and all that RAII goodness you hear about:
 
 [source,cpp]
-```
+----
 std::unique_ptr<foo_t> new_foo;
 if (!create_foo(new_foo)) {
   // etc. ...
 }
-```
+----
 
 Or, this:
 
 [source,cpp]
-```
+----
 std::unique_ptr<foo_t> new_foo;
 if (!create_foo(&new_foo)) {
   // etc. ...
 }
-```
+----
 
 Doing this by hand is increasingly difficult with the number of calls you need to make. Writing tooling to generate code to wrap functions to return ``std::unique_ptr`` and morph the functions into something that returns a smart pointer is also a non-starter that will take you too much time.
 
 With this library, you now can do exactly this at the call site:
 
 [source,cpp]
-```
+----
 using pop = phd::out_ptr;
 
 std::unique_ptr<foo_t> new_foo;
 if (!create_foo(pop::out_ptr(new_foo))) {
   // etc. ...
 }
-```
+----
 
 phd.out_ptr provides the a way to have C code retain identical semantics to the original C code written to handle these resources while helping code work with C APIs. It ensures ``new_foo`` is guaranteed to be treated in a RAII manner. Thus, we get increased exception safety, memory leak mitigation, and all the other benefits of RAII.
 

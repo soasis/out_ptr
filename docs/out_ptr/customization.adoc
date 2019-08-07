@@ -28,7 +28,8 @@ Therefore, if you have a `.get()` and `.reset()` call, alongside a `.release()` 
 
 A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<reference/out_ptr.adoc#ref.out_ptr.class, `phd::out_ptr::out_ptr_t`>> or <<reference/inout_ptr.adoc#ref.inout_ptr.class, `phd::out_ptr::inout_ptr_t`>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
 
-```
+[source, cpp]
+----
 namespace phd {
 
 	template <typename T>
@@ -62,7 +63,7 @@ namespace phd {
 	};
 
 } // namespace phd
-```
+----
 
 This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). There are 2 levels of customization support: one for specializing a struct to control every detail, and one to control just a few static free functions within a traits type (similary to how `std::allocator_traits` behaves). A user may control one, or the other. The struct specialization has more control and is lower-level, and is checked in precedence and the customization point using traits. The traits customization point can be simpler and take less lines to write.
 
@@ -73,14 +74,16 @@ This type may require special support. For example, this might represent a handl
 A user may _(partially) template specialize_ the `phd::out_ptr::out_ptr_traits` and the `phd::out_ptr::inout_ptr_traits`. These types offer less control over the layout and internals of the RAII structures that are used to power the abstraction, while giving users the benefit of only having to override a small select portion of functionality. To use this traits type:
 
 - First, open up the phd.out_ptr namespace:
-```
+[source, cpp]
+----
 namespace phd { namespace out_ptr {
 
 }} // namespace phd::out_ptr
-```
+----
 
 - Then, create a _partial template specialization_:
-```
+[source, cpp]
+----
 namespace phd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer>
@@ -89,14 +92,14 @@ namespace phd { namespace out_ptr {
 	};
 
 }} // namespace phd::out_ptr
-```
+----
 
 - Now, we need to create a handful of **required** functions. We need... 
 * a `construct` function that takes the smart pointer (the handle) and all the Arguments that were stored from the initial call to `phd::out_ptr::inout_ptr( ... )`;
 * and, a `reset()` that takes all the necessary arguments and calls `.reset()`.
 
 [source,cpp]
-```
+----
 namespace phd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer>
@@ -109,7 +112,7 @@ namespace phd { namespace out_ptr {
 	};
 
 }} // namespace phd::out_ptr
-```
+----
 
 By using overloading, you can write as many or as little `construct` functions as you want that assert that a certain number or certain types of arguments are present:
 
@@ -120,15 +123,15 @@ A user may _(partially) template specialize_ the customized `phd::out_ptr::out_p
 
 - First, open up the phd.out_ptr namespace:
 [source,cpp]
-```
+----
 namespace phd { namespace out_ptr {
 
 }} // namespace phd::out_ptr
-```
+----
 
 - Then, create a _partial template specialization_:
 [source,cpp]
-```
+----
 namespace phd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer, typename... Args>
@@ -137,7 +140,7 @@ namespace phd { namespace out_ptr {
 	};
 
 }} // namespace phd::out_ptr
-```
+----
 
 - Now, we need to create a family of required functions (4 functions). We need... 
 * a constructor that takes the smart pointer (the handle) and all the Arguments that need to be stored for use later;
@@ -146,7 +149,7 @@ namespace phd { namespace out_ptr {
 * and, a destructor that calls `.reset()`.
 
 [source,cpp]
-```
+----
 namespace phd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer, typename... Args>
@@ -164,7 +167,7 @@ namespace phd { namespace out_ptr {
 	}
 
 }} // namespace phd::out_ptr
-```
+----
 
 
 ### And That's it!

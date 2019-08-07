@@ -13,7 +13,8 @@
 [[ref.inout_ptr.function]]
 ### `phd::out_ptr::inout_ptr`
 
-```
+[source, cpp]
+----
 namespace phd { namespace out_ptr {
 
 	template <class Pointer, class Smart, class... Args>
@@ -22,8 +23,8 @@ namespace phd { namespace out_ptr {
 	template <class Smart, class... Args>
 	inout_ptr<Smart, POINTER_OF(Smart), Args...> inout_ptr(Smart& s, Args&&... args) noexcept;
 
-}}
-```
+----
+----
 
 - Effects:
 * The first overload is Equivalent to: `return inout_ptr_t<Smart, Pointer, Args...>(s, std::forward<Args>(args)...);`
@@ -32,8 +33,9 @@ namespace phd { namespace out_ptr {
 
 [[ref.inout_ptr.traits]]
 ### class template `phd::out_ptr::inout_ptr_traits`
-
-```
+----
+[source, cpp]
+----
 namespace phd { namespace out_ptr {
 
 	template <class Pointer, class Smart>
@@ -51,9 +53,9 @@ namespace phd { namespace out_ptr {
 		template <typename... Args>
 		static void reset(Smart& s, pointer& p, Args&&... args) noexcept;
 	};
-
+----
 }}
-```
+----
 
 ### Member Types
 
@@ -97,9 +99,10 @@ NOTE: This allows special smart pointers (e.g., a `shared_ptr`-like type) to pre
 
 
 [[ref.inout_ptr.class]]
-### `phd::out_ptr::inout_ptr_t`
+---- `phd::out_ptr::inout_ptr_t`
 
-```
+[source, cpp]
+----
 namespace phd { namespace out_ptr {
 
 	template <class Smart, class Pointer, class... Args>
@@ -121,10 +124,10 @@ namespace phd { namespace out_ptr {
 		Smart* s; // exposition only
 		tuple<Args...> a; // exposition only
 		pointer p; // exposition only
-	};
+----
 	
 }}
-```
+----
 
 IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared_ptr`, the program is ill-formed. `Pointer` shall meet the http://eel.is/c++draft/nullablepointer.requirements[`Cpp17NullablePointer` requirements [*nullablepointer.requirements*]], unless this type is program specialized.
 
@@ -148,16 +151,17 @@ NOTE: It is impossible to properly release the managed resource from a `std::sha
 
 ### Assignment
 
-`inout_ptr_t& operator=(inout_ptr&& rhs) noexcept;`
+----out_ptr_t& operator=(inout_ptr&& rhs) noexcept;`
 
 - Effects: Equivalent to:
-```
+[source, cpp]
+----
 s = std::move(rhs.s); 
-a = std::move(rhs.a); 
+---- std::move(rhs.a); 
 p = std::move(rhs.p);
 rhs.s = nullptr;
 return *this;
-```
+----
 
 
 ### Destructors

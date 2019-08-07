@@ -18,7 +18,8 @@ There are a few places where the rules of {cpp} (or a poorly implemented C libra
 
 `out_ptr` and `inout_ptr` work primarily by creating a temporary that, by the ironclad rules of Standard {cpp}, will destruct by the end of the enclosing function expression. The only time this rule is bent is for the sake of `if` statements, as written https://devblogs.microsoft.com/oldnewthing/20190429-00/?p=102456[by Raymond Chen] and demonstrated here. Consider the following fictional but representative call:
 
-```
+[source, cpp]
+----
 using pop = boost:out_ptr;
 // ...
 if (my_maybe_failing_C_api(
@@ -27,31 +28,31 @@ if (my_maybe_failing_C_api(
 		// do something here if the function returns success (0) 
 		// and "my_handle" is non-null
 }
-```
+----
 
 The problem is that all temporaties -- including the one `phd::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
 
 It is still safe to use such a construct with if statements if you will check the return value only, and not check the actual pointer itself in the same if statement:
 
-```
+----
 using pop = boost:out_ptr;
 // ...
 if (SQLITE_OK != sqlite3_open("test.db", 
 	pop::out_ptr(database, sqlite3_close))) {
 	// this usage is just fine
 }
-```
+----
 
 {cpp}17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
 
-```
+----
 using pop = boost:out_ptr;
 if (c_error_t err = my_maybe_failing_C_api(
 	pop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
 	err == 0 && my_handle) {
 		// still wrong
 }
-```
+----
 
 Everywhere else in the language, temporaries stop at the semicolon: that is not the case here. It is unfortunate, but that is how it works. Please use `out_ptr` (and any RAII abstraction) outside of the context of if/else conditionals.
 
@@ -71,7 +72,8 @@ It is impossible for this abstraction to handle such wild cases. Perhaps in the 
 
 Note that a {cpp} API that takes a `$$T**$$` may throw. The API could throw after deleting / freeing the passed-in resoure, but before setting it to `nullptr`. Therefore, given a `really::terrible::api`, this can result in a double-delete:
 
-```
+[source, cpp]
+----
 namespace really::terrible { // C++17 nested namespaces
 	inline int api (int** res) {
 		delete *res;
@@ -87,7 +89,7 @@ int main () {
 	// leaks because of do_something_that_throws
 	auto result = really::terrible::api(pop::inout_ptr(my_smart));
 }
-```
+----
 
 The workaround is not using this kind of API and filing a bug with the person who wrote it / maintains it.
 
@@ -109,7 +111,8 @@ For phd.out_ptr, the implementation of `inout_ptr` performs the release call in 
 
 For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
 
-```
+[source, cpp]
+----
 my_c_api(phd::out_ptr::inout_ptr(my_smart), 
 	24, 
 	// unspecified into undefined behavior below: bad 
@@ -119,6 +122,6 @@ my_c_api(phd::out_ptr::inout_ptr(my_smart),
 	my_smart->a_value,
 	nullptr
 );
-```
+----
 
 This is an inherent flaw with all order-dependent function calls, but there is little that can be done until the Standard chooses a well-defined argument order.

@@ -44,7 +44,7 @@ The following are definitions for some meta-functions done on types. If you see 
 The contents of the library are in namespace phd.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions, `out_ptr_t` and `inout_ptr_t`:
 
 [source,cpp]
-```
+----
 namespace phd { namespace out_ptr {
 	
 	template <class Smart, class Pointer, class... Args>
@@ -65,12 +65,12 @@ namespace phd { namespace out_ptr {
 	template <class Smart, class... Args>
 	inout_ptr_t<Smart, POINTER_OF(SMART), Args...> inout_ptr(Smart& s, Args&&... args) noexcept 
 }} // namespace phd::out_ptr
-```
+----
 
 There are also 2 traits types which can be specialized, `out_ptr_traits` and `inout_ptr_traits`:
 
 [source,cpp]
-```
+----
 namespace phd { namespace out_ptr {
 	
 	template <class Smart, class Pointer>
@@ -80,7 +80,7 @@ namespace phd { namespace out_ptr {
 	class inout_ptr_traits;
 	
 }} // namespace phd::out_ptr
-```
+----
 
 You can read about each of these, below.
 

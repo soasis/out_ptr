@@ -109,10 +109,11 @@ endif::[]
 Notice how an extra parameter gets passed to the function:
 
 ifdef::env-github[]
-```
+[source, cpp]
+----
 	HRESULT cci_result = CoCreateInstance(clsid, 0, CLSCTX_INPROC_SERVER,
-		__uuidof(IDispatch), phd::out_ptr::out_ptr<void*>(dispatch_ptr, false));
-```
+----_uuidof(IDispatch), phd::out_ptr::out_ptr<void*>(dispatch_ptr, false));
+----
 endif::[]
 ifndef::env-github[]
 [source,cpp,linenums]
