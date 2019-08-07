@@ -60,36 +60,50 @@ namespace detail {
 
 		inout_unique_fast(std::false_type, Smart& ptr) noexcept {
 			// analysis necessary
+			void* target;
 			if (is_specialization_of<Smart, boost::movelib::unique_ptr>::value) {
 				// boost::movelib::unique_ptr
 #if defined(PHD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && PHD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
-				// implementation has Pointer as first member: alias directly
-				void* target = static_cast<void*>(std::addressof(ptr));
+				if (std::is_reference<D>::value || std::is_function<D>::value) {
+					// implementation has Pointer as first member: alias directly
+					target = static_cast<void*>(std::addressof(ptr));
+				}
+				else {
+					// implementation has Pointer as second member: shift, align, alias
+					constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
+					std::size_t max_space				 = sizeof(Smart) - memory_start;
+					void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
+					target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+				}
 #else
-				// implementation has Pointer as second member: shift, align, alias
-				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
-				std::size_t max_space				 = sizeof(Smart) - memory_start;
-				void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
-				void* target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+				if (std::is_reference<D>::value || std::is_function<D>::value) {
+					// implementation has Pointer as second member: shift, align, alias
+					constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
+					std::size_t max_space				 = sizeof(Smart) - memory_start;
+					void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
+					target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+				}
+				else {
+					// implementation has Pointer as first member: alias directly
+					target = static_cast<void*>(std::addressof(ptr));
+				}
 #endif
-				// get direct Pointer
-				this->m_target_ptr = static_cast<Pointer*>(target);
 			}
 			else {
 				// std::unique_ptr
 #if defined(PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
 				// implementation has Pointer as first member: alias directly
-				void* target = static_cast<void*>(std::addressof(ptr));
+				target = static_cast<void*>(std::addressof(ptr));
 #else
 				// implementation has Pointer as second member: shift, align, alias
 				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
 				std::size_t max_space				 = sizeof(Smart) - memory_start;
 				void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
-				void* target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+				target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
 #endif
-				// get direct Pointer
-				this->m_target_ptr = static_cast<Pointer*>(target);
 			}
+			// get direct Pointer
+			this->m_target_ptr = static_cast<Pointer*>(target);
 #if defined(PHD_OUT_PTR_CLEVER_SANITY_CHECK) && PHD_OUT_PTR_CLEVER_SANITY_CHECK != 0
 			assert(*this->m_target_ptr == static_cast<Pointer>(ptr.get()) && "clever UB-based optimization did not properly retrieve the pointer value, consider turning it off for your platform");
 #endif // Clever Sanity Checks

@@ -26,7 +26,7 @@ void COM_folder_check() {
 	CLSID clsid;
 	CLSIDFromProgID(CComBSTR{ "Scripting.FileSystemObject" }, &clsid);
 
-	phd::intrusive_ptr<IDispatch> dispatch_ptr(nullptr);
+	boost::intrusive_ptr<IDispatch> dispatch_ptr(nullptr);
 	// put the return value into dispatch_ptr,
 	// along with the "false" argument to
 	// not AddRef when putting

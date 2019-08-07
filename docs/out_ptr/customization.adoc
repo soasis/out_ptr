@@ -95,6 +95,7 @@ namespace phd { namespace out_ptr {
 * a `construct` function that takes the smart pointer (the handle) and all the Arguments that were stored from the initial call to `phd::out_ptr::inout_ptr( ... )`;
 * and, a `reset()` that takes all the necessary arguments and calls `.reset()`.
 
+[source,cpp]
 ```
 namespace phd { namespace out_ptr {
 	
@@ -118,6 +119,7 @@ By using overloading, you can write as many or as little `construct` functions a
 A user may _(partially) template specialize_ the customized `phd::out_ptr::out_ptr_t` and `phd::out_ptr::inout_ptr_t`. It allows the user to control what gets stored and how simple it is. Here is an example for `inout_ptr_t`:
 
 - First, open up the phd.out_ptr namespace:
+[source,cpp]
 ```
 namespace phd { namespace out_ptr {
 
@@ -125,6 +127,7 @@ namespace phd { namespace out_ptr {
 ```
 
 - Then, create a _partial template specialization_:
+[source,cpp]
 ```
 namespace phd { namespace out_ptr {
 	
@@ -142,6 +145,7 @@ namespace phd { namespace out_ptr {
 * a conversion operator to the `Pointer*`;
 * and, a destructor that calls `.reset()`.
 
+[source,cpp]
 ```
 namespace phd { namespace out_ptr {
 	

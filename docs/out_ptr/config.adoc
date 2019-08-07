@@ -32,9 +32,11 @@ There are macro definitions one can employ for their project's build to change t
 ** If defined and not 0, switches the implementation for `inout_ptr` to be an unsafe clever version.
 ** This is *dangerous*: aliasing memory to access private members is UB!
 ** This **is turned on** by default for when the following standard library version macros are present and it has not already been defined:
-*** - `_LIBCPP_VERSION`: works with libc++, which uses the "pointer first, deleter second" layout. As such, if `PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER` and `PHD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER` are defined.
+*** - `_LIBCPP_VERSION`: works with libc++, which uses the "pointer first, deleter second" layout. As such, `PHD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER` and are defined if they have not already been defined.
 *** - `__GLIBC__`: works with libstdc++, which uses the "deleter first, pointer second" layout.
 *** - `_YVALS` or `_CPPLIB_VER`: works with Visual C++'s standard library, which uses the "deleter first, pointer second" layout.
+*** - boost::movelib uses first, second layouting as well
+
 * `PHD_OUT_PTR_CLEVER_SANITY_CHECK`
 ** If either of the `PHD_OUT_PTR_USE_CLEVER*` defined and not equal to zero, and this is both defined and not 0, then phd.out_ptr will do a check on the value aliased out of the pointer to make sure it has a value equivalent to `my_smart_ptr.get()`.
 ** For debugging and sanity checking purposes.
