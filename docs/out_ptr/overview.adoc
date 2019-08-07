@@ -17,7 +17,7 @@ boost::shared_ptr<mll_driver> axis_driver;
 mll_errno err = mll_driver_init(&axis_driver, 
 	/* additional args ...*/);
 if (err != MLL_SUCESS) {
-	// ...
+	// etc. ...
 }
 ```
 
@@ -33,7 +33,7 @@ mll_driver* raw_axis_driver = nullptr;
 mll_errno err = mll_driver_init(&raw_axis_driver, 
 	/* additional args ...*/);
 if (err != MLL_SUCESS) {
-	// ...
+	// etc. ...
 }
 axis_driver.reset(raw_axis_driver, mll_driver_free);
 ```

@@ -30,26 +30,26 @@ namespace phd { namespace out_ptr {
 * The second overload is Equivalent to: `return inout_ptr_t<Smart, POINTER_OF(Smart), Args...>(s, std::forward<Args>(args)...);`
 
 
-[[ref.out_ptr.traits]]
-### class template `phd::out_ptr::out_ptr_traits`
+[[ref.inout_ptr.traits]]
+### class template `phd::out_ptr::inout_ptr_traits`
 
 ```
 namespace phd { namespace out_ptr {
 
 	template <class Pointer, class Smart>
-	class out_ptr_traits {
+	class inout_ptr_traits {
 	public:
 		// if program-specialized, optional
 		using pointer = POINTER_OF_OR(Smart, Pointer);
 
 		template <typename... Args>
-		static pointer construct(Smart& s, Args&&... args) noexcept;
+		static pointer construct(Smart& s, Args&&... args);
 
 		// if program-specialized, optional
 		static pointer* get(Smart& s, pointer& p) noexcept;
 
 		template <typename... Args>
-		static void reset(Smart& s, pointer& p, Args&&... args) noexcept(see-below);
+		static void reset(Smart& s, pointer& p, Args&&... args) noexcept;
 	};
 
 }}
@@ -61,15 +61,20 @@ namespace phd { namespace out_ptr {
 
 ### Static Member Functions
 
-`static pointer construct(Smart& smart, Args&&... args) noexcept;`
+`static pointer construct(Smart& smart, Args&&... args);`
 
 - Returns: Equivalent to:
 * `smart` if `std::is_pointer_v<Smart>` is true,
-* otherwise, an unspecified value of either `smart.get()` or `smart.release()`.
+* an unspecified value of either `smart.get()` or `smart.release()` if `std::is_same_v<POINTER_OF(Smart, Pointer), pointer>` is true,
+* otherwise, an unspecified value of `pointer` type.
 
-NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. ``phd::out_ptr::inout_ptr_t``s implementation behaves as if `s->release()` is called in the destructor, specifically to avoid the problem raised by <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in {cpp}.
+NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. ``phd::out_ptr::inout_ptr_t``s implementation behaves as if `s->release()` is called in the destructor/`reset`, specifically to avoid the problem raised by <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in {cpp}.
 
-- Remarks: if an implementation calls `smart.release()` in this function, then it shall not call `smart.release()` in the `reset` function of this type.
+- Remarks: if an implementation calls `smart.release()` in this function, then it shall not call `smart.release()` in the `reset` function of this type. The `pointer` member type may contain additional state, members and/or semantics that is used in subsequent calls to this trait type's `reset` and `get` calls.
+
+- Throws: any exception by the evaluation of the Returns.
+
+NOTE: This allows special smart pointers (e.g., a `shared_ptr`-like type) to pre-allocate internal nodes and potentially fail allocation. This is to avoid potentially allocating in the destructor.
 
 `static pointer* get(Smart& smart, pointer& p) noexcept;`
 
@@ -88,12 +93,7 @@ NOTE: An unspecified value allows an implementation and subsequent program-defin
 * `=smart.release(); smart.reset( static_cast<SP>(p), std::forward<Args>(args)... );` if the expression `smart.reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed,
 * otherwise, `smart.release(); *s = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`.
 
-- Remarks: if an implementation calls `smart.release()` in this function, then it shall not call `smart.release()` in the `constructor` function of this type.
-
-- Throws:
-* no exceptions and is `noexcept` if `std::is_pointer_v<Smart>` is true;
-* any exceptions and is conditionally `noexcept` from `s->release();` and `s->reset( static_cast<SP>(p), std::forward<Args>(args)... );` if the expression `s->reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed;
-* otherwise, any exceptions and is conditionally `noexcept` from `s->release();` and `*s = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`;
+- Remarks: if an implementation calls `smart.release()` in this function, then it shall not call `smart.release()` in the `construct` function of this type.
 
 
 [[ref.inout_ptr.class]]
@@ -105,12 +105,12 @@ namespace phd { namespace out_ptr {
 	template <class Smart, class Pointer, class... Args>
 	class inout_ptr_t {
 	public:
-		inout_ptr_t(Smart&, Args...) noexcept;
+		inout_ptr_t(Smart&, Args...) noexcept(see-below);
 		inout_ptr_t(inout_ptr_t&&) noexcept;
 
 		inout_ptr_t& operator=(inout_ptr_t&&) noexcept;
 
-		~inout_ptr_t() noexcept(see-below);
+		~inout_ptr_t() noexcept;
 
 		operator Pointer const*() noexcept const;
 
@@ -130,11 +130,16 @@ IMPORTANT: If `Smart` is a specialization of `std::shared_ptr` or `boost::shared
 
 NOTE: It is impossible to properly release the managed resource from a `std::shared_ptr` or `boost::shared_ptr` given its shared ownership model.
 
+
 ### Constructors
 
-`inout_ptr_t(Smart& smart, Args... args) noexcept;`
+`inout_ptr_t(Smart& smart, Args... args) noexcept(see-below);`
+
+- Requires: `noexcept(true)` if the evaluation of the Effects is `noexcept`. Otherwise, `noexcept(false)`.
 
 - Effects: initializes `s` with `addressof(smart)`, `a` with `std::forward<Args>(args)...`, and `p` with `inout_ptr_traits<Smart>::construct(s, p, a_args...)`, where `a_args...` are references to the arguments stored in `a`.
+
+- Throws: any exceptions thrown by the evaluation of the Effects.
 
 `inout_ptr_t(inout_ptr&& rhs) noexcept;`
 
@@ -157,16 +162,11 @@ return *this;
 
 ### Destructors
 
-`~out_ptr_t() noexcept(see-below);`
+`~inout_ptr_t() noexcept;`
 
 - Let `SP` be <<../reference.adoc#ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
 
-- Requires: `noexcept(true)` if the evaluation of the Effects is `noexcept`. Otherwise, `noexcept(false)`.
-
 - Effects: Equivalent to: `if (s != nullptr) { traits_type::reset(*s, p, std::forward<Args>(args)...); }`, where `Args` are stored in `a`.
-
-- Throws: anything thrown by the evaluation of the Effects.
-
 
 
 ### Conversions

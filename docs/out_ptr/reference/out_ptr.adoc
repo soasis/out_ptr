@@ -43,13 +43,13 @@ namespace phd { namespace out_ptr {
 		using pointer = POINTER_OF_OR(Smart, Pointer);
 
 		template <typename... Args>
-		static pointer construct(Smart& s, Args&&... args) noexcept;
+		static pointer construct(Smart& s, Args&&... args);
 
 		// if program-specialized, optional
 		static pointer* get(Smart& s, pointer& p) noexcept;
 
 		template <typename... Args>
-		static void reset(Smart& s, pointer& p, Args&&... args) noexcept(see-below);
+		static void reset(Smart& s, pointer& p, Args&&... args) noexcept;
 	};
 
 }}
@@ -67,9 +67,18 @@ namespace phd { namespace out_ptr {
 
 ### Static Member Functions
 
-`static pointer construct(Smart&, Args&&...) noexcept;`
+`static pointer construct(Smart&, Args&&...);`
 
-- Returns: a value initialization of `pointer`.
+- Returns: Equivalent to:
+* `smart` if `std::is_pointer_v<Smart>` is true,
+* a value initialization of `pointer` if `std::is_same_v<POINTER_OF(Smart, Pointer), pointer>` is true,
+* otherwise, an unspecified value of `pointer` type.
+
+- Remarks: the `pointer` member type may contain additional members, state, and/or semantics that is used in subsequent calls to this traits type's `reset` and `get` calls.
+
+- Throws: any exception by evaluation of Returns.
+
+NOTE: This allows special smart pointers (e.g., a `shared_ptr`-like type) to pre-allocate internal nodes and potentially fail allocation. This is to avoid potentially allocating and throwing in the destructor.
 
 `static pointer* get(Smart& smart, pointer& p) noexcept;`
 
@@ -83,11 +92,6 @@ namespace phd { namespace out_ptr {
 * `smart.reset( static_cast<SP>(p), std::forward<Args>(args)... );` if `reset` is a valid member function on `Smart`
 * otherwise `smart = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`.
 
-- Throws:
-* no exceptions and is `noexcept` if `std::is_pointer_v<Smart>` is true;
-* any exceptions and is conditionally `noexcept` from `smart.reset( static_cast<SP>(p), std::forward<Args>(args)... );` if the expression `s->reset(static_cast<SP>(p), std::forward<Args>(args)...)` is well-formed;
-* otherwise, any exceptions and is conditionally `noexcept` from `smart = Smart( static_cast<SP>(p), std::forward<Args>(args)... );`;
-
 
 [[ref.out_ptr.class]]
 ### class template `phd::out_ptr::out_ptr_t`
@@ -98,12 +102,12 @@ namespace phd { namespace out_ptr {
 	template <class Smart, class Pointer, class... Args>
 	class out_ptr_t {
 	public:
-		out_ptr_t(Smart&, Args...) noexcept;
+		out_ptr_t(Smart&, Args...) noexcept(see-below);
 		out_ptr_t(out_ptr_t&&) noexcept;
 
 		out_ptr_t& operator=(out_ptr_t&&) noexcept;
 
-		~out_ptr_t() noexcept(see-below);
+		~out_ptr_t() noexcept;
 
 		operator Pointer*() const noexcept;
 
@@ -126,9 +130,13 @@ NOTE: It is typically a user error to reset a `shared_ptr` without specifying a 
 
 ### Constructors
 
-`out_ptr_t(Smart& smart, Args&&... args) noexcept;`
+`out_ptr_t(Smart& smart, Args&&... args) noexcept(see-below);`
+
+- Requires: `noexcept(true)` if the evaluation of the Effects is `noexcept`. Otherwise, `noexcept(false)`.
 
 - Effects: initializes `s` with `addressof(smart)`, `a` with `std::forward<Args>(args)...`, and initializes `p` with `traits_type::construct(smart, a_args...)`, where `a_args...` are references to the arguments stored in `a`.
+
+- Throws: any exception thrown by the evaluation of the Effects.
 
 `out_ptr_t(out_ptr&& rhs) noexcept;`
 
@@ -151,16 +159,11 @@ return *this;
 
 ### Destructors
 
-`~out_ptr_t() noexcept(see-below);`
+`~out_ptr_t() noexcept;`
 
 - Let `SP` be <<../reference.adoc#ref.def, `POINTER_OF_OR(Smart, Pointer)`>>.
 
-- Requires: `noexcept(true)` if the evaluation of the Effects is `noexcept`. Otherwise, `noexcept(false)`.
-
 - Effects: Equivalent to: `if (s != nullptr) { traits_type::reset(*s, p, std::forward<Args>(args)...); }`, where `Args` are stored in `a`.
-
-- Throws: anything thrown by the evaluation of the Effects.
-
 
 
 ### Conversions

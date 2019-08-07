@@ -19,7 +19,49 @@ ThePhD
 :table-caption: Illustration
 :docinfo: private-footer
 
-This library automates the `.reset(...)` call with `phd::out_ptr::out_ptr(...)` wrapping an argument passed to a C-style function taking a `$$T**$$` argument. Additionally, it automates the `.release(...)` and `.reset(...)` paradigm with `phd::out_ptr::inout_ptr(...)` in cases where the `T**` argument passed to the function will both delete and then allocate the resource being handled.
+So, you have code that looks like this:
+
+```
+foo_t* new_foo;
+if (!create_foo(&new_foo)) {
+  // etc. ...
+}
+```
+
+And it's not just one bit. Hundreds, maybe even thousands of calls like this are scatted all throughout you code base. You know about smart pointers, and you want to turn it into something like this for better exception safety and all that RAII goodness you hear about:
+
+```
+std::unique_ptr<foo_t> new_foo;
+if (!create_foo(new_foo)) {
+  // etc. ...
+}
+```
+
+Or, this:
+
+```
+std::unique_ptr<foo_t> new_foo;
+if (!create_foo(&new_foo)) {
+  // etc. ...
+}
+```
+
+Doing this by hand is increasingly difficult with the number of calls you need to make. Writing tooling to generate code to wrap functions to return ``std::unique_ptr`` and morph the functions into something that returns a smart pointer is also a non-starter that will take you too much time.
+
+With this library, you now can do exactly this at the call site:
+
+```
+using pop = phd::out_ptr;
+
+std::unique_ptr<foo_t> new_foo;
+if (!create_foo(pop::out_ptr(new_foo))) {
+  // etc. ...
+}
+```
+
+phd.out_ptr provides the a way to have C code retain identical semantics to the original C code written to handle these resources while helping code work with C APIs. It ensures ``new_foo`` is guaranteed to be treated in a RAII manner. Thus, we get increased exception safety, memory leak mitigation, and all the other benefits of RAII.
+
+More formally, this library automates the `.reset(...)` call with `phd::out_ptr::out_ptr(...)` wrapping an argument passed to a C-style function taking a `$$T**$$` argument. Additionally, it automates the `.release(...)` and `.reset(...)` paradigm with `phd::out_ptr::inout_ptr(...)` in cases where the `T**` argument passed to the function will both delete and then allocate the resource being handled.
 
 Additional optimizations are implemented within the library to ensure good performance by default for a myriad of types, including `boost::movelib:unique_ptr` and `std::unique_ptr`. It also helps catch small errors in using `shared_ptr`-types reset calls, and works out-of-the-box for many other types including the upcoming `std::retain_ptr`, `phd::intrusive_ptr`, and any other types which follow the `.reset(...)`/`.release()` paradigm (or have constructors that behave similarly).
 

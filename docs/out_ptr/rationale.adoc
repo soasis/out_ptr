@@ -66,6 +66,4 @@ The traits type (as in `std::allocator_traits`, not `std::char_trats`) customiza
 
 ## noexcept destructors, or ...?
 
-This library has conditionally `noexcept` destructors. They were originally noexcept, implying that failure to `.reset()` (as would be the case for, say, a `std::shared_ptr` or `boost::shared_ptr`) would result in termination. Many saw this as a step back from progress. Therefore, the design was modified to be novel and introduce potentially throwing destructors.
-
-If the class type used with `phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr` is noexcept, then the destructor is `noexcept`. Otherwise, it is not. This allows exceptions to be thrown out of failed `.reset()` calls and into the function's regular scope, rather than just immediately terminating inside of the `out_ptr`/`inout_ptr` destructor.
+This library has regular, Standard Library Approved™ `noexcept` destructors. For cases where there is a potential `.reset()` operation that can throw (e.g., an allocation is done by `std::shared_ptr::reset` or some other smart pointer type), one can specialize for these types and do potentially failing operations in ``out_ptr``'s constructor rather than its destructor. The constructors of these types are allowed to be non-noexcept, if the implementation calls for it.
