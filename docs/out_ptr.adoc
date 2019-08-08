@@ -29,7 +29,7 @@ if (!create_foo(&new_foo)) {
 }
 ----
 
-And it's not just one bit. Hundreds, maybe even thousands of calls like this are scatted all throughout you code base. You know about smart pointers, and you want to turn it into something like this for better exception safety and all that RAII goodness you hear about:
+And it's not just one bit. Hundreds, maybe even thousands of calls like this are scatted all throughout your code base. You know about smart pointers, and you want to turn it into something like this for better exception safety and all that RAII goodness you hear about:
 
 [source,cpp]
 ----
@@ -49,7 +49,7 @@ if (!create_foo(&new_foo)) {
 }
 ----
 
-Doing this by hand is increasingly difficult with the number of calls you need to make. Writing tooling to generate code to wrap functions to return ``std::unique_ptr`` and morph the functions into something that returns a smart pointer is also a non-starter that will take you too much time.
+The problem is, the above doesn't compile. You can manually wrap the raw pointer version into a new function, but if you have hundreds of thousands of these calls that's just not a good use of your time. Writing tooling to generate code to wrap functions to return ``std::unique_ptr`` and morph the functions into something that returns a smart pointer is also a non-starter that will take you too much time.
 
 With this library, you now can do exactly this at the call site:
 
@@ -62,6 +62,8 @@ if (!create_foo(pop::out_ptr(new_foo))) {
   // etc. ...
 }
 ----
+
+And that's pretty much the point!
 
 phd.out_ptr provides the a way to have C code retain identical semantics to the original C code written to handle these resources while helping code work with C APIs. It ensures ``new_foo`` is guaranteed to be treated in a RAII manner. Thus, we get increased exception safety, memory leak mitigation, and all the other benefits of RAII.
 
