@@ -54,7 +54,7 @@ namespace phd { namespace out_ptr {
 			};
 		}
 
-		static Pointer* get(Smart& s, pointer& p) noexcept {
+		static Pointer* get(Smart&, pointer& p) noexcept {
 			return p.target;
 		}
 

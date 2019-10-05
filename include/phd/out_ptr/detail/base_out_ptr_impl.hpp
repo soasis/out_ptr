@@ -11,6 +11,7 @@
 #ifndef PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 #define PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 
+#include <phd/out_ptr/necessary_arity.hpp>
 #include <phd/out_ptr/detail/is_specialization_of.hpp>
 #include <phd/out_ptr/detail/customization_forward.hpp>
 #include <phd/out_ptr/detail/inout_ptr_traits.hpp>
@@ -47,12 +48,11 @@ namespace detail {
 		Smart* m_smart_ptr;
 		storage m_target_ptr;
 
-		static_assert(!(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, ::boost::shared_ptr>::value)
-				|| (sizeof...(Indices) > 0), // clang-format hack
-			"shared_ptr<T> must pass a deleter in alongside the out_ptr "
-			"so when reset is called the deleter can be properly "
-			"initialized, otherwise the deleter will be defaulted "
-			"by the shared_ptr<T>::reset() call!");
+		static_assert(sizeof...(Indices) >= necessary_arity_v<Smart, std::tuple_element_t<Indices, Base>...>, // clang-format hack
+			"out_ptr requires certain arguments to be passed in for use with this type "
+			"(e.g. shared_ptr<T> must pass a deleter in so when reset is called the "
+			"deleter can be properly initialized, otherwise the deleter will be "
+			"defaulted by the shared_ptr<T>::reset() call!)");
 
 		base_out_ptr_impl(Smart& ptr, Base&& args, storage initial) noexcept
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {

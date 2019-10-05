@@ -64,7 +64,7 @@ namespace phd { namespace out_ptr {
 			return state.target;
 		}
 
-		static void reset(Smart& s, pointer& state) noexcept {
+		static void reset(Smart&, pointer&) noexcept {
 			// value already written directly into the pointer
 		}
 	};
