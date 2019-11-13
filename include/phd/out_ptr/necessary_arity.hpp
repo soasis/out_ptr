@@ -27,10 +27,11 @@ namespace out_ptr {
 	template <typename Smart, typename... Args>
 	class necessary_arity : public detail::necessary_arity_impl<Smart, Args...> {};
 
-	template <typename Smart, typename... Args>
 #if __cplusplus >= 201703LL
+	template <typename Smart, typename... Args>
 	inline static constexpr std::size_t necessary_arity_v = necessary_arity<Smart, Args...>::value;
-#else
+#elif __cplusplus >= 201402LL
+	template <typename Smart, typename... Args>
 	static constexpr std::size_t necessary_arity_v = necessary_arity<Smart, Args...>::value;
 #endif
 }
