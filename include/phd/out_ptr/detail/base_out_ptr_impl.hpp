@@ -48,7 +48,7 @@ namespace detail {
 		Smart* m_smart_ptr;
 		storage m_target_ptr;
 
-		static_assert(sizeof...(Indices) >= necessary_arity_v<Smart, std::tuple_element_t<Indices, Base>...>, // clang-format hack
+		static_assert(sizeof...(Indices) >= necessary_arity_v<Smart, typename std::tuple_element<Indices, Base>...>::type, // clang-format hack
 			"out_ptr requires certain arguments to be passed in for use with this type "
 			"(e.g. shared_ptr<T> must pass a deleter in so when reset is called the "
 			"deleter can be properly initialized, otherwise the deleter will be "
