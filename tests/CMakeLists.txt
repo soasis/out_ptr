@@ -7,7 +7,9 @@
 #  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 # Test dependency: catch2
-add_subdirectory(../vendor/catch2 "vendor/catch2")
+if (NOT TARGET Catch2::Catch2)
+	add_subdirectory(../vendor/Catch2 "vendor/Catch2")
+endif()
 
 set(phd.out_ptr.tests_sources
 	"source/clever_out_ptr_test.cpp"
