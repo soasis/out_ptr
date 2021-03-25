@@ -24,11 +24,6 @@ foreach (test_name ${ztd_out_ptr_failure_tests_sources})
 	set(test_file source/${test_name})
 	set(test_target ztd.out_ptr.fail.${test_name})
 	add_executable(${test_target} ${test_file} "source/main.cpp")
-	if (MSVC)
-	else()
-		target_compile_options(${test_target} 
-			PRIVATE -std=c++11)
-	endif()
 	set_target_properties(${test_target} 
 		PROPERTIES 
 		EXCLUDE_FROM_ALL TRUE

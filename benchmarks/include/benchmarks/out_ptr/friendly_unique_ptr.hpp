@@ -23,7 +23,7 @@
 
 namespace std {
 
-#if defined(_MSC_VER)
+#if defined(_YVALS_CORE_H_)
 
 #ifndef _NOEXCEPT
 #define _NOEXCEPT noexcept
@@ -51,11 +51,11 @@ namespace std {
 		: _Mypair(_Zero_then_variadic_args_t(), _Ptr) { // construct with compatible pointer
 		}
 
-		_NODISCARD _Dx& get_deleter() noexcept { // return reference to deleter
+		_Dx& get_deleter() noexcept { // return reference to deleter
 			return (_Mypair._Get_first());
 		}
 
-		_NODISCARD const _Dx& get_deleter() const noexcept { // return const reference to deleter
+		 const _Dx& get_deleter() const noexcept { // return const reference to deleter
 			return (_Mypair._Get_first());
 		}
 
@@ -190,23 +190,23 @@ namespace std {
 			}
 		}
 
-		_NODISCARD add_lvalue_reference_t<_Ty> operator*() const { // return reference to object
+		add_lvalue_reference_t<_Ty> operator*() const { // return reference to object
 			return (*get());
 		}
 
-		_NODISCARD pointer operator->() const noexcept { // return pointer to class object
+		pointer operator->() const noexcept { // return pointer to class object
 			return (this->_Myptr());
 		}
 
-		_NODISCARD pointer get() const noexcept { // return pointer to object
+		pointer get() const noexcept { // return pointer to object
 			return (this->_Myptr());
 		}
 
-		_NODISCARD pointer& friendly_get() noexcept { // return pointer to object
+		pointer& friendly_get() noexcept { // return pointer to object
 			return (this->_Myptr());
 		}
 
-		_NODISCARD const pointer& friendly_get() const noexcept { // return pointer to object
+		const pointer& friendly_get() const noexcept { // return pointer to object
 			return (this->_Myptr());
 		}
 

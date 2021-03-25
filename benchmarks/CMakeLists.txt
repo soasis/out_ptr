@@ -45,7 +45,7 @@ if (MSVC)
 		PRIVATE /W4)
 else()
 	target_compile_options(phd.out_ptr.benchmarks
-		PRIVATE -std=c++11 -Wpedantic -Wall -Werror)
+		PRIVATE -Wpedantic -Wall -Werror)
 endif()
 target_link_libraries(phd.out_ptr.benchmarks
 	PRIVATE 
