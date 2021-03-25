@@ -1,23 +1,31 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #pragma once
 
-#ifndef PHD_OUT_PTR_POINTER_OF_HPP
-#define PHD_OUT_PTR_POINTER_OF_HPP
+#ifndef ZTD_OUT_PTR_POINTER_OF_HPP
+#define ZTD_OUT_PTR_POINTER_OF_HPP
 
 #include <type_traits>
 #include <memory>
 
-namespace phd {
+namespace ztd {
 namespace out_ptr {
 
-	namespace detail {
+	namespace op_detail {
 
 		template <typename... Ts>
 		struct make_void { typedef void type; };
@@ -30,7 +38,7 @@ namespace out_ptr {
 		};
 
 		template <typename T, typename U>
-		struct element_type<T, U, detail::void_t<typename T::element_type>> {
+		struct element_type<T, U, op_detail::void_t<typename T::element_type>> {
 			using type = typename T::element_type*;
 		};
 
@@ -39,7 +47,7 @@ namespace out_ptr {
 		};
 
 		template <typename T, typename U>
-		struct pointer_of_or<T, U, detail::void_t<typename T::pointer>> {
+		struct pointer_of_or<T, U, op_detail::void_t<typename T::pointer>> {
 			using type = typename T::pointer;
 		};
 
@@ -85,17 +93,17 @@ namespace out_ptr {
 		};
 
 		template <typename T>
-		struct is_releasable<T, detail::void_t<decltype(std::declval<T&>().release())>> : std::true_type {
+		struct is_releasable<T, op_detail::void_t<decltype(std::declval<T&>().release())>> : std::true_type {
 		};
 
 		template <typename T, typename... Args>
 		struct is_resetable : std::integral_constant<bool, is_resetable_test<T, Args...>::value> {
 		};
 
-	} // namespace detail
+	} // namespace op_detail
 
 	template <typename T, typename U>
-	struct pointer_of_or : detail::pointer_of_or<T, U> {
+	struct pointer_of_or : op_detail::pointer_of_or<T, U> {
 	};
 
 	template <typename T, typename U>
@@ -109,12 +117,12 @@ namespace out_ptr {
 
 	template <typename T, typename Dx>
 	struct pointer_type {
-		typedef typename detail::pointer_typedef_enable_if<detail::has_typedef_pointer<Dx>::value, Dx, T>::type type;
+		typedef typename op_detail::pointer_typedef_enable_if<op_detail::has_typedef_pointer<Dx>::value, Dx, T>::type type;
 	};
 
 	template <typename T, typename D>
 	using pointer_type_t = typename pointer_type<T, D>::type;
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 
-#endif // PHD_OUT_PTR_POINTER_OF_HPP
+#endif // ZTD_OUT_PTR_POINTER_OF_HPP

@@ -1,21 +1,27 @@
-////
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
-////
 
 # inout_ptr
 
 [[ref.inout_ptr.function]]
-### `phd::out_ptr::inout_ptr`
+### `ztd::out_ptr::inout_ptr`
 
 [source, cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
 	template <class Pointer, class Smart, class... Args>
 	inout_ptr_t<Smart, Pointer, Args...> inout_ptr(Smart& s, Args&&... args) noexcept;
@@ -32,11 +38,11 @@ namespace phd { namespace out_ptr {
 
 
 [[ref.inout_ptr.traits]]
-### class template `phd::out_ptr::inout_ptr_traits`
+### class template `ztd::out_ptr::inout_ptr_traits`
 ----
 [source, cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
 	template <class Pointer, class Smart>
 	class inout_ptr_traits {
@@ -70,7 +76,7 @@ namespace phd { namespace out_ptr {
 * an unspecified value of either `smart.get()` or `smart.release()` if `std::is_same_v<POINTER_OF(Smart, Pointer), pointer>` is true,
 * otherwise, an unspecified value of `pointer` type.
 
-NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. ``phd::out_ptr::inout_ptr_t``s implementation behaves as if `s->release()` is called in the destructor/`reset`, specifically to avoid the problem raised by <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in {cpp}.
+NOTE: An unspecified value allows an implementation and subsequent program-defined specializations to pick an option which fits an implementation's purpose. ``ztd::out_ptr::inout_ptr_t``s implementation behaves as if `s->release()` is called in the destructor/`reset`, specifically to avoid the problem raised by <<../caveats.adoc#caveat.order, Order of Evaluation>> issues in {cpp}.
 
 - Remarks: if an implementation calls `smart.release()` in this function, then it shall not call `smart.release()` in the `reset` function of this type. The `pointer` member type may contain additional state, members and/or semantics that is used in subsequent calls to this trait type's `reset` and `get` calls.
 
@@ -99,11 +105,11 @@ NOTE: This allows special smart pointers (e.g., a `shared_ptr`-like type) to pre
 
 
 [[ref.inout_ptr.class]]
----- `phd::out_ptr::inout_ptr_t`
+---- `ztd::out_ptr::inout_ptr_t`
 
 [source, cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
 	template <class Smart, class Pointer, class... Args>
 	class inout_ptr_t {

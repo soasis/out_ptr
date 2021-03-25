@@ -1,4 +1,4 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+//  Copyright ⓒ 2018-2021 ThePhD.
 //
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
@@ -8,16 +8,16 @@
 
 #pragma once
 
-#ifndef PHD_HANDLE_HANDLE_HPP
-#define PHD_HANDLE_HANDLE_HPP
+#ifndef ZTD_HANDLE_HANDLE_HPP
+#define ZTD_HANDLE_HANDLE_HPP
 
-#include <phd/out_ptr/pointer_of.hpp>
+#include <ztd/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
 #include <utility>
 #include <memory>
 
-namespace phd {
+namespace ztd {
 
 	template <typename T>
 	struct default_handle_deleter {
@@ -50,7 +50,7 @@ namespace phd {
 		}
 	};
 
-	namespace detail {
+	namespace op_detail {
 
 		struct has_write_null {
 			template <typename T, typename P,
@@ -104,13 +104,13 @@ namespace phd {
 			using yes_no = decltype(has_is_null::test<D, typename std::remove_const<typename std::remove_reference<P>::type>::type>(0));
 			return is_null(yes_no(), deleter, std::forward<P>(p));
 		}
-	} // namespace detail
+	} // namespace op_detail
 
 	template <typename T,
 		typename Dx = default_handle_deleter<T>>
 	struct handle : Dx {
 	public:
-		using pointer	 = phd::out_ptr::pointer_type_t<T, Dx>;
+		using pointer	 = ztd::out_ptr::pointer_type_t<T, Dx>;
 		using deleter_type = Dx;
 
 	private:
@@ -128,7 +128,7 @@ namespace phd {
 
 		handle(std::nullptr_t) noexcept {
 			deleter_type& deleter = get_deleter();
-			detail::write_null(deleter, res);
+			op_detail::write_null(deleter, res);
 		}
 
 		handle(pointer h, deleter_type d) noexcept
@@ -138,7 +138,7 @@ namespace phd {
 		handle(std::nullptr_t, deleter_type d) noexcept
 		: deleter_base(std::move(d)) {
 			deleter_type& deleter = get_deleter();
-			detail::write_null(deleter, res);
+			op_detail::write_null(deleter, res);
 		}
 
 		template <typename... DxArgs>
@@ -150,7 +150,7 @@ namespace phd {
 		handle(std::nullptr_t, DxArgs&&... dx_args) noexcept
 		: deleter_base(std::forward<Dx>(dx_args)...) {
 			deleter_type& deleter = get_deleter();
-			detail::write_null(deleter, res);
+			op_detail::write_null(deleter, res);
 		}
 
 		handle(const handle& nocopy) noexcept = delete;
@@ -182,23 +182,23 @@ namespace phd {
 		pointer get_null() const noexcept {
 			pointer p;
 			const deleter_type& deleter = this->get_deleter();
-			detail::write_null(deleter, p);
+			op_detail::write_null(deleter, p);
 			return p;
 		}
 
 		static pointer get_null(const deleter_type& deleter) noexcept {
 			pointer p;
-			detail::write_null(deleter, p);
+			op_detail::write_null(deleter, p);
 			return p;
 		}
 
 		bool is_null() const noexcept {
 			const deleter_type& deleter = this->get_deleter();
-			return detail::is_null(deleter, res);
+			return op_detail::is_null(deleter, res);
 		}
 
 		static bool is_null(const deleter_type& deleter, pointer& res) noexcept {
-			return detail::is_null(deleter, res);
+			return op_detail::is_null(deleter, res);
 		}
 
 		pointer& get() noexcept {
@@ -220,13 +220,13 @@ namespace phd {
 			deleter_type& deleter = this->get_deleter();
 			if (!is_null())
 				deleter(res);
-			detail::write_null(deleter, res);
+			op_detail::write_null(deleter, res);
 		}
 
 		pointer release() noexcept {
 			pointer rel		  = std::move(res);
 			deleter_type& deleter = this->get_deleter();
-			detail::write_null(deleter, res);
+			op_detail::write_null(deleter, res);
 			return rel;
 		}
 
@@ -257,7 +257,7 @@ namespace phd {
 			deleter_type& deleter = this->get_deleter();
 			if (!is_null())
 				deleter(res);
-			detail::write_null(deleter, res);
+			op_detail::write_null(deleter, res);
 		}
 	};
 
@@ -302,6 +302,6 @@ namespace phd {
 	inline bool operator!=(const handle<T, Dx>& left, typename handle<T, Dx>::pointer right) noexcept {
 		return left.get() != right;
 	}
-} // namespace phd
+} // namespace ztd
 
-#endif // PHD_HANDLE_HANDLE_HPP
+#endif // ZTD_HANDLE_HANDLE_HPP

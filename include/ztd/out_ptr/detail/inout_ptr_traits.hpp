@@ -1,25 +1,33 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #pragma once
 
-#ifndef PHD_OUT_PTR_DETAIL_INOUT_PTR_TRAITS_HPP
-#define PHD_OUT_PTR_DETAIL_INOUT_PTR_TRAITS_HPP
+#ifndef ZTD_OUT_PTR_DETAIL_INOUT_PTR_TRAITS_HPP
+#define ZTD_OUT_PTR_DETAIL_INOUT_PTR_TRAITS_HPP
 
-#include <phd/out_ptr/detail/out_ptr_traits.hpp>
-#include <phd/out_ptr/pointer_of.hpp>
+#include <ztd/out_ptr/detail/out_ptr_traits.hpp>
+#include <ztd/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
 
-namespace phd {
+namespace ztd {
 namespace out_ptr {
 
-	namespace detail {
+	namespace op_detail {
 		template <typename Smart>
 		void call_release(std::true_type, Smart& s) noexcept(noexcept(std::declval<Smart&>().release())) {
 			s.release();
@@ -29,7 +37,7 @@ namespace out_ptr {
 		void call_release(std::false_type, Smart&) noexcept {
 			static_assert(std::is_pointer<Smart>::value, "the type that does not have release called on it must be a pointer type");
 		}
-	} // namespace detail
+	} // namespace op_detail
 
 	template <typename Smart, typename Pointer>
 	class inout_ptr_traits {
@@ -62,11 +70,11 @@ namespace out_ptr {
 
 		template <typename... Args>
 		static void reset(Smart& s, pointer& p, Args&&... args) noexcept {
-			detail::call_release(detail::is_releasable<Smart>(), s);
+			op_detail::call_release(op_detail::is_releasable<Smart>(), s);
 			defer_t::reset(s, p, std::forward<Args>(args)...);
 		}
 	};
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 
-#endif // PHD_OUT_PTR_DETAIL_INOUT_PTR_TRAITS_HPP
+#endif // ZTD_OUT_PTR_DETAIL_INOUT_PTR_TRAITS_HPP

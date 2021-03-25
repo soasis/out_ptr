@@ -1,12 +1,18 @@
-////
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
-////
 
 [[ref]]
 # Reference
@@ -30,22 +36,22 @@ The following are definitions for some meta-functions done on types. If you see 
 * `T::pointer` if the qualified-id `T::pointer` is valid and denotes a type, or
 * otherwise, `typename T::element_type*` if the qualified-id `T::element_type` is valid and denotes a type,
 * otherwise, `U`.
-* This is defined as `phd::out_ptr::pointer_of_or` and `phd::out_ptr::pointer_of_or_t`
+* This is defined as `ztd::out_ptr::pointer_of_or` and `ztd::out_ptr::pointer_of_or_t`
 
 
 [[ref.def.pointer_of]]
 - Let `POINTER_OF(T)` denote a type that is defined as `POINTER_OF_OR(T, typename std::pointer_traits<T>::element_type*)`
-* This is defined as `phd::out_ptr::pointer_of` and `phd::out_ptr::pointer_of_t`
+* This is defined as `ztd::out_ptr::pointer_of` and `ztd::out_ptr::pointer_of_t`
 
 
 [[ref.syn]]
 ## Synopsis
 
-The contents of the library are in namespace phd.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions, `out_ptr_t` and `inout_ptr_t`:
+The contents of the library are in namespace ztd.OutPtr. There are two template functions: `out_ptr` and `inout_ptr`. There are two types that correspond to each of the 2 template functions, `out_ptr_t` and `inout_ptr_t`:
 
 [source,cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 	
 	template <class Smart, class Pointer, class... Args>
 	class out_ptr_t;
@@ -64,14 +70,14 @@ namespace phd { namespace out_ptr {
 	
 	template <class Smart, class... Args>
 	inout_ptr_t<Smart, POINTER_OF(SMART), Args...> inout_ptr(Smart& s, Args&&... args) noexcept 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 There are also 2 traits types which can be specialized, `out_ptr_traits` and `inout_ptr_traits`:
 
 [source,cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 	
 	template <class Smart, class Pointer>
 	class out_ptr_traits;
@@ -79,7 +85,7 @@ namespace phd { namespace out_ptr {
 	template <class Smart, class Pointer>
 	class inout_ptr_traits;
 	
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 You can read about each of these, below.

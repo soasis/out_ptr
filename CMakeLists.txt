@@ -1,28 +1,37 @@
-#  Copyright ⓒ 2018-2019 ThePhD.
+#  Copyright ⓒ 2018-2021 ThePhD.
 #
-#  Distributed under the Boost Software License, Version 1.0. (See
-#  accompanying file LICENSE or copy at
-#  http://www.boost.org/LICENSE_1_0.txt)
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 #  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 project(phd.out_ptr VERSION 1.0.0 DESCRIPTION "A library for having output pointers in C-like functions work well with C++ smart pointer types." LANGUAGES C CXX)
 
 # # Inclusion Work
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
+include(FetchContent)
 
 # # Top Level Directories
 # Check if this is the top-level project or not
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    set(PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT true)
+    set(ZTD_OUT_PTR_IS_TOP_LEVEL_PROJECT true)
 else()
-    set(PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT false)
+    set(ZTD_OUT_PTR_IS_TOP_LEVEL_PROJECT false)
 endif()
 
 # Modify bad flags / change defaults if that is the case
-if (PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT)
+if (ZTD_OUT_PTR_IS_TOP_LEVEL_PROJECT)
 	if (CMAKE_SIZEOF_VOID_P EQUAL 4)
 		set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CFG_INT_DIR}/lib")
 		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/x86/${CFG_INT_DIR}/bin")
@@ -40,17 +49,17 @@ if (PHD_OUT_PTR_IS_TOP_LEVEL_PROJECT)
 endif()
 
 # # Options
-option(PHD_OUT_PTR_CI "Whether or not we are in continguous integration environment" OFF)
-option(PHD_OUT_PTR_TESTS "Enable build of tests" OFF)
-option(PHD_OUT_PTR_EXAMPLES "Enable build of examples" OFF)
-option(PHD_OUT_PTR_BENCHMARKS "Enable build of benchmarks" OFF)
+option(ZTD_OUT_PTR_CI "Whether or not we are in continguous integration environment" OFF)
+option(ZTD_OUT_PTR_TESTS "Enable build of tests" OFF)
+option(ZTD_OUT_PTR_EXAMPLES "Enable build of examples" OFF)
+option(ZTD_OUT_PTR_BENCHMARKS "Enable build of benchmarks" OFF)
 
 
 # # Targets
-add_library(phd_out_ptr INTERFACE)
-add_library(phd::out_ptr ALIAS phd_out_ptr)
+add_library(ztd_out_ptr INTERFACE)
+add_library(ztd::out_ptr ALIAS ztd_out_ptr)
 
-target_include_directories(phd_out_ptr INTERFACE 
+target_include_directories(ztd_out_ptr INTERFACE 
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
 	$<INSTALL_INTERFACE:include>
 )
@@ -58,66 +67,62 @@ target_include_directories(phd_out_ptr INTERFACE
 # # Config / Version packaging
 # Version configurations
 configure_package_config_file(
-	cmake/phd_out_ptr-config.cmake.in
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config.cmake"
-	INSTALL_DESTINATION lib/cmake/phd/out_ptr
+	cmake/ztd_out_ptr-config.cmake.in
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd/out_ptr-config.cmake"
+	INSTALL_DESTINATION lib/cmake/ztd/out_ptr
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config-version.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd/out_ptr-config-version.cmake"
 	COMPATIBILITY AnyNewerVersion)
 
-export(TARGETS phd_out_ptr FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-targets.cmake")
+export(TARGETS ztd_out_ptr FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd/out_ptr-targets.cmake")
 
-set(phd_out_ptr_sources 
-	"include/phd/out_ptr.hpp"
-	"include/phd/out_ptr/out_ptr.hpp"
-	"include/phd/out_ptr/inout_ptr.hpp"
-	"include/phd/out_ptr/simple_out_ptr.hpp"
-	"include/phd/out_ptr/simple_inout_ptr.hpp"
-	"include/phd/out_ptr/clever_out_ptr.hpp"
-	"include/phd/out_ptr/clever_inout_ptr.hpp"
+file(GLOB_RECURSE ztd_out_ptr_sources
+	LIST_DIRECTORIES FALSE
+	include/ztd/*.*
 )
 
-#target_sources(phd_out_ptr INTERFACE 
-#	$<BUILD_INTERFACE:${phd_out_ptr_sources}>  
-#	$<INSTALL_INTERFACE:${phd_out_ptr_sources}>
+#target_sources(ztd_out_ptr INTERFACE 
+#	$<BUILD_INTERFACE:${ztd_out_ptr_sources}>  
+#	$<INSTALL_INTERFACE:${ztd_out_ptr_sources}>
 #)
-set_target_properties(phd_out_ptr
+set_target_properties(ztd_out_ptr
 	PROPERTIES
-	EXPORT_NAME phd::out_ptr
+	EXPORT_NAME ztd::out_ptr
 )
 
-#install(TARGETS phd_out_ptr
-#	EXPORT phd_out_ptr)
+#install(TARGETS ztd_out_ptr
+#	EXPORT ztd_out_ptr)
 
-#install(EXPORT phd_out_ptr
-#	FILE phd_out_ptr-targets.cmake
-#	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/phd/out_ptr")
+#install(EXPORT ztd_out_ptr
+#	FILE ztd_out_ptr-targets.cmake
+#	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/ztd/out_ptr")
 
-#install(DIRECTORY "include/phd/out_ptr"
+#install(DIRECTORY "include/ztd/out_ptr"
 #	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 #install(FILES
-#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config.cmake"
-#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/phd/out_ptr-config-version.cmake"
+#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd/out_ptr-config.cmake"
+#	"${CMAKE_CURRENT_BINARY_DIR}/cmake/ztd/out_ptr-config-version.cmake"
 #	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/boost")
 
-if (PHD_OUT_PTR_BENCHMARKS OR PHD_OUT_PTR_TESTS OR PHD_OUT_PTR_EXAMPLES)
+if (ZTD_OUT_PTR_BENCHMARKS OR ZTD_OUT_PTR_TESTS OR ZTD_OUT_PTR_EXAMPLES)
 	# test and benchmark deps
-	add_subdirectory(vendor/boost/config)
-	add_subdirectory(vendor/boost/core)
-	add_subdirectory(vendor/boost/assert)
-	add_subdirectory(vendor/ficapi)
+	FetchContent_Declare(ficapi
+		GIT_REPOSITORY https://github.com/ThePhD/ficapi.git
+		GIT_TAG origin/main
+	)
+	FetchContent_MakeAvailable(ficapi)
 endif()
 
-if (PHD_OUT_PTR_TESTS)
+if (ZTD_OUT_PTR_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
-endif(PHD_OUT_PTR_TESTS)
-if (PHD_OUT_PTR_BENCHMARKS)
+endif()
+if (ZTD_OUT_PTR_BENCHMARKS)
 	add_subdirectory(benchmarks)
-endif(PHD_OUT_PTR_BENCHMARKS)
-if (PHD_OUT_PTR_EXAMPLES)
+endif()
+if (ZTD_OUT_PTR_EXAMPLES)
 	add_subdirectory(examples)
-endif(PHD_OUT_PTR_EXAMPLES)
+endif()

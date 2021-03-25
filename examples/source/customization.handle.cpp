@@ -1,8 +1,16 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
@@ -11,20 +19,20 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <phd/out_ptr.hpp>
+#include <ztd/out_ptr.hpp>
 
 #include <assert.hpp>
 
 #include <type_traits>
 
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
 	// this is the full out_ptr_t customization point
 	// you can also specialize the inout_ptr_t for that template too
 	template <typename T, typename D, typename Pointer, typename... Args>
-	class inout_ptr_t<phd::handle<T, D>, Pointer, Args...> : std::tuple<Args...> {
+	class inout_ptr_t<ztd::handle<T, D>, Pointer, Args...> : std::tuple<Args...> {
 	private:
-		using Smart		 = phd::handle<T, D>;
+		using Smart		 = ztd::handle<T, D>;
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 		using ArgsTuple	 = std::tuple<Args...>;
 		using Base		 = ArgsTuple;
@@ -61,11 +69,11 @@ namespace phd { namespace out_ptr {
 			// we are fine
 		}
 	};
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 
 int main() {
-	phd::handle<int*, ficapi::int_deleter> p(nullptr);
-	ficapi_re_create(phd::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_int);
+	ztd::handle<int*, ficapi::int_deleter> p(nullptr);
+	ficapi_re_create(ztd::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_int);
 	int* rawp = static_cast<int*>(p.get());
 
 	OUT_PTR_C_ASSERT(rawp != nullptr);

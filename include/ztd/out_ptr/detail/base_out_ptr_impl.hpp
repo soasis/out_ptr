@@ -1,23 +1,31 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #pragma once
 
-#ifndef PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
-#define PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
+#ifndef ZTD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
+#define ZTD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 
-#include <phd/out_ptr/necessary_arity.hpp>
-#include <phd/out_ptr/detail/is_specialization_of.hpp>
-#include <phd/out_ptr/detail/customization_forward.hpp>
-#include <phd/out_ptr/detail/inout_ptr_traits.hpp>
-#include <phd/out_ptr/detail/voidpp_op.hpp>
-#include <phd/out_ptr/pointer_of.hpp>
-#include <phd/out_ptr/detail/integer_sequence.hpp>
+#include <ztd/out_ptr/necessary_arity.hpp>
+#include <ztd/out_ptr/detail/is_specialization_of.hpp>
+#include <ztd/out_ptr/detail/customization_forward.hpp>
+#include <ztd/out_ptr/detail/inout_ptr_traits.hpp>
+#include <ztd/out_ptr/detail/voidpp_op.hpp>
+#include <ztd/out_ptr/pointer_of.hpp>
+#include <ztd/out_ptr/detail/integer_sequence.hpp>
 
 #include <cstdlib>
 #include <type_traits>
@@ -27,24 +35,24 @@
 
 // Only defined for clang version 7 and above
 #if defined(__clang__) && __clang__ >= 7
-#define PHD_OUT_PTR_TRIVIAL_ABI __attribute__((trivial_abi))
+#define ZTD_OUT_PTR_TRIVIAL_ABI __attribute__((trivial_abi))
 #else
-#define PHD_OUT_PTR_TRIVIAL_ABI
+#define ZTD_OUT_PTR_TRIVIAL_ABI
 #endif // Clang or otherwise
 
-namespace phd {
+namespace ztd {
 namespace out_ptr {
-namespace detail {
+namespace op_detail {
 
 	template <typename Smart, typename Pointer, typename Traits, typename Args, typename List>
-	class PHD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl;
+	class ZTD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl;
 
 	template <typename Smart, typename Pointer, typename Traits, typename Base, std::size_t... Indices>
-	class PHD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, phd::out_ptr::detail::index_sequence<Indices...>>
-	: public voidpp_op<base_out_ptr_impl<Smart, Pointer, Traits, Base, phd::out_ptr::detail::index_sequence<Indices...>>, Pointer>, protected Base {
+	class ZTD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, ztd::out_ptr::op_detail::index_sequence<Indices...>>
+	: public voidpp_op<base_out_ptr_impl<Smart, Pointer, Traits, Base, ztd::out_ptr::op_detail::index_sequence<Indices...>>, Pointer>, protected Base {
 	protected:
 		using traits_t = Traits;
-		using storage  = pointer_of_or_t<traits_t, Pointer>;
+		using storage	= pointer_of_or_t<traits_t, Pointer>;
 		Smart* m_smart_ptr;
 		storage m_target_ptr;
 
@@ -89,6 +97,6 @@ namespace detail {
 		}
 	};
 
-}}} // namespace phd::out_ptr::detail
+}}} // namespace ztd::out_ptr::op_detail
 
-#endif // PHD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
+#endif // ZTD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP

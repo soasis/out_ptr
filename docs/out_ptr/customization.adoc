@@ -1,23 +1,29 @@
-////
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
-////
 
 [[customization]]
 # Customization for Your Smart Pointers
 
-Both `phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr` have expectations on the Smart Pointer passed into it as the first argument.
+Both `ztd::out_ptr::out_ptr` and `ztd::out_ptr::inout_ptr` have expectations on the Smart Pointer passed into it as the first argument.
 
-In general, `phd::out_ptr::out_ptr` needs the following 2 things:
+In general, `ztd::out_ptr::out_ptr` needs the following 2 things:
 - A `.get()` call, to retrieve the underlying pointer;
 - and, one of `.reset(pointer, Args...)` or `SmartPointer(pointer, Args...)` to be a well-formed expression.
 
-Additionally, `phd::out_ptr::inout_ptr` has one more additional requirement:
+Additionally, `ztd::out_ptr::inout_ptr` has one more additional requirement:
 - have a `.release()` function to release ownership of the resource so that utilized API can delete it and then re-allocate it.
 
 Therefore, if you have a `.get()` and `.reset()` call, alongside a `.release()` for `inout_ptr`, you are completely fine with the default implementation.
@@ -26,11 +32,11 @@ Therefore, if you have a `.get()` and `.reset()` call, alongside a `.release()` 
 [[customization.point]]
 ## Changing the Defaults
 
-A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<reference/out_ptr.adoc#ref.out_ptr.class, `phd::out_ptr::out_ptr_t`>> or <<reference/inout_ptr.adoc#ref.inout_ptr.class, `phd::out_ptr::inout_ptr_t`>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
+A user can change the default behavior of these types for their classes, so long as they follow the 4 functions specified for either <<reference/out_ptr.adoc#ref.out_ptr.class, `ztd::out_ptr::out_ptr_t`>> or <<reference/inout_ptr.adoc#ref.inout_ptr.class, `ztd::out_ptr::inout_ptr_t`>>. Let us consider a hypothetical class `handle` in a library and namespace named `phd`, where it is a more specialized version of `std::unique_ptr` that does not necessarily assume pointer semantics for the type. It allows one to customize how nullability is checked, what null value is written into the type, and more by the deleter (to make it work for an e.g. `int`):
 
 [source, cpp]
 ----
-namespace phd {
+namespace ztd {
 
 	template <typename T>
 	struct default_handle_deleter {
@@ -62,7 +68,7 @@ namespace phd {
 		bool is_null() const noexcept;
 	};
 
-} // namespace phd
+} // namespace ztd
 ----
 
 This type may require special support. For example, this might represent a handle to a resource, but that handle is only a `uint32` (e.g., `GLuint` for OpenGL and similar). There are 2 levels of customization support: one for specializing a struct to control every detail, and one to control just a few static free functions within a traits type (similary to how `std::allocator_traits` behaves). A user may control one, or the other. The struct specialization has more control and is lower-level, and is checked in precedence and the customization point using traits. The traits customization point can be simpler and take less lines to write.
@@ -71,47 +77,47 @@ This type may require special support. For example, this might represent a handl
 [[customization.point.traits]]
 ## Customization: High-Level Traits Specialization
 
-A user may _(partially) template specialize_ the `phd::out_ptr::out_ptr_traits` and the `phd::out_ptr::inout_ptr_traits`. These types offer less control over the layout and internals of the RAII structures that are used to power the abstraction, while giving users the benefit of only having to override a small select portion of functionality. To use this traits type:
+A user may _(partially) template specialize_ the `ztd::out_ptr::out_ptr_traits` and the `ztd::out_ptr::inout_ptr_traits`. These types offer less control over the layout and internals of the RAII structures that are used to power the abstraction, while giving users the benefit of only having to override a small select portion of functionality. To use this traits type:
 
-- First, open up the phd.out_ptr namespace:
+- First, open up the ztd.out_ptr namespace:
 [source, cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 - Then, create a _partial template specialization_:
 [source, cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer>
-	class inout_ptr_traits<phd::handle<T, Del>, Pointer> {
+	class inout_ptr_traits<ztd::handle<T, Del>, Pointer> {
 		/* ... */
 	};
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 - Now, we need to create a handful of **required** functions. We need... 
-* a `construct` function that takes the smart pointer (the handle) and all the Arguments that were stored from the initial call to `phd::out_ptr::inout_ptr( ... )`;
+* a `construct` function that takes the smart pointer (the handle) and all the Arguments that were stored from the initial call to `ztd::out_ptr::inout_ptr( ... )`;
 * and, a `reset()` that takes all the necessary arguments and calls `.reset()`.
 
 [source,cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer>
-	class inout_ptr_traits<phd::handle<T, Del>, Pointer> {
-		using Smart = phd::handle<T, Del>;
+	class inout_ptr_traits<ztd::handle<T, Del>, Pointer> {
+		using Smart = ztd::handle<T, Del>;
 
 	public:
 		static Pointer construct (Smart& s) noexcept;
 		static Pointer construct (Smart& s) noexcept;
 	};
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 By using overloading, you can write as many or as little `construct` functions as you want that assert that a certain number or certain types of arguments are present:
@@ -119,27 +125,27 @@ By using overloading, you can write as many or as little `construct` functions a
 [[customization.point.struct]]
 ## Customization: Low-Level Struct Specialization
 
-A user may _(partially) template specialize_ the customized `phd::out_ptr::out_ptr_t` and `phd::out_ptr::inout_ptr_t`. It allows the user to control what gets stored and how simple it is. Here is an example for `inout_ptr_t`:
+A user may _(partially) template specialize_ the customized `ztd::out_ptr::out_ptr_t` and `ztd::out_ptr::inout_ptr_t`. It allows the user to control what gets stored and how simple it is. Here is an example for `inout_ptr_t`:
 
-- First, open up the phd.out_ptr namespace:
+- First, open up the ztd.out_ptr namespace:
 [source,cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 - Then, create a _partial template specialization_:
 [source,cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer, typename... Args>
-	class inout_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
+	class inout_ptr_t<ztd::handle<T, Del>, Pointer, Args...> {
 		/* ... */
 	};
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 - Now, we need to create a family of required functions (4 functions). We need... 
@@ -150,10 +156,10 @@ namespace phd { namespace out_ptr {
 
 [source,cpp]
 ----
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 	
 	template <typename T, typename Del, typename Pointer, typename... Args>
-	class inout_ptr_t<phd::handle<T, Del>, Pointer, Args...> {
+	class inout_ptr_t<ztd::handle<T, Del>, Pointer, Args...> {
 
 		inout_ptr_t(Smart& ptr, Args... args) noexcept;
 
@@ -166,13 +172,13 @@ namespace phd { namespace out_ptr {
 		~inout_ptr_t() noexcept;
 	}
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 ----
 
 
 ### And That's it!
 
-Either way you choose to specialize, that is everything you need to write. A full, optimized implementation for `phd::out_ptr::inout_ptr_t` and `phd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/customization.handle.cpp[this example].
+Either way you choose to specialize, that is everything you need to write. A full, optimized implementation for `ztd::out_ptr::inout_ptr_t` and `ztd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/customization.handle.cpp[this example].
 
-The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `$$T**$$` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `phd::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.
+The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `$$T**$$` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `ztd::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.
 

@@ -1,64 +1,58 @@
-#  Copyright ⓒ 2018-2019 ThePhD.
+#  Copyright ⓒ 2018-2021 ThePhD.
 #
-#  Distributed under the Boost Software License, Version 1.0. (See
-#  accompanying file LICENSE or copy at
-#  http://www.boost.org/LICENSE_1_0.txt)
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 #  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 # Test dependency: catch2
-if (NOT TARGET Catch2::Catch2)
-	add_subdirectory(../vendor/Catch2 "vendor/Catch2")
-endif()
+include(FetchContent)
 
-set(phd.out_ptr.tests_sources
-	"source/clever_out_ptr_test.cpp"
-	"source/simple_out_ptr_test.cpp"
-	"source/out_ptr_test.cpp"
-	"source/raw_out_ptr_test.cpp"
-	"source/exceptions_out_ptr_test.cpp"
-	"source/customized_out_ptr_test.cpp"
-	"source/customized_traits_out_ptr_test.cpp"
-	"source/custom_unique_deleter_test.cpp"
+FetchContent_Declare(
+	Catch2
+	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+	GIT_TAG        v2.13.4
+)
+FetchContent_MakeAvailable(Catch2)
 
-	"source/clever_inout_ptr_test.cpp"
-	"source/simple_inout_ptr_test.cpp"
-	"source/inout_ptr_test.cpp"
-	"source/raw_inout_ptr_test.cpp"
-	"source/exceptions_inout_ptr_test.cpp"
-	"source/customized_inout_ptr_test.cpp"
-	"source/customized_traits_inout_ptr_test.cpp"
-
-	"source/footguns.cpp"
-	"source/const_test.cpp"
-
-	"source/main.cpp"
+file(GLOB_RECURSE ztd.out_ptr.tests_sources
+	LIST_DIRECTORIES FALSE
+	source/*.*
 )
 
-add_executable(phd.out_ptr.tests ${phd.out_ptr.tests_sources})
+add_executable(ztd.out_ptr.tests ${ztd.out_ptr.tests_sources})
 set_target_properties(${example_target} PROPERTIES
 	CXX_STANDARD 11
 	CXX_STANDARD_REQUIRED TRUE
 	CXX_EXTENSIONS FALSE
 )
-target_compile_definitions(phd.out_ptr.tests
-	PRIVATE PHD_OUT_PTR_CLEVER_SANITY_CHECK=1)
+target_compile_definitions(ztd.out_ptr.tests
+	PRIVATE ZTD_OUT_PTR_CLEVER_SANITY_CHECK=1)
 if (MSVC)
-	target_compile_options(phd.out_ptr.tests
+	target_compile_options(ztd.out_ptr.tests
 		PRIVATE /W4)
 else()
-	target_compile_options(phd.out_ptr.tests
+	target_compile_options(ztd.out_ptr.tests
 		PRIVATE -Wpedantic -Wall -Werror)
 endif()
-target_include_directories(phd.out_ptr.tests
+target_include_directories(ztd.out_ptr.tests
 	PRIVATE 
 	"${CMAKE_CURRENT_SOURCE_DIR}/include"
 	"../vendor/handle/include"
 )
-target_link_libraries(phd.out_ptr.tests 
+target_link_libraries(ztd.out_ptr.tests 
 	PRIVATE 
 
-	phd::out_ptr 
+	ztd::out_ptr 
 	
 	Catch2::Catch2 
 	
@@ -66,7 +60,7 @@ target_link_libraries(phd.out_ptr.tests
 	
 	${CMAKE_DL_LIBS}
 )
-add_test(NAME phd.out_ptr.tests COMMAND phd.out_ptr.tests)
+add_test(NAME ztd.out_ptr.tests COMMAND ztd.out_ptr.tests)
 
 # # failure tests
 add_subdirectory(failure)

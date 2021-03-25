@@ -1,8 +1,16 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
@@ -10,10 +18,10 @@
 
 #include <benchmark/benchmark.h>
 
-#define PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
+#define ZTD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR 1
 
 #include <benchmarks/out_ptr/friendly_unique_ptr.hpp>
-#include <phd/out_ptr/out_ptr.hpp>
+#include <ztd/out_ptr/out_ptr.hpp>
 #include <benchmarks/out_ptr/friendly_out_ptr.hpp>
 
 #include <ficapi/ficapi.hpp>
@@ -69,7 +77,7 @@ static void simple_reset_out_ptr(benchmark::State& state) {
 	std::unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 	for (auto _ : state) {
 		(void)_;
-		ficapi_handle_no_alloc_create(phd::out_ptr::detail::simple_out_ptr(p));
+		ficapi_handle_no_alloc_create(ztd::out_ptr::op_detail::simple_out_ptr(p));
 		x += ficapi_handle_get_data(p.get());
 	}
 	int64_t expected = int64_t(state.iterations()) * ficapi_get_data();
@@ -89,7 +97,7 @@ static void clever_reset_out_ptr(benchmark::State& state) {
 	std::unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 	for (auto _ : state) {
 		(void)_;
-		ficapi_handle_no_alloc_create(phd::out_ptr::detail::clever_out_ptr(p));
+		ficapi_handle_no_alloc_create(ztd::out_ptr::op_detail::clever_out_ptr(p));
 		x += ficapi_handle_get_data(p.get());
 	}
 	int64_t expected = int64_t(state.iterations()) * ficapi_get_data();
@@ -105,14 +113,14 @@ BENCHMARK(clever_reset_out_ptr)
 	->ComputeStatistics("dispersion", &compute_index_of_dispersion);
 
 
-#if defined(PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR) && PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR != 0
+#if defined(ZTD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR) && ZTD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR != 0
 
 static void friendly_reset_out_ptr(benchmark::State& state) {
 	int64_t x = 0;
 	std::friendly_unique_ptr<ficapi::opaque, ficapi::handle_no_alloc_deleter> p(nullptr);
 	for (auto _ : state) {
 		(void)_;
-		ficapi_handle_no_alloc_create(phd::out_ptr::friendly_out_ptr(p));
+		ficapi_handle_no_alloc_create(ztd::out_ptr::friendly_out_ptr(p));
 		x += ficapi_handle_get_data(p.get());
 	}
 	int64_t expected = int64_t(state.iterations()) * ficapi_get_data();

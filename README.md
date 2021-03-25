@@ -24,7 +24,7 @@ use(ptr);
 
 ```cpp
 // After
-using pop = phd::out_ptr;
+using pop = ztd::out_ptr;
 std::unique_ptr<Obj, ObjDeleter> ptr;
 
 if (!c_api_get_obj(pop::inout_ptr(ptr), ...)) {
@@ -49,12 +49,12 @@ There are examples and documentation contained in this repository: please, perus
 
 Right now, can be run easily VIA CMake. To ease development, all necessary dependencies -- including other Boost dependencies -- are included as submodules. You can initialize and update all submodules by performing a successful `git submodule update --init --recursive` call.
 
-From there, CMake is run. It requires that the parameters `PHD_OUT_PTR_TESTS` is `ON`. Examples can also be run by specifying `PHD_OUT_PTR_EXAMPLES` and `PHD_OUT_PTR_TESTS` to be `ON` at the same time:
+From there, CMake is run. It requires that the parameters `ZTD_OUT_PTR_TESTS` is `ON`. Examples can also be run by specifying `ZTD_OUT_PTR_EXAMPLES` and `ZTD_OUT_PTR_TESTS` to be `ON` at the same time:
 
 ```bash
 md out_ptr-build
 cd out_ptr-build
-cmake path/to/out_ptr/src -GNinja -DPHD_OUT_PTR_TESTS=ON -DPHD_OUT_PTR_EXAMPLES=ON
+cmake path/to/out_ptr/src -GNinja -DZTD_OUT_PTR_TESTS=ON -DZTD_OUT_PTR_EXAMPLES=ON
 cmake --build .
 ctest --output-on-failure
 ```
@@ -64,4 +64,4 @@ You can replace the `-G` argument with the generator of your choice. You may als
 
 # Running Benchmarks
 
-Benchmarks can be run by running CMake with the option `-DPHD_OUT_PTR_BENCHMARKS` set to `ON`.
+Benchmarks can be run by running CMake with the option `-DZTD_OUT_PTR_BENCHMARKS` set to `ON`.

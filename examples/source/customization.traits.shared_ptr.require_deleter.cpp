@@ -1,12 +1,20 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
-#include <phd/out_ptr.hpp>
+#include <ztd/out_ptr.hpp>
 #include <boost/smart_ptr/local_shared_ptr.hpp>
 
 #include <avformat.h>
@@ -16,7 +24,7 @@
 // not used with inout_ptr
 // because ownership is not unique or releasable!
 template <typename T>
-struct my_company_shared_ptr : public phd::local_shared_ptr<T> {};
+struct my_company_shared_ptr : public ztd::local_shared_ptr<T> {};
 
 // type to allow us to use static assert
 // that is not eagerly evaluated
@@ -26,7 +34,7 @@ struct dependent_type_false : std::true_type {};
 // this is the usage of the simple traits customization point
 // to achieve the same goals as above
 
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
 	// inout_ptr_t is illegal
 	template <typename T, typename Pointer>
@@ -55,7 +63,7 @@ namespace phd { namespace out_ptr {
 		}
 	};
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 
 struct av_format_context_deleter {
 	void operator()(AVFormatContext* c) noexcept {
@@ -67,7 +75,7 @@ struct av_format_context_deleter {
 using av_format_context_ptr = my_company_shared_ptr<AVFormatContext>;
 
 int main(int, char* argv[]) {
-	using pop = phd::out_ptr;
+	using zop = ztd::out_ptr;
 
 	av_format_context_ptr context(avformat_alloc_context());
 

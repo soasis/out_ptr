@@ -1,24 +1,32 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #pragma once
 
-#ifndef PHD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
-#define PHD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#ifndef ZTD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#define ZTD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
 
-#include <phd/out_ptr/pointer_of.hpp>
+#include <ztd/out_ptr/pointer_of.hpp>
 
 #include <type_traits>
 #include <utility>
 
-namespace phd {
+namespace ztd {
 namespace out_ptr {
-	namespace detail {
+	namespace op_detail {
 
 		template <typename Smart, typename... Args>
 		void reset_or_create(std::true_type, Smart& s, Args&&... args) noexcept(noexcept(s.reset(std::forward<Args>(args)...))) {
@@ -61,13 +69,13 @@ namespace out_ptr {
 
 			static constexpr const bool value = std::is_same<decltype(test<T>(0)), std::true_type>::value;
 		};
-	} // namespace detail
+	} // namespace op_detail
 
 	template <typename Smart, typename Pointer>
 	class out_ptr_traits {
 	private:
 		template <typename T>
-		friend struct detail::has_unspecialized_marker;
+		friend struct op_detail::has_unspecialized_marker;
 		using OUT_PTR_DETAIL_UNSPECIALIZED_MARKER_ = int;
 		using source_pointer				   = pointer_of_or_t<Smart, Pointer>;
 
@@ -85,11 +93,11 @@ namespace out_ptr {
 
 		template <typename... Args>
 		static void reset(Smart& s, pointer& p, Args&&... args) noexcept {
-			using can_reset = detail::is_resetable<Smart, source_pointer, Args...>;
+			using can_reset = op_detail::is_resetable<Smart, source_pointer, Args...>;
 			reset_or_create(can_reset(), s, static_cast<source_pointer>(std::move(p)), std::forward<Args>(args)...);
 		}
 	};
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 
-#endif // PHD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#endif // ZTD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP

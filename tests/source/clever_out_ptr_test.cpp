@@ -1,12 +1,20 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
-#include <phd/out_ptr/out_ptr.hpp>
+#include <ztd/out_ptr/out_ptr.hpp>
 
 #include <ficapi/ficapi.hpp>
 
@@ -16,14 +24,14 @@
 TEST_CASE("clever_out_ptr/basic", "clever_out_ptr type works with smart pointers and C-style output APIs") {
 	SECTION("unique_ptr<void>") {
 		std::unique_ptr<void, ficapi::deleter<>> p(nullptr);
-		ficapi_create(phd::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_create(ztd::out_ptr::op_detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
 	}
 	SECTION("unique_ptr<int>") {
 		std::unique_ptr<int, ficapi::deleter<>> p(nullptr);
-		ficapi_int_create(phd::out_ptr::detail::clever_out_ptr(p));
+		ficapi_int_create(ztd::out_ptr::op_detail::clever_out_ptr(p));
 		int* rawp = p.get();
 		REQUIRE(rawp != nullptr);
 		REQUIRE(*rawp == ficapi_get_dynamic_data());
@@ -50,14 +58,14 @@ TEST_CASE("clever_out_ptr/reused", "clever_out_ptr type properly deletes non-nul
 	SECTION("unique_ptr<void, stateful_deleter>") {
 		std::unique_ptr<void, reused_deleter> p(nullptr, reused_deleter{});
 
-		ficapi_create(phd::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_create(ztd::out_ptr::op_detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
 		{
 			int* rawp = static_cast<int*>(p.get());
 			REQUIRE(rawp != nullptr);
 			REQUIRE(*rawp == ficapi_get_dynamic_data());
 			REQUIRE(p.get_deleter().store == 0);
 		}
-		ficapi_create(phd::out_ptr::detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
+		ficapi_create(ztd::out_ptr::op_detail::clever_out_ptr(p), ficapi_type::ficapi_type_int);
 		{
 			int* rawp = static_cast<int*>(p.get());
 			REQUIRE(rawp != nullptr);
@@ -68,14 +76,14 @@ TEST_CASE("clever_out_ptr/reused", "clever_out_ptr type properly deletes non-nul
 	SECTION("unique_ptr<int, stateful_deleter>") {
 		std::unique_ptr<int, reused_int_deleter> p(nullptr, reused_int_deleter{});
 
-		ficapi_int_create(phd::out_ptr::detail::clever_out_ptr(p));
+		ficapi_int_create(ztd::out_ptr::op_detail::clever_out_ptr(p));
 		{
 			int* rawp = p.get();
 			REQUIRE(rawp != nullptr);
 			REQUIRE(*rawp == ficapi_get_dynamic_data());
 			REQUIRE(p.get_deleter().store == 0);
 		}
-		ficapi_int_create(phd::out_ptr::detail::clever_out_ptr(p));
+		ficapi_int_create(ztd::out_ptr::op_detail::clever_out_ptr(p));
 		{
 			int* rawp = p.get();
 			REQUIRE(rawp != nullptr);

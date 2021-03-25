@@ -1,29 +1,37 @@
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #pragma once
 
-#ifndef PHD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
-#define PHD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#ifndef ZTD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#define ZTD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
 
-#if defined(PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR) && PHD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR != 0
+#if defined(ZTD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR) && ZTD_OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR != 0
 
-#include <phd/out_ptr/detail/base_inout_ptr_impl.hpp>
-#include <phd/out_ptr/pointer_of.hpp>
+#include <ztd/out_ptr/detail/base_inout_ptr_impl.hpp>
+#include <ztd/out_ptr/pointer_of.hpp>
 
 #include <cstdlib>
 #include <cstddef>
 #include <type_traits>
 #include <memory>
 
-namespace phd { namespace out_ptr {
+namespace ztd { namespace out_ptr {
 
-	namespace detail {
+	namespace op_detail {
 		template <typename Smart, typename Pointer, typename Args, typename List>
 		struct friendly_inout_ptr_impl : public base_inout_ptr_impl<Smart, Pointer, Args, List> {
 		private:
@@ -34,7 +42,7 @@ namespace phd { namespace out_ptr {
 		};
 
 		template <typename T, typename D, typename Pointer>
-		struct friendly_inout_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, phd::out_ptr::detail::index_sequence<>> {
+		struct friendly_inout_ptr_impl<std::friendly_unique_ptr<T, D>, Pointer, std::tuple<>, ztd::out_ptr::op_detail::index_sequence<>> {
 		public:
 			using Smart		 = std::friendly_unique_ptr<T, D>;
 			using source_pointer = pointer_of_or_t<Smart, Pointer>;
@@ -56,13 +64,13 @@ namespace phd { namespace out_ptr {
 				return const_cast<Pointer*>(m_target_ptr);
 			}
 		};
-	} // namespace detail
+	} // namespace op_detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class friendly_inout_ptr_t : public detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, phd::out_ptr::detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	class friendly_inout_ptr_t : public op_detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
-		using list_t = phd::out_ptr::detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
-		using core_t = detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
+		using list_t = ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
+		using core_t = op_detail::friendly_inout_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;
 
 	public:
 		friendly_inout_ptr_t(Smart& s, Args... args)
@@ -81,8 +89,8 @@ namespace phd { namespace out_ptr {
 		return friendly_inout_ptr<Pointer>(p, std::forward<Args>(args)...);
 	}
 
-}} // namespace phd::out_ptr
+}} // namespace ztd::out_ptr
 
 #endif // OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 
-#endif // PHD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#endif // ZTD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP

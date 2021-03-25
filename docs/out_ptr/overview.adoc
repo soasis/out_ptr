@@ -1,14 +1,20 @@
-////
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
-////
 
-# phd.out_ptr at a glance
+# ztd.out_ptr at a glance
 
 Have you ever wanted to pass a smart pointer like `std::unique_ptr` or `boost::shared_ptr` or `boost::intrusive_ptr` to a C API?
 
@@ -44,11 +50,11 @@ This works, but you need to call `.reset(...)` with the raw pointer and set ever
 
 ### Let's make it simple and easy!
 
-With phd.out_ptr, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
+With ztd.out_ptr, we can do better. Get rid of the raw pointer and avoid potential memory or resource leakage by using this https://en.cppreference.com/w/cpp/language/raii[RAII] function:
 
 [source,cpp]
 ----
-using pop = phd::out_ptr;
+using zop = ztd::out_ptr;
 
 boost::shared_ptr<mll_driver> axis_driver(nullptr);
 mll_errno err = mll_driver_init(pop::out_ptr(axis_driver, mll_driver_free), 
@@ -60,11 +66,11 @@ if (err != MLL_SUCESS) {
 
 No reset call, no inspecting for exception safety, and it remembers the deleter we passed in after `axis_driver` to safely and properly call `.reset()` for shared pointers that stores the deleter.
 
-Welcome to phd.out_ptr, the present and future of C API interoperation. This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `$$T**$$`.
+Welcome to ztd.out_ptr, the present and future of C API interoperation. This library automates the `.reset(...)` and -- sometimes additionally -- the `.release()` call when interfacing with C-style initialization functions which take an "output parameter" of `$$T**$$`.
 
-- Use <<reference/out_ptr.adoc#ref.out_ptr.function, `phd::out_ptr::out_ptr`>> when you just need to call `.reset()`, or use <<reference/inout_ptr.adoc#ref.inout_ptr.function, `phd::out_ptr::inout_ptr`>>, when you need to call `.release()` and then `.reset()` (e.g., for a reallocating C function).
+- Use <<reference/out_ptr.adoc#ref.out_ptr.function, `ztd::out_ptr::out_ptr`>> when you just need to call `.reset()`, or use <<reference/inout_ptr.adoc#ref.inout_ptr.function, `ztd::out_ptr::inout_ptr`>>, when you need to call `.release()` and then `.reset()` (e.g., for a reallocating C function).
 - Get started with the <<examples.adoc#examples,examples>>.
-- Understand the pitfalls and problems that come with {cpp} and phd.out_ptr by reading <<caveats.adoc#caveats, the Caveats>>.
+- Understand the pitfalls and problems that come with {cpp} and ztd.out_ptr by reading <<caveats.adoc#caveats, the Caveats>>.
 - Read up on how to use it with your <<customization.adoc#customization, custom smart pointers>>, if you do not have a conforming interface!
 - The exact interface requirements on the desired smart pointers can be seen in the <<reference.adoc#ref.api, reference documentation for the types produced by the factory functions>>.
 - Peruse & use the advanced <<config.adoc#config, configuration options>> for safety, sanity checking, and speed!

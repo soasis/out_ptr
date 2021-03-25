@@ -1,20 +1,28 @@
-#  Copyright ⓒ 2018-2019 ThePhD.
+#  Copyright ⓒ 2018-2021 ThePhD.
 #
-#  Distributed under the Boost Software License, Version 1.0. (See
-#  accompanying file LICENSE or copy at
-#  http://www.boost.org/LICENSE_1_0.txt)
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 #  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
-set(phd_out_ptr_failure_tests_sources
+set(ztd_out_ptr_failure_tests_sources
 	"inout_ptr.shared_ptr.cpp"
 	"inout_ptr.shared_ptr.deleter.cpp"
 	"out_ptr.shared_ptr.deleter.cpp"
 )
 
-foreach (test_name ${phd_out_ptr_failure_tests_sources})
+foreach (test_name ${ztd_out_ptr_failure_tests_sources})
 	set(test_file source/${test_name})
-	set(test_target phd.out_ptr.fail.${test_name})
+	set(test_target ztd.out_ptr.fail.${test_name})
 	add_executable(${test_target} ${test_file} "source/main.cpp")
 	if (MSVC)
 	else()
@@ -34,7 +42,7 @@ foreach (test_name ${phd_out_ptr_failure_tests_sources})
 	target_link_libraries(${test_target}
 		PRIVATE 
 		
-		phd::out_ptr 
+		ztd::out_ptr 
 		
 		Catch2::Catch2 
 		

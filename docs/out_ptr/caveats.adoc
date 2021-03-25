@@ -1,12 +1,18 @@
-////
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
-////
 
 [[caveats]]
 # Caveats and Caution
@@ -20,7 +26,7 @@ There are a few places where the rules of {cpp} (or a poorly implemented C libra
 
 [source, cpp]
 ----
-using pop = boost:out_ptr;
+using zop = ztd:out_ptr;
 // ...
 if (my_maybe_failing_C_api(
 	pop::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
@@ -30,12 +36,12 @@ if (my_maybe_failing_C_api(
 }
 ----
 
-The problem is that all temporaties -- including the one `phd::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
+The problem is that all temporaties -- including the one `ztd::out_ptr::out_ptr` makes -- does not get destructed until the first `{` in that code. This means that the `.reset()` or equivalent functionality from the temporary's destructor is not executed until after the entire `if` statement is evaluated, meaning that even if the function success `my_handle` will contain its old value (e.g., `nullptr`) and may return false.
 
 It is still safe to use such a construct with if statements if you will check the return value only, and not check the actual pointer itself in the same if statement:
 
 ----
-using pop = boost:out_ptr;
+using zop = ztd:out_ptr;
 // ...
 if (SQLITE_OK != sqlite3_open("test.db", 
 	pop::out_ptr(database, sqlite3_close))) {
@@ -46,7 +52,7 @@ if (SQLITE_OK != sqlite3_open("test.db",
 {cpp}17's if-initializer statement standardized the same mistake. The if-initializer's temporaries do not die even at a semi-colon:
 
 ----
-using pop = boost:out_ptr;
+using zop = ztd:out_ptr;
 if (c_error_t err = my_maybe_failing_C_api(
 	pop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
 	err == 0 && my_handle) {
@@ -85,7 +91,7 @@ namespace really::terrible { // C++17 nested namespaces
 }
 
 int main () {
-	using pop = phd::out_ptr;
+	using zop = ztd::out_ptr;
 	// leaks because of do_something_that_throws
 	auto result = really::terrible::api(pop::inout_ptr(my_smart));
 }
@@ -103,17 +109,17 @@ As such, you must ensure that construction of the smart pointer and checking for
 
 
 [[caveats.order]]
-## Order of Evaluation with `phd::out_ptr::inout_ptr`
+## Order of Evaluation with `ztd::out_ptr::inout_ptr`
 
-Because `phd::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
+Because `ztd::out_ptr::inout_ptr` has an unspecified internal implementation that may call `.release()` in the constructor, one could run into a problem where order of evaluation matters.
 
-For phd.out_ptr, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
+For ztd.out_ptr, the implementation of `inout_ptr` performs the release call in the destructor to avoid such a problem in a wide variety of cases. However, a user providing their own `inout_ptr_t` may behave differently than the specification: if you are a user, please be aware of this feature if you are providing a customization point.
 
 For example, a misbehaving `inout_ptr_t` implementation may make it so the following is a footgun:
 
 [source, cpp]
 ----
-my_c_api(phd::out_ptr::inout_ptr(my_smart), 
+my_c_api(ztd::out_ptr::inout_ptr(my_smart), 
 	24, 
 	// unspecified into undefined behavior below: bad 
 	// implementation called .release() in constructor and

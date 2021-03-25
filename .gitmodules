@@ -1,45 +1,12 @@
-[submodule "vendor/config"]
-	path = vendor/boost/config
-	url = https://github.com/boostorg/config.git
-[submodule "vendor/core"]
-	path = vendor/boost/core
-	url = https://github.com/boostorg/core.git
 [submodule "vendor/static_assert"]
 	path = vendor/boost/static_assert
 	url = https://github.com/boostorg/static_assert.git
-[submodule "vendor/catch2"]
-	path = vendor/catch2
-	url = https://github.com/catchorg/Catch2.git
 [submodule "vendor/type_traits"]
 	path = vendor/boost/type_traits
 	url = https://github.com/boostorg/type_traits.git
 [submodule "vendor/detail"]
 	path = vendor/boost/detail
 	url = https://github.com/boostorg/detail.git
-[submodule "vendor/benchmark"]
-	path = vendor/benchmark
-	url = https://github.com/google/benchmark.git
-[submodule "vendor/boost/assert"]
-	path = vendor/boost/assert
-	url = https://github.com/boostorg/assert.git
-[submodule "vendor/boost/smart_ptr"]
-	path = vendor/boost/smart_ptr
-	url = https://github.com/boostorg/smart_ptr
-[submodule "vendor/boost/move"]
-	path = vendor/boost/move
-	url = https://github.com/boostorg/move
-[submodule "vendor/boost/type_traits"]
-	path = vendor/boost/type_traits
-	url = https://github.com/boostorg/type_traits
 [submodule "vendor/ficapi"]
 	path = vendor/ficapi
 	url = https://github.com/ThePhD/ficapi.git
-[submodule "vendor/boost/predef"]
-	path = vendor/boost/predef
-	url = https://github.com/boostorg/predef.git
-[submodule "vendor/boost/static_assert"]
-	path = vendor/boost/static_assert
-	url = https://github.com/boostorg/static_assert.git
-[submodule "vendor/boost/throw_exception"]
-	path = vendor/boost/throw_exception
-	url = https://github.com/boostorg/throw_exception.git

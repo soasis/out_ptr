@@ -1,17 +1,23 @@
-////
-//  Copyright ⓒ 2018-2019 ThePhD.
+// Copyright ⓒ 2018-2021 ThePhD.
 //
-//  Distributed under the Boost Software License, Version 1.0. (See
-//  accompanying file LICENSE or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
-////
 
 [[examples]]
 # Examples
 
-Here are a few examples of the more powerful features of `phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr`.
+Here are a few examples of the more powerful features of `ztd::out_ptr::out_ptr` and `ztd::out_ptr::inout_ptr`.
 
 [[examples.size_create]]
 ## Parameters with Size
@@ -31,7 +37,7 @@ if (ret != 0) {
 DeleteBusInterface(obj, obj_size);
 ----
 
-And turn it into something that would be usable with C++ smart pointers. With phd.out_ptr, interfacing with this is fairly okay to do:
+And turn it into something that would be usable with C++ smart pointers. With ztd.out_ptr, interfacing with this is fairly okay to do:
 
 .out_ptr.createbus
 [source,cpp]
@@ -44,7 +50,7 @@ struct SizedDeleter {
     }
 };
 
-using pop = phd::out_ptr;
+using zop = ztd::out_ptr;
 
 size_t& size_ref = p_obj.get_deleter().size;
 std::unique_ptr<Interface, SizedDeleter> obj;
@@ -79,7 +85,7 @@ upNumf.reset((Numf*)pNumf);
 .out_ptr.posix_memalign
 [source,cpp]
 ----
-using pop = phd::out_ptr;
+using zop = ztd::out_ptr;
 
 std::unique_ptr<Numf, DoFree> upNumf;
 /* some work... */
@@ -92,9 +98,9 @@ if (ret != 0) {
 
 ## IntrusivePtr with COM and base-class / void** with Casting Support
 
-`phd::out_ptr::out_ptr` and `phd::out_ptr::inout_ptr` work with more than just the typical standard pointers. They also know how to interop with legacy codebases which communicate through base class ``IUnknown**`` or ``void**``!
+`ztd::out_ptr::out_ptr` and `ztd::out_ptr::inout_ptr` work with more than just the typical standard pointers. They also know how to interop with legacy codebases which communicate through base class ``IUnknown**`` or ``void**``!
 
-You can add a template parameter `T` in an `phd::out_ptr::out_ptr` call to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
+You can add a template parameter `T` in an `ztd::out_ptr::out_ptr` call to cast to a specific type, where `T` can be `HANDLE`, `int*`, `void*` and more:
 
 ifdef::env-github[]
 link:../../examples/source/com.intrusive_ptr.cpp[com.intrusive_ptr.cpp]
@@ -112,7 +118,7 @@ ifdef::env-github[]
 [source, cpp]
 ----
 	HRESULT cci_result = CoCreateInstance(clsid, 0, CLSCTX_INPROC_SERVER,
-----_uuidof(IDispatch), phd::out_ptr::out_ptr<void*>(dispatch_ptr, false));
+----_uuidof(IDispatch), ztd::out_ptr::out_ptr<void*>(dispatch_ptr, false));
 ----
 endif::[]
 ifndef::env-github[]
@@ -142,7 +148,7 @@ endif::[]
 
 ## Prevents errors with `shared_ptr` resetting the deleter.
 
-If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). phd.out_ptr prevents that from happening by giving a strong, compile-time warning when you forget:
+If you have ever used any `shared_ptr` similar to the one in `boost` or the `std`, you'll know that if you call `my_shared_ptr.reset(some_raw_pointer)`, it will erase the old deleter and automatically place in the `std::default_delete<T>` (or similar). ztd.out_ptr prevents that from happening by giving a strong, compile-time warning when you forget:
 
 ifdef::env-github[]
 link:../../examples/source/std.shared_ptr.cpp[std.shared_ptr.cpp]
