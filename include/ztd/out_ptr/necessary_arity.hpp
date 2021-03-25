@@ -34,14 +34,6 @@ namespace out_ptr {
 
 	template <typename Smart, typename... Args>
 	class necessary_arity : public op_detail::necessary_arity_impl<Smart, Args...> {};
-
-#if defined(__cpp_inline_variables) && (!defined(__clang__) || __cplusplus > 201400L)
-	template <typename Smart, typename... Args>
-	inline static constexpr std::size_t necessary_arity_v = necessary_arity<Smart, Args...>::value;
-#elif defined(__cpp_alias_templates) && (!defined(__clang__) || __cplusplus > 201100L)
-	template <typename Smart, typename... Args>
-	static constexpr std::size_t necessary_arity_v = necessary_arity<Smart, Args...>::value;
-#endif
 }
 } // namespace ztd::out_ptr
 
