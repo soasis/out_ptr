@@ -35,10 +35,10 @@ namespace out_ptr {
 	template <typename Smart, typename... Args>
 	class necessary_arity : public op_detail::necessary_arity_impl<Smart, Args...> {};
 
-#if defined(__cpp_­inline_­variables)
+#if defined(__cpp_inline_variables)
 	template <typename Smart, typename... Args>
 	inline static constexpr std::size_t necessary_arity_v = necessary_arity<Smart, Args...>::value;
-#elif defined(__cpp_­alias_­templates)
+#elif defined(__cpp_alias_templates)
 	template <typename Smart, typename... Args>
 	static constexpr std::size_t necessary_arity_v = necessary_arity<Smart, Args...>::value;
 #endif
