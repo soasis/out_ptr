@@ -22,8 +22,8 @@ jobs:
 
     - name: build
       run: |
-        cmake --verbose=1 --build build/debug   --config Debug
-        cmake --verbose=1 --build build/release --config Release
+        cmake --build build/debug   --verbose=1 --config Debug
+        cmake --build build/release --verbose=1 --config Release
 
     - name: test
       run: |
