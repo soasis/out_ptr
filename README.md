@@ -24,7 +24,7 @@ use(ptr);
 
 ```cpp
 // After
-using pop = ztd::out_ptr;
+using zop = ztd::out_ptr;
 std::unique_ptr<Obj, ObjDeleter> ptr;
 
 if (!c_api_get_obj(pop::inout_ptr(ptr), ...)) {

@@ -30,11 +30,7 @@ file(GLOB_RECURSE ztd.out_ptr.tests_sources
 )
 
 add_executable(ztd.out_ptr.tests ${ztd.out_ptr.tests_sources})
-set_target_properties(${example_target} PROPERTIES
-	CXX_STANDARD 11
-	CXX_STANDARD_REQUIRED TRUE
-	CXX_EXTENSIONS FALSE
-)
+target_compile_features(ztd.out_ptr.tests PRIVATE cxx_std_11)
 target_compile_definitions(ztd.out_ptr.tests
 	PRIVATE ZTD_OUT_PTR_CLEVER_SANITY_CHECK=1)
 if (MSVC)

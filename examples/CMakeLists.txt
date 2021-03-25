@@ -17,16 +17,16 @@
 # # Dependencies
 # Need boost.smart_ptr
 # which comes with all these dependencies...
-#FetchContent_Declare(
-#	Boost
-#	GIT_REPOSITORY https://github.com/boostorg/boost.git
-#	GIT_SUBMODULES libs/config libs/assert libs/static_assert libs/core 
-#	               libs/type_traits libs/throw_exception libs/preprocessor
-#	               libs/smart_ptr libs/static_assert libs/smart_ptr libs/predef libs/move
-#	               tools/cmake
-#)
-#
-#FetchContent_MakeAvailable(Boost)
+set(BOOST_ENABLE_CMAKE YES)
+FetchContent_Declare(
+	Boost
+	GIT_REPOSITORY https://github.com/boostorg/boost.git
+	GIT_SUBMODULES libs/config libs/assert libs/static_assert libs/core 
+	               libs/type_traits libs/throw_exception libs/preprocessor
+	               libs/smart_ptr libs/static_assert libs/smart_ptr libs/predef libs/move
+	               tools/cmake
+)
+FetchContent_MakeAvailable(Boost)
 
 # Need pthreads
 find_package(Threads REQUIRED)
@@ -40,15 +40,11 @@ set(ztd_out_ptr_example_sources
 	"std.unique_ptr.cpp"
 )
 
-foreach (example_source_name ${ztd_out_ptr_example_sources})
+foreach (example_source_name IN LISTS ztd_out_ptr_example_sources)
 	set(example_source_file source/${example_source_name})
 	set(example_target ztd.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
-	set_target_properties(${example_target} PROPERTIES
-		CXX_STANDARD 11
-		CXX_STANDARD_REQUIRED TRUE
-		CXX_EXTENSIONS FALSE
-	)
+	target_compile_features(${example_target} PRIVATE cxx_std_11)
 	if (MSVC)
 		target_compile_options(${example_target}
 			PRIVATE /W4)
@@ -82,11 +78,7 @@ if (CMAKE_USE_PTHREADS_INIT)
 	set(example_source_file source/${example_source_name})
 	set(example_target ztd.out_ptr.${example_source_name})
 	add_executable(${example_target} ${example_source_file})
-	set_target_properties(${example_target} PROPERTIES
-		CXX_STANDARD 11
-		CXX_STANDARD_REQUIRED TRUE
-		CXX_EXTENSIONS FALSE
-	)
+	target_compile_features(${example_target} PRIVATE cxx_std_11)
 	if (MSVC)
 		target_compile_options(${example_target}
 			PRIVATE /W4)
@@ -111,3 +103,44 @@ if (CMAKE_USE_PTHREADS_INIT)
 		add_test(NAME ${example_target} COMMAND ${example_target})
 	endif()
 endif()
+
+
+#[[
+set(ztd_out_ptr_boost_example_sources
+	"com.intrusive_ptr.cpp"
+)
+
+foreach (example_source_name IN LISTS ztd_out_ptr_boost_example_sources)
+	set(example_source_file source/${example_source_name})
+	set(example_target ztd.out_ptr.${example_source_name})
+	add_executable(${example_target} ${example_source_file})
+	target_compile_features(${example_target} PRIVATE cxx_std_11)
+	if (MSVC)
+		target_compile_options(${example_target}
+			PRIVATE /W4)
+	else()
+		target_compile_options(${example_target}
+			PRIVATE -Wpedantic -Wall -Werror)
+	endif()
+	target_compile_definitions(${example_target} PRIVATE __STDC_WANT_LIB_EXT1__=1)
+	target_link_libraries(${example_target}
+		PRIVATE 
+		
+		Threads::Threads
+
+		ztd::out_ptr
+
+		Boost::smart_ptr
+
+		ficapi
+		
+		${CMAKE_DL_LIBS}
+	)
+	target_include_directories(${example_target} PRIVATE
+		"include"
+	)
+	if (ZTD_OUT_PTR_TESTS)
+		add_test(NAME ${example_target} COMMAND ${example_target})
+	endif()
+endforeach()
+]]
