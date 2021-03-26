@@ -1,6 +1,6 @@
-# phd.out_ptr
+# ztd.out_ptr
 
-`phd.out_ptr` is a simple parameter wrapper for output pointers.
+`ztd.out_ptr` is a simple parameter wrapper for output pointers.
 
 [![Linux & Max OSX Build Status](https://travis-ci.org/ThePhD/out_ptr.svg?branch=master)](https://travis-ci.org/ThePhD/out_ptr)
 [![Build status](https://ci.appveyor.com/api/projects/status/aj895ac668xa8jo0?svg=true)](https://ci.appveyor.com/project/ThePhD/out-ptr)

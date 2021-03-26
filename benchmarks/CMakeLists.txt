@@ -37,17 +37,17 @@ file(GLOB_RECURSE ztd_out_ptr_benchmarks_sources
 	source/*.*
 )
 
-add_executable(phd.out_ptr.benchmarks ${ztd_out_ptr_benchmarks_sources})
-target_include_directories(phd.out_ptr.benchmarks PRIVATE
+add_executable(ztd.out_ptr.benchmarks ${ztd_out_ptr_benchmarks_sources})
+target_include_directories(ztd.out_ptr.benchmarks PRIVATE
 	"include")
 if (MSVC)
-	target_compile_options(phd.out_ptr.benchmarks
+	target_compile_options(ztd.out_ptr.benchmarks
 		PRIVATE /W4)
 else()
-	target_compile_options(phd.out_ptr.benchmarks
+	target_compile_options(ztd.out_ptr.benchmarks
 		PRIVATE -Wpedantic -Wall -Werror)
 endif()
-target_link_libraries(phd.out_ptr.benchmarks
+target_link_libraries(ztd.out_ptr.benchmarks
 	PRIVATE 
 	
 	ztd::out_ptr 
@@ -76,22 +76,22 @@ set(ztd_out_ptr_benchmarks_categories shared_local_out_ptr shared_reset_out_ptr 
 
 add_custom_command(
 	OUTPUT "${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
-	COMMAND phd.out_ptr.benchmarks 
+	COMMAND ztd.out_ptr.benchmarks 
 		"--benchmark_out=${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}" 
 		"--benchmark_out_format=${ZTD_OUT_PTR_BENCHMARKS_FORMAT}" 
 		"--benchmark_repetitions=${ZTD_OUT_PTR_BENCHMARKS_REPETITIONS}"
-	DEPENDS phd.out_ptr.benchmarks
+	DEPENDS ztd.out_ptr.benchmarks
 	COMMENT "Executing Benchmarks and outputting to '${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}'"
 )
 
 if (Python3_Interpreter_FOUND)
-	add_custom_target(phd.out_ptr.benchmarks_graphs_generator
+	add_custom_target(ztd.out_ptr.benchmarks_graphs_generator
 		COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/benchmarks/tools/generate_graphs.py" 
 			"--input=${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 			"--input_format=${ZTD_OUT_PTR_BENCHMARKS_FORMAT}"
 			"--output_dir=${ZTD_OUT_PTR_BENCHMARKS_GRAPH_OUTDIR}"
 			--categories ${ztd_out_ptr_benchmarks_categories}
-		DEPENDS phd.out_ptr.benchmarks "${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
+		DEPENDS ztd.out_ptr.benchmarks "${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}"
 		COMMENT "Graphing '${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTFILE}' data to '${ZTD_OUT_PTR_BENCHMARKS_RESULTS_OUTDIR}'"
 	)
 endif()

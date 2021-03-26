@@ -15,7 +15,7 @@
 #  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 cmake_minimum_required(VERSION 3.15)
-project(phd.out_ptr VERSION 1.0.0 DESCRIPTION "A library for having output pointers in C-like functions work well with C++ smart pointer types." LANGUAGES C CXX)
+project(ztd.out_ptr VERSION 1.0.0 DESCRIPTION "A library for having output pointers in C-like functions work well with C++ smart pointer types." LANGUAGES C CXX)
 
 # # Inclusion Work
 include(CMakePackageConfigHelpers)
