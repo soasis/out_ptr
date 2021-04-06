@@ -125,3 +125,13 @@ endif()
 if (ZTD_OUT_PTR_EXAMPLES)
 	add_subdirectory(examples)
 endif()
+
+if (ZTD_OUT_PTR_SCRATCH)
+	add_executable(ztd.out_ptr.scratch main.cpp)
+	target_link_libraries(ztd.out_ptr.scratch
+		PRIVATE
+		ztd::out_ptr
+		d3d11
+		dxgi
+	)
+endif()
