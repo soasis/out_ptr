@@ -24,10 +24,10 @@ use(ptr);
 
 ```cpp
 // After
-using zop = ztd::out_ptr;
+namespace zop = ztd::out_ptr;
 std::unique_ptr<Obj, ObjDeleter> ptr;
 
-if (!c_api_get_obj(pop::inout_ptr(ptr), ...)) {
+if (!c_api_get_obj(zop::inout_ptr(ptr), ...)) {
   throw std::runtime_error(...);
 }
 
