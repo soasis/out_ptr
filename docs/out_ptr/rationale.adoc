@@ -17,7 +17,7 @@
 [[rationale]]
 # Rationale
 
-Below is the rationale for the design. Most of this rationale can also be found in https://thephd.dev/vendor/future_cxx/papers/d1132.html[p1132 - std::out_ptr].
+Below is the rationale for the design. Most of this rationale can also be found in https://thephd.dev/_vendor/future_cxx/papers/d1132.html[p1132 - std::out_ptr].
 
 
 ## It is tedious to manage lifetime with smart pointers and C functions
