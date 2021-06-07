@@ -65,7 +65,7 @@ With this library, you now can do exactly this at the call site:
 using zop = ztd::out_ptr;
 
 std::unique_ptr<foo_t> new_foo;
-if (!create_foo(pop::out_ptr(new_foo))) {
+if (!create_foo(zop::out_ptr(new_foo))) {
   // etc. ...
 }
 ----

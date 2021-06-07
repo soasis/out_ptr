@@ -57,7 +57,7 @@ With ztd.out_ptr, we can do better. Get rid of the raw pointer and avoid potenti
 using zop = ztd::out_ptr;
 
 boost::shared_ptr<mll_driver> axis_driver(nullptr);
-mll_errno err = mll_driver_init(pop::out_ptr(axis_driver, mll_driver_free), 
+mll_errno err = mll_driver_init(zop::out_ptr(axis_driver, mll_driver_free), 
 	/* additional args ...*/);
 if (err != MLL_SUCESS) {
 	// ...
