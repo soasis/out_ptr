@@ -29,7 +29,7 @@ There are a few places where the rules of {cpp} (or a poorly implemented C libra
 using zop = ztd:out_ptr;
 // ...
 if (my_maybe_failing_C_api(
-	pop::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
+	zop::out_ptr(my_handle), 56, ID_SOFT_CLS) == 0 
 	&& my_handle) {
 		// do something here if the function returns success (0) 
 		// and "my_handle" is non-null
@@ -44,7 +44,7 @@ It is still safe to use such a construct with if statements if you will check th
 using zop = ztd:out_ptr;
 // ...
 if (SQLITE_OK != sqlite3_open("test.db", 
-	pop::out_ptr(database, sqlite3_close))) {
+	zop::out_ptr(database, sqlite3_close))) {
 	// this usage is just fine
 }
 ----
@@ -54,7 +54,7 @@ if (SQLITE_OK != sqlite3_open("test.db",
 ----
 using zop = ztd:out_ptr;
 if (c_error_t err = my_maybe_failing_C_api(
-	pop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
+	zop::out_ptr(my_handle), 56, ID_SOFT_CLS); 
 	err == 0 && my_handle) {
 		// still wrong
 }
@@ -93,7 +93,7 @@ namespace really::terrible { // C++17 nested namespaces
 int main () {
 	using zop = ztd::out_ptr;
 	// leaks because of do_something_that_throws
-	auto result = really::terrible::api(pop::inout_ptr(my_smart));
+	auto result = really::terrible::api(zop::inout_ptr(my_smart));
 }
 ----
 
