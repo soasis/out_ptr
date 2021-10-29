@@ -33,7 +33,7 @@ namespace out_ptr {
 namespace op_detail {
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class ZTD_OUT_PTR_TRIVIAL_ABI simple_out_ptr_t : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, std::tuple<Args...>, ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ simple_out_ptr_t : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, std::tuple<Args...>, ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
 		using list_t = ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
 		using core_t = base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, std::tuple<Args...>, list_t>;

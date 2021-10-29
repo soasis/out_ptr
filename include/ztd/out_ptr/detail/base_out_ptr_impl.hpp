@@ -19,6 +19,8 @@
 #ifndef ZTD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 #define ZTD_OUT_PTR_DETAIL_BASE_OUT_PTR_IMPL_HPP
 
+#include <ztd/out_ptr/version.hpp>
+
 #include <ztd/out_ptr/necessary_arity.hpp>
 #include <ztd/out_ptr/detail/is_specialization_of.hpp>
 #include <ztd/out_ptr/detail/customization_forward.hpp>
@@ -33,22 +35,16 @@
 #include <utility>
 #include <tuple>
 
-// Only defined for clang version 7 and above
-#if defined(__clang__) && __clang__ >= 7
-#define ZTD_OUT_PTR_TRIVIAL_ABI __attribute__((trivial_abi))
-#else
-#define ZTD_OUT_PTR_TRIVIAL_ABI
-#endif // Clang or otherwise
 
 namespace ztd {
 namespace out_ptr {
 namespace op_detail {
 
 	template <typename Smart, typename Pointer, typename Traits, typename Args, typename List>
-	class ZTD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl;
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ base_out_ptr_impl;
 
 	template <typename Smart, typename Pointer, typename Traits, typename Base, std::size_t... Indices>
-	class ZTD_OUT_PTR_TRIVIAL_ABI base_out_ptr_impl<Smart, Pointer, Traits, Base, ztd::out_ptr::op_detail::index_sequence<Indices...>>
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ base_out_ptr_impl<Smart, Pointer, Traits, Base, ztd::out_ptr::op_detail::index_sequence<Indices...>>
 	: public voidpp_op<base_out_ptr_impl<Smart, Pointer, Traits, Base, ztd::out_ptr::op_detail::index_sequence<Indices...>>, Pointer>, protected Base {
 	protected:
 		using traits_t = Traits;

@@ -19,6 +19,8 @@
 #ifndef ZTD_OUT_PTR_INOUT_PTR_HPP
 #define ZTD_OUT_PTR_INOUT_PTR_HPP
 
+#include <ztd/out_ptr/version.hpp>
+
 #include <ztd/out_ptr/detail/clever_inout_ptr.hpp>
 #include <ztd/out_ptr/detail/simple_inout_ptr.hpp>
 #include <ztd/out_ptr/detail/inout_ptr_traits.hpp>
@@ -26,17 +28,11 @@
 
 #include <cstddef>
 
-#if !defined(ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR)
-#if defined(_LIBCPP_VERSION) || defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
-#define ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR 1
-#endif // Checked with VC++ lib/Dinkumware, libstdc++, and libc++
-#endif // To use the clever optimization or not
-
 namespace ztd {
 namespace out_ptr {
 
 	namespace op_detail {
-#if (defined(ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR) && ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR != 0)
+#if ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_
 		template <typename Smart, typename Pointer, typename... Args>
 		using core_inout_ptr_t = clever_inout_ptr_t<Smart, Pointer, Args...>;
 #else
@@ -46,7 +42,7 @@ namespace out_ptr {
 	} // namespace op_detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class ZTD_OUT_PTR_TRIVIAL_ABI inout_ptr_t : public op_detail::core_inout_ptr_t<Smart, Pointer, Args...> {
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ inout_ptr_t : public op_detail::core_inout_ptr_t<Smart, Pointer, Args...> {
 	private:
 		using base_t = op_detail::core_inout_ptr_t<Smart, Pointer, Args...>;
 

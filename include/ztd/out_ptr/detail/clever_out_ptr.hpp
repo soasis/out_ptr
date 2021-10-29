@@ -19,6 +19,8 @@
 #ifndef ZTD_OUT_PTR_CLEVER_OUT_PTR_HPP
 #define ZTD_OUT_PTR_CLEVER_OUT_PTR_HPP
 
+#include <ztd/out_ptr/version.hpp>
+
 #include <ztd/out_ptr/detail/clever_out_ptr_impl.hpp>
 #include <ztd/out_ptr/detail/integer_sequence.hpp>
 #include <ztd/out_ptr/detail/marker.hpp>
@@ -36,7 +38,7 @@ namespace out_ptr {
 namespace op_detail {
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class ZTD_OUT_PTR_TRIVIAL_ABI clever_out_ptr_t : public clever_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ clever_out_ptr_t : public clever_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>> {
 	private:
 		using list_t = ztd::out_ptr::op_detail::make_index_sequence<std::tuple_size<std::tuple<Args...>>::value>;
 		using core_t = clever_out_ptr_impl<Smart, Pointer, std::tuple<Args...>, list_t>;

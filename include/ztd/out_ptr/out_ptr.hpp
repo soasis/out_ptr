@@ -19,6 +19,8 @@
 #ifndef ZTD_OUT_PTR_OUT_PTR_HPP
 #define ZTD_OUT_PTR_OUT_PTR_HPP
 
+#include <ztd/out_ptr/version.hpp>
+
 #include <ztd/out_ptr/detail/simple_out_ptr.hpp>
 #include <ztd/out_ptr/detail/clever_out_ptr.hpp>
 #include <ztd/out_ptr/detail/out_ptr_traits.hpp>
@@ -32,7 +34,7 @@ namespace ztd { namespace out_ptr {
 
 	namespace op_detail {
 
-#if defined(ZTD_OUT_PTR_USE_CLEVER_OUT_PTR) && ZTD_OUT_PTR_USE_CLEVER_OUT_PTR != 0
+#if ZTD_OUT_PTR_USE_CLEVER_OUT_PTR_I_
 		// One must opt into this specifically because it is unsafe for a large
 		// variety of APIs
 		template <typename Smart, typename Pointer, typename... Args>
@@ -47,7 +49,7 @@ namespace ztd { namespace out_ptr {
 	} // namespace op_detail
 
 	template <typename Smart, typename Pointer, typename... Args>
-	class ZTD_OUT_PTR_TRIVIAL_ABI out_ptr_t : public op_detail::core_out_ptr_t<Smart, Pointer, Args...> {
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ out_ptr_t : public op_detail::core_out_ptr_t<Smart, Pointer, Args...> {
 	private:
 		using base_t = op_detail::core_out_ptr_t<Smart, Pointer, Args...>;
 

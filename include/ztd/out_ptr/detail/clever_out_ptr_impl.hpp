@@ -19,30 +19,30 @@
 #ifndef ZTD_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
 #define ZTD_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP
 
+#include <ztd/out_ptr/version.hpp>
+
 #include <ztd/out_ptr/detail/base_out_ptr_impl.hpp>
 #include <ztd/out_ptr/detail/customization_forward.hpp>
 #include <ztd/out_ptr/detail/voidpp_op.hpp>
 #include <ztd/out_ptr/detail/integer_sequence.hpp>
 
 #include <memory>
+#include <tuple>
+#if ZTD_OUT_PTR_CLEVER_SANITY_CHECK_I_
 #include <cassert>
+#endif // assert for sanity checks
 
-#if defined(_LIBCPP_VERSION)
-// Why is their __compressed_pair <pointer, deleter>
-// and not <deleter, pointer>? It still seems to optimize the bases correctly,
-// so maybe this is more so my own hubris as a libstdc++ baby
-#if !defined(ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER)
-#define ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER 1
-#endif // std::unique_ptr
-
-#endif // Libc++ does pointer first...!
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4127)
+#endif
 
 namespace ztd {
 namespace out_ptr {
 namespace op_detail {
 
 	template <typename Smart, typename T, typename D, typename Pointer>
-	class ZTD_OUT_PTR_TRIVIAL_ABI out_unique_fast : voidpp_op<out_unique_fast<Smart, T, D, Pointer>, Pointer> {
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ out_unique_fast : voidpp_op<out_unique_fast<Smart, T, D, Pointer>, Pointer> {
 	protected:
 		using source_pointer = pointer_of_or_t<Smart, Pointer>;
 
@@ -56,7 +56,7 @@ namespace op_detail {
 		out_unique_fast(std::true_type, Smart& ptr) noexcept
 		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(ptr.get()), m_target_ptr(static_cast<Pointer*>(static_cast<void*>(this->m_smart_ptr))) {
 			// we can assume things are cleaner here
-#if defined(ZTD_OUT_PTR_CLEVER_SANITY_CHECK) && ZTD_OUT_PTR_CLEVER_SANITY_CHECK != 0
+#if ZTD_OUT_PTR_CLEVER_SANITY_CHECK_I_
 			assert(*this->m_target_ptr == this->m_old_ptr && "clever UB-based optimization did not properly retrieve the pointer value");
 #endif // Clever Sanity Checks
 		}
@@ -65,7 +65,7 @@ namespace op_detail {
 		: m_smart_ptr(std::addressof(ptr)), m_old_ptr(static_cast<Pointer>(ptr.get())) {
 			// analysis necessary
 			if (is_specialization_of<Smart, boost::movelib::unique_ptr>::value) {
-#if defined(ZTD_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER) && ZTD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
+#if ZTD_OUT_PTR_CLEVER_UNIQUE_MOVELIB_IMPLEMENTATION_FIRST_MEMBER_I_
 				// implementation has Pointer as first member: alias directly
 				void* target = static_cast<void*>(this->m_smart_ptr);
 #else
@@ -79,7 +79,7 @@ namespace op_detail {
 				this->m_target_ptr = static_cast<Pointer*>(target);
 			}
 			else {
-#if defined(ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER) && ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER != 0
+#if ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_
 				// implementation has Pointer as first member: alias directly
 				void* target = static_cast<void*>(this->m_smart_ptr);
 #else
@@ -92,7 +92,7 @@ namespace op_detail {
 				// get direct Pointer
 				this->m_target_ptr = static_cast<Pointer*>(target);
 			}
-#if defined(ZTD_OUT_PTR_CLEVER_SANITY_CHECK) && ZTD_OUT_PTR_CLEVER_SANITY_CHECK != 0
+#if ZTD_OUT_PTR_CLEVER_SANITY_CHECK_I_
 			assert(*this->m_target_ptr == this->m_old_ptr && "clever UB-based optimization did not properly retrieve the pointer value");
 #endif // Clever Sanity Checks
 		}
@@ -125,7 +125,7 @@ namespace op_detail {
 	};
 
 	template <typename Smart, typename Pointer, typename Args, typename List, typename = void>
-	class ZTD_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List> {
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ clever_out_ptr_impl : public base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List> {
 	private:
 		using base_t = base_out_ptr_impl<Smart, Pointer, out_ptr_traits<Smart, Pointer>, Args, List>;
 
@@ -134,7 +134,7 @@ namespace op_detail {
 	};
 
 	template <typename T, typename D, typename Pointer>
-	class ZTD_OUT_PTR_TRIVIAL_ABI clever_out_ptr_impl<std::unique_ptr<T, D>,
+	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ clever_out_ptr_impl<std::unique_ptr<T, D>,
 		Pointer, std::tuple<>, ztd::out_ptr::op_detail::index_sequence<>,
 		typename std::enable_if<std::is_same<pointer_of_or_t<std::unique_ptr<T, D>, Pointer>, Pointer>::value
 			|| op_detail::has_unspecialized_marker<out_ptr_traits<std::unique_ptr<T, D>, Pointer>>::value
@@ -163,5 +163,9 @@ namespace op_detail {
 		using base_t::base_t;
 	};
 }}} // namespace ztd::out_ptr::op_detail
+
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
 #endif // ZTD_OUT_PTR_DETAIL_CLEVER_OUT_PTR_IMPL_HPP

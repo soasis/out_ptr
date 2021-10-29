@@ -39,7 +39,7 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 		}
 	};
 	SECTION("unique_ptr<void, stateful_deleter>") {
-		reused_deleter deleter{};
+		reused_deleter deleter {};
 		try {
 			std::unique_ptr<void, std::reference_wrapper<reused_deleter>> p(nullptr, std::ref(deleter));
 
@@ -59,12 +59,26 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
 				REQUIRE(p.get_deleter().get().store == 1);
 			}
-			if (ficapi_int_create_fail(ztd::out_ptr::out_ptr<int*>(p), 1)) {
-				int* rawp = static_cast<int*>(p.get());
-				REQUIRE(rawp == nullptr);
-				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
-				REQUIRE(p.get_deleter().get().store == 2);
-				throw std::runtime_error("ficapi: failure to create");
+			{
+				int* before_rawp = static_cast<int*>(p.get());
+				int err		  = ficapi_int_create_fail(ztd::out_ptr::out_ptr<int*>(p), 1);
+				if (err == 1) {
+					REQUIRE(err == 1);
+					int* rawp = static_cast<int*>(p.get());
+					REQUIRE(rawp == before_rawp);
+					REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
+					REQUIRE(p.get_deleter().get().store == 1);
+					throw std::runtime_error("ficapi: failure to create");
+				}
+				else {
+					REQUIRE(err == 0);
+					int* rawp = static_cast<int*>(p.get());
+					REQUIRE(rawp != before_rawp);
+					REQUIRE(rawp != nullptr);
+					REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
+					REQUIRE(p.get_deleter().get().store == 2);
+					throw std::runtime_error("ficapi: failure to create");
+				}
 			}
 		}
 		catch (const std::runtime_error&) {
@@ -92,12 +106,26 @@ TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullpt
 				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
 				REQUIRE(p.get_deleter().get().store == 1);
 			}
-			if (ficapi_create_fail(ztd::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_int, 1)) {
-				int* rawp = p.get();
-				REQUIRE(rawp == nullptr);
-				REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
-				REQUIRE(p.get_deleter().get().store == 2);
-				throw std::runtime_error("ficapi: failure to create");
+			{
+				int* before_rawp = static_cast<int*>(p.get());
+				int err		  = ficapi_create_fail(ztd::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_int, 1);
+				if (err == 1) {
+					REQUIRE(err == 1);
+					int* rawp = static_cast<int*>(p.get());
+					REQUIRE(rawp == before_rawp);
+					REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
+					REQUIRE(p.get_deleter().get().store == 1);
+					throw std::runtime_error("ficapi: failure to create");
+				}
+				else {
+					REQUIRE(err == 0);
+					int* rawp = static_cast<int*>(p.get());
+					REQUIRE(rawp != before_rawp);
+					REQUIRE(rawp != nullptr);
+					REQUIRE(std::addressof(p.get_deleter().get()) == std::addressof(deleter));
+					REQUIRE(p.get_deleter().get().store == 2);
+					throw std::runtime_error("ficapi: failure to create");
+				}
 			}
 		}
 		catch (const std::runtime_error&) {

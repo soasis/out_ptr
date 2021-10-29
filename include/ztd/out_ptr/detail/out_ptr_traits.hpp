@@ -94,7 +94,9 @@ namespace out_ptr {
 		template <typename... Args>
 		static void reset(Smart& s, pointer& p, Args&&... args) noexcept {
 			using can_reset = op_detail::is_resetable<Smart, source_pointer, Args...>;
-			reset_or_create(can_reset(), s, static_cast<source_pointer>(std::move(p)), std::forward<Args>(args)...);
+			if (p) {
+				reset_or_create(can_reset(), s, static_cast<source_pointer>(std::move(p)), std::forward<Args>(args)...);
+			}
 		}
 	};
 
