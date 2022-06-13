@@ -1,4 +1,4 @@
-//  Copyright ⓒ 2018-2021 ThePhD.
+//  Copyright ⓒ 2018-2022 ThePhD.
 //
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
@@ -110,7 +110,7 @@ namespace ztd {
 		typename Dx = default_handle_deleter<T>>
 	struct handle : Dx {
 	public:
-		using pointer	 = ztd::out_ptr::pointer_type_t<T, Dx>;
+		using pointer	    = ztd::out_ptr::pointer_type_t<T, Dx>;
 		using deleter_type = Dx;
 
 	private:

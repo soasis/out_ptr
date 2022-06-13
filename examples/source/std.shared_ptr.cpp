@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@
 
 #include <memory>
 
-int main(int, char* []) {
+int main(int, char*[]) {
 
 	std::shared_ptr<ficapi::opaque> p(nullptr);
 	// next line would error: forgot to pass deleter and it got reset!
-	//ficapi_handle_create(ztd::out_ptr::out_ptr(p));
+	// ficapi_handle_create(ztd::out_ptr::out_ptr(p));
 
 	// next line does not error
 	ficapi_handle_create(ztd::out_ptr::out_ptr(p, ficapi_handle_delete));

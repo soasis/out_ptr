@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,10 +55,10 @@ namespace ztd { namespace out_ptr {
 			: m_target_ptr(static_cast<Pointer*>(static_cast<void*>(&ptr.friendly_get()))) {
 			}
 
-			friendly_inout_ptr_impl(friendly_inout_ptr_impl&& right) noexcept = default;
+			friendly_inout_ptr_impl(friendly_inout_ptr_impl&& right) noexcept		  = default;
 			friendly_inout_ptr_impl& operator=(friendly_inout_ptr_impl&& right) noexcept = default;
 			friendly_inout_ptr_impl(const friendly_inout_ptr_impl&)				  = delete;
-			friendly_inout_ptr_impl& operator=(const friendly_inout_ptr_impl&) = delete;
+			friendly_inout_ptr_impl& operator=(const friendly_inout_ptr_impl&)		  = delete;
 
 			operator Pointer*() const noexcept {
 				return const_cast<Pointer*>(m_target_ptr);

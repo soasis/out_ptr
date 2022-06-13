@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#define ZTD_OUT_PTR_EXAMPLE_ASSERT_MSG(condition, message)                                                                                                                \
+#define ZTD_OUT_PTR_EXAMPLE_ASSERT_MSG(condition, message)                                                                                                                  \
 	(!(condition) ? ((void)(std::cerr << "Assertion `" #condition "` failed in " << __FILE__ << " line " << __LINE__ << ": " << message << std::endl), (void)std::abort()) \
 			    : (void)0)
 

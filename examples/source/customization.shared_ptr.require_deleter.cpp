@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@
 // not used with inout_ptr
 // because ownership is not unique or releasable!
 template <typename T>
-struct my_company_shared_ptr : public ztd::local_shared_ptr<T> {};
+struct my_company_shared_ptr : public ztd::local_shared_ptr<T> { };
 
 // type to allow us to use static assert
 // that is not eagerly evaluated
 template <typename>
-struct dependent_type_false : std::true_type {};
+struct dependent_type_false : std::true_type { };
 
 // this customization point is the more powerful version
 namespace ztd { namespace out_ptr {
@@ -69,7 +69,7 @@ namespace ztd { namespace out_ptr {
 			right.m_old_ptr = nullptr;
 		}
 		out_ptr_t& operator=(out_ptr_t&& right) noexcept {
-			Base::operator	=(std::move(right));
+			Base::operator=(std::move(right));
 			this->m_smart_ptr  = std::move(right.m_smart_ptr);
 			this->m_target_ptr = std::move(right.m_target_ptr);
 			right.m_smart_ptr  = nullptr;
@@ -111,13 +111,13 @@ int main(int, char* argv[]) {
 	av_format_context_ptr context(avformat_alloc_context());
 
 	// cannot use it with inout_ptr
-	//if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
+	// if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
 
 	// cannot use it wihout a deleter
-	//if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
+	// if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) { ... }
 
 	// this is the only way to use it properly!
-	if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter{}), argv[0], nullptr, nullptr)) {
+	if (0 != avformat_open_input(pop::out_ptr(raw_context, av_format_context_deleter {}), argv[0], nullptr, nullptr)) {
 		std::stringstream ss;
 		ss << "ffmpeg_image_loader could not open file '"
 		   << path << "'";

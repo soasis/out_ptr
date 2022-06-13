@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 
 // A template that always evaluates to false anyhow
 template <std::size_t I>
-struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> {};
+struct always_false_index : std::integral_constant<bool, I == 1 && I == 0> { };
 
 namespace ztd { namespace out_ptr {
 

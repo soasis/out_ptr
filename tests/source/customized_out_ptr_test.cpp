@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ namespace ztd { namespace out_ptr {
 			right.m_old_ptr = nullptr;
 		}
 		out_ptr_t& operator=(out_ptr_t&& right) noexcept {
-			Base::operator	=(std::move(right));
+			Base::operator=(std::move(right));
 			this->m_smart_ptr  = right.m_smart_ptr;
 			this->m_old_ptr    = right.m_old_ptr;
 			this->m_target_ptr = right.m_target_ptr;
@@ -122,7 +122,7 @@ TEST_CASE("out_ptr/customization basic", "out_ptr type works with smart pointers
 
 TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful deleters in smart pointers") {
 	SECTION("handle<void*, stateful_deleter>") {
-		ztd::special_out_customization_handle<void*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
+		ztd::special_out_customization_handle<void*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter { 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_create(ztd::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
@@ -130,7 +130,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 		REQUIRE(p.get_deleter().state() == 0x12345678);
 	}
 	SECTION("handle<int*, stateful_deleter>") {
-		ztd::special_out_customization_handle<int*, ficapi::stateful_int_deleter> p(nullptr, ficapi::stateful_int_deleter{ 0x12345678 });
+		ztd::special_out_customization_handle<int*, ficapi::stateful_int_deleter> p(nullptr, ficapi::stateful_int_deleter { 0x12345678 });
 		ficapi_int_create(ztd::out_ptr::out_ptr(p));
 		int* rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -138,7 +138,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 		REQUIRE(p.get_deleter().state() == 0x12345678);
 	}
 	SECTION("handle<ficapi::opaque*, stateful_handle_deleter>") {
-		ztd::special_out_customization_handle<ficapi::opaque*, ficapi::stateful_handle_deleter> p(nullptr, ficapi::stateful_handle_deleter{ 0x12345678 });
+		ztd::special_out_customization_handle<ficapi::opaque*, ficapi::stateful_handle_deleter> p(nullptr, ficapi::stateful_handle_deleter { 0x12345678 });
 		ficapi_handle_create(ztd::out_ptr::out_ptr(p));
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -146,7 +146,7 @@ TEST_CASE("out_ptr/customization stateful", "out_ptr type works with stateful de
 		REQUIRE(p.get_deleter().state() == 0x12345678);
 	}
 	SECTION("handle<ficapi::opaque*, stateful_deleter>, void out_ptr") {
-		ztd::special_out_customization_handle<ficapi::opaque*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
+		ztd::special_out_customization_handle<ficapi::opaque*, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter { 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_create(ztd::out_ptr::out_ptr<void*>(p), ficapi_type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -173,7 +173,7 @@ TEST_CASE("out_ptr/customization reused", "out_ptr type properly deletes non-nul
 		}
 	};
 	SECTION("handle<void*, stateful_deleter>") {
-		ztd::special_out_customization_handle<void*, reused_deleter> p(nullptr, reused_deleter{});
+		ztd::special_out_customization_handle<void*, reused_deleter> p(nullptr, reused_deleter {});
 
 		ficapi_create(ztd::out_ptr::out_ptr(p), ficapi_type::ficapi_type_int);
 		{
@@ -198,7 +198,7 @@ TEST_CASE("out_ptr/customization reused", "out_ptr type properly deletes non-nul
 		}
 	}
 	SECTION("handle<int*, stateful_deleter>") {
-		ztd::special_out_customization_handle<int*, reused_int_deleter> p(nullptr, reused_int_deleter{});
+		ztd::special_out_customization_handle<int*, reused_int_deleter> p(nullptr, reused_int_deleter {});
 
 		ficapi_int_create(ztd::out_ptr::out_ptr(p));
 		{

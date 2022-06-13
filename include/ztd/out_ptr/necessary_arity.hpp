@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,11 +29,11 @@ namespace ztd {
 namespace out_ptr {
 	namespace op_detail {
 		template <typename Smart, typename... Args>
-		class necessary_arity_impl : public std::integral_constant<std::size_t, static_cast<std::size_t>(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, boost::shared_ptr>::value)> {};
+		class necessary_arity_impl : public std::integral_constant<std::size_t, static_cast<std::size_t>(is_specialization_of<Smart, std::shared_ptr>::value || is_specialization_of<Smart, boost::shared_ptr>::value)> { };
 	} // namespace op_detail
 
 	template <typename Smart, typename... Args>
-	class necessary_arity : public op_detail::necessary_arity_impl<Smart, Args...> {};
+	class necessary_arity : public op_detail::necessary_arity_impl<Smart, Args...> { };
 }
 } // namespace ztd::out_ptr
 

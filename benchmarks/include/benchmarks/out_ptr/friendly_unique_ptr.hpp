@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ namespace std {
 			return (_Mypair._Get_first());
 		}
 
-		 const _Dx& get_deleter() const noexcept { // return const reference to deleter
+		const _Dx& get_deleter() const noexcept { // return const reference to deleter
 			return (_Mypair._Get_first());
 		}
 
@@ -135,7 +135,7 @@ namespace std {
 
 		friendly_unique_ptr(friendly_unique_ptr&& _Right) noexcept
 		: _Mybase(_Right.release(),
-			  _STD forward<_Dx>(_Right.get_deleter())) { // construct by moving _Right
+			_STD forward<_Dx>(_Right.get_deleter())) { // construct by moving _Right
 		}
 
 		template <class _Ty2,
@@ -146,7 +146,7 @@ namespace std {
 				int> = 0>
 		friendly_unique_ptr(friendly_unique_ptr<_Ty2, _Dx2>&& _Right) noexcept
 		: _Mybase(_Right.release(),
-			  _STD forward<_Dx2>(_Right.get_deleter())) { // construct by moving _Right
+			_STD forward<_Dx2>(_Right.get_deleter())) { // construct by moving _Right
 		}
 
 #if _HAS_AUTO_PTR_ETC
@@ -167,14 +167,14 @@ namespace std {
 				int> = 0>
 		friendly_unique_ptr& operator=(friendly_unique_ptr<_Ty2, _Dx2>&& _Right) noexcept { // assign by moving _Right
 			reset(_Right.release());
-			this->get_deleter()	= _STD forward<_Dx2>(_Right.get_deleter());
+			this->get_deleter() = _STD forward<_Dx2>(_Right.get_deleter());
 			return (*this);
 		}
 
 		friendly_unique_ptr& operator=(friendly_unique_ptr&& _Right) noexcept { // assign by moving _Right
 			if (this != _STD addressof(_Right)) {						  // different, do the move
 				reset(_Right.release());
-				this->get_deleter()= _STD forward<_Dx>(_Right.get_deleter());
+				this->get_deleter() = _STD forward<_Dx>(_Right.get_deleter());
 			}
 			return (*this);
 		}
@@ -215,20 +215,20 @@ namespace std {
 		}
 
 		pointer release() noexcept { // yield ownership of pointer
-			pointer _Ans   = get();
+			pointer _Ans	= get();
 			this->_Myptr() = pointer();
 			return (_Ans);
 		}
 
 		void reset(pointer _Ptr = pointer()) noexcept { // establish new pointer
-			pointer _Old   = get();
+			pointer _Old	= get();
 			this->_Myptr() = _Ptr;
 			if (_Old != pointer()) {
 				this->get_deleter()(_Old);
 			}
 		}
 
-		friendly_unique_ptr(const friendly_unique_ptr&) = delete;
+		friendly_unique_ptr(const friendly_unique_ptr&)		    = delete;
 		friendly_unique_ptr& operator=(const friendly_unique_ptr&) = delete;
 	};
 
@@ -413,7 +413,7 @@ namespace std {
 		_LIBCPP_INLINE_VISIBILITY
 		friendly_unique_ptr(__rv<friendly_unique_ptr> __u)
 		: __ptr_(__u->release(),
-			  _VSTD::forward<deleter_type>(__u->get_deleter())) {
+			_VSTD::forward<deleter_type>(__u->get_deleter())) {
 		}
 
 		template <class _Up, class _Ep>
@@ -487,14 +487,14 @@ namespace std {
 
 		_LIBCPP_INLINE_VISIBILITY
 		pointer release() _NOEXCEPT {
-			pointer __t    = __ptr_.first();
+			pointer __t	= __ptr_.first();
 			__ptr_.first() = pointer();
 			return __t;
 		}
 
 		_LIBCPP_INLINE_VISIBILITY
 		void reset(pointer __p = pointer()) _NOEXCEPT {
-			pointer __tmp  = __ptr_.first();
+			pointer __tmp	= __ptr_.first();
 			__ptr_.first() = __p;
 			if (__tmp)
 				__ptr_.second()(__tmp);
@@ -522,7 +522,7 @@ namespace std {
 		__uniq_ptr_impl<_Tp, _Dp> _M_t;
 
 	public:
-		using pointer	 = typename __uniq_ptr_impl<_Tp, _Dp>::pointer;
+		using pointer	    = typename __uniq_ptr_impl<_Tp, _Dp>::pointer;
 		using element_type = _Tp;
 		using deleter_type = _Dp;
 
@@ -547,11 +547,11 @@ namespace std {
 		}
 
 		/** Takes ownership of a pointer.
-       *
-       * @param __p  A pointer to an object of @c element_type
-       *
-       * The deleter will be value-initialized.
-       */
+		 *
+		 * @param __p  A pointer to an object of @c element_type
+		 *
+		 * The deleter will be value-initialized.
+		 */
 		template <typename _Up = _Dp,
 			typename		   = _DeleterConstraint<_Up>>
 		explicit friendly_unique_ptr(pointer __p) noexcept
@@ -559,12 +559,12 @@ namespace std {
 		}
 
 		/** Takes ownership of a pointer.
-       *
-       * @param __p  A pointer to an object of @c element_type
-       * @param __d  A reference to a deleter.
-       *
-       * The deleter will be initialized with @p __d
-       */
+		 *
+		 * @param __p  A pointer to an object of @c element_type
+		 * @param __d  A reference to a deleter.
+		 *
+		 * The deleter will be initialized with @p __d
+		 */
 		friendly_unique_ptr(pointer __p,
 			typename conditional<is_reference<deleter_type>::value,
 				deleter_type, const deleter_type&>::type __d) noexcept
@@ -572,12 +572,12 @@ namespace std {
 		}
 
 		/** Takes ownership of a pointer.
-       *
-       * @param __p  A pointer to an object of @c element_type
-       * @param __d  An rvalue reference to a deleter.
-       *
-       * The deleter will be initialized with @p std::move(__d)
-       */
+		 *
+		 * @param __p  A pointer to an object of @c element_type
+		 * @param __d  An rvalue reference to a deleter.
+		 *
+		 * The deleter will be initialized with @p std::move(__d)
+		 */
 		friendly_unique_ptr(pointer __p,
 			typename remove_reference<deleter_type>::type&& __d) noexcept
 		: _M_t(std::move(__p), std::move(__d)) {
@@ -600,11 +600,11 @@ namespace std {
 		}
 
 		/** @brief Converting constructor from another type
-       *
-       * Requires that the pointer owned by @p __u is convertible to the
-       * type of pointer owned by this object, @p __u does not own an array,
-       * and @p __u has a compatible deleter type.
-       */
+		 *
+		 * Requires that the pointer owned by @p __u is convertible to the
+		 * type of pointer owned by this object, @p __u does not own an array,
+		 * and @p __u has a compatible deleter type.
+		 */
 		template <typename _Up, typename _Ep, typename = _Require<__safe_conversion_up<_Up, _Ep>, typename conditional<is_reference<_Dp>::value, is_same<_Ep, _Dp>, is_convertible<_Ep, _Dp>>::type>>
 		friendly_unique_ptr(friendly_unique_ptr<_Up, _Ep>&& __u) noexcept
 		: _M_t(__u.release(), std::forward<_Ep>(__u.get_deleter())) {
@@ -630,11 +630,11 @@ namespace std {
 		// Assignment.
 
 		/** @brief Move assignment operator.
-       *
-       * @param __u  The object to transfer ownership from.
-       *
-       * Invokes the deleter first if this object owns a pointer.
-       */
+		 *
+		 * @param __u  The object to transfer ownership from.
+		 *
+		 * Invokes the deleter first if this object owns a pointer.
+		 */
 		friendly_unique_ptr&
 		operator=(friendly_unique_ptr&& __u) noexcept {
 			reset(__u.release());
@@ -643,12 +643,12 @@ namespace std {
 		}
 
 		/** @brief Assignment from another type.
-       *
-       * @param __u  The object to transfer ownership from, which owns a
-       *             convertible pointer to a non-array object.
-       *
-       * Invokes the deleter first if this object owns a pointer.
-       */
+		 *
+		 * @param __u  The object to transfer ownership from, which owns a
+		 *             convertible pointer to a non-array object.
+		 *
+		 * Invokes the deleter first if this object owns a pointer.
+		 */
 		template <typename _Up, typename _Ep>
 		typename enable_if<__and_<
 						    __safe_conversion_up<_Up, _Ep>,
@@ -723,11 +723,11 @@ namespace std {
 		}
 
 		/** @brief Replace the stored pointer.
-       *
-       * @param __p  The new pointer to store.
-       *
-       * The deleter will be invoked if a pointer is already owned.
-       */
+		 *
+		 * @param __p  The new pointer to store.
+		 *
+		 * The deleter will be invoked if a pointer is already owned.
+		 */
 		void
 		reset(pointer __p = pointer()) noexcept {
 			using std::swap;
@@ -744,7 +744,7 @@ namespace std {
 		}
 
 		// Disable copy from lvalue.
-		friendly_unique_ptr(const friendly_unique_ptr&) = delete;
+		friendly_unique_ptr(const friendly_unique_ptr&)		    = delete;
 		friendly_unique_ptr& operator=(const friendly_unique_ptr&) = delete;
 	};
 
@@ -770,7 +770,7 @@ namespace std {
 				__not_<is_same<__remove_cv<_Tp>, __remove_cv<_Up>>>>;
 
 	public:
-		using pointer	 = typename __uniq_ptr_impl<_Tp, _Dp>::pointer;
+		using pointer	    = typename __uniq_ptr_impl<_Tp, _Dp>::pointer;
 		using element_type = _Tp;
 		using deleter_type = _Dp;
 
@@ -809,29 +809,29 @@ namespace std {
 		}
 
 		/** Takes ownership of a pointer.
-       *
-       * @param __p  A pointer to an array of a type safely convertible
-       * to an array of @c element_type
-       *
-       * The deleter will be value-initialized.
-       */
+		 *
+		 * @param __p  A pointer to an array of a type safely convertible
+		 * to an array of @c element_type
+		 *
+		 * The deleter will be value-initialized.
+		 */
 		template <typename _Up,
 			typename _Vp = _Dp,
-			typename	= _DeleterConstraint<_Vp>,
-			typename	= typename enable_if<
+			typename	   = _DeleterConstraint<_Vp>,
+			typename	   = typename enable_if<
 				    __safe_conversion_raw<_Up>::value, bool>::type>
 		explicit friendly_unique_ptr(_Up __p) noexcept
 		: _M_t(__p) {
 		}
 
 		/** Takes ownership of a pointer.
-       *
-       * @param __p  A pointer to an array of a type safely convertible
-       * to an array of @c element_type
-       * @param __d  A reference to a deleter.
-       *
-       * The deleter will be initialized with @p __d
-       */
+		 *
+		 * @param __p  A pointer to an array of a type safely convertible
+		 * to an array of @c element_type
+		 * @param __d  A reference to a deleter.
+		 *
+		 * The deleter will be initialized with @p __d
+		 */
 		template <typename _Up,
 			typename = typename enable_if<
 				__safe_conversion_raw<_Up>::value, bool>::type>
@@ -842,13 +842,13 @@ namespace std {
 		}
 
 		/** Takes ownership of a pointer.
-       *
-       * @param __p  A pointer to an array of a type safely convertible
-       * to an array of @c element_type
-       * @param __d  A reference to a deleter.
-       *
-       * The deleter will be initialized with @p std::move(__d)
-       */
+		 *
+		 * @param __p  A pointer to an array of a type safely convertible
+		 * to an array of @c element_type
+		 * @param __d  A reference to a deleter.
+		 *
+		 * The deleter will be initialized with @p std::move(__d)
+		 */
 		template <typename _Up,
 			typename = typename enable_if<
 				__safe_conversion_raw<_Up>::value, bool>::type>
@@ -887,11 +887,11 @@ namespace std {
 		// Assignment.
 
 		/** @brief Move assignment operator.
-       *
-       * @param __u  The object to transfer ownership from.
-       *
-       * Invokes the deleter first if this object owns a pointer.
-       */
+		 *
+		 * @param __u  The object to transfer ownership from.
+		 *
+		 * Invokes the deleter first if this object owns a pointer.
+		 */
 		friendly_unique_ptr&
 		operator=(friendly_unique_ptr&& __u) noexcept {
 			reset(__u.release());
@@ -900,12 +900,12 @@ namespace std {
 		}
 
 		/** @brief Assignment from another type.
-       *
-       * @param __u  The object to transfer ownership from, which owns a
-       *             convertible pointer to an array object.
-       *
-       * Invokes the deleter first if this object owns a pointer.
-       */
+		 *
+		 * @param __u  The object to transfer ownership from, which owns a
+		 *             convertible pointer to an array object.
+		 *
+		 * Invokes the deleter first if this object owns a pointer.
+		 */
 		template <typename _Up, typename _Ep>
 		typename enable_if<__and_<__safe_conversion_up<_Up, _Ep>,
 						    is_assignable<deleter_type&, _Ep&&>>::value,
@@ -966,11 +966,11 @@ namespace std {
 		}
 
 		/** @brief Replace the stored pointer.
-       *
-       * @param __p  The new pointer to store.
-       *
-       * The deleter will be invoked if a pointer is already owned.
-       */
+		 *
+		 * @param __p  The new pointer to store.
+		 *
+		 * The deleter will be invoked if a pointer is already owned.
+		 */
 		template <typename _Up,
 			typename = _Require<
 				__or_<is_same<_Up, pointer>,
@@ -1000,7 +1000,7 @@ namespace std {
 		}
 
 		// Disable copy from lvalue.
-		friendly_unique_ptr(const friendly_unique_ptr&) = delete;
+		friendly_unique_ptr(const friendly_unique_ptr&)		    = delete;
 		friendly_unique_ptr& operator=(const friendly_unique_ptr&) = delete;
 	};
 

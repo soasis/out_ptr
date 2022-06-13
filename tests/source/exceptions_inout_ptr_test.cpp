@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ TEST_CASE("inout_ptr/exceptions/basic fail in scope", "inout_ptr does not double
 
 TEST_CASE("inout_ptr/exceptions/stateful fail in scope", "inout_ptr type works with stateful deleters in smart pointers") {
 	SECTION("unique_ptr<void, stateful_deleter>") {
-		std::unique_ptr<void, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
+		std::unique_ptr<void, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter { 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_re_create(ztd::out_ptr::inout_ptr(p), ficapi_type::ficapi_type_int);
 		int* rawp = static_cast<int*>(p.get());
 		REQUIRE(rawp != nullptr);
@@ -112,7 +112,7 @@ TEST_CASE("inout_ptr/exceptions/stateful fail in scope", "inout_ptr type works w
 		}
 	}
 	SECTION("unique_ptr<int, stateful_deleter>") {
-		std::unique_ptr<int, ficapi::stateful_int_deleter> p(nullptr, ficapi::stateful_int_deleter{ 0x12345678 });
+		std::unique_ptr<int, ficapi::stateful_int_deleter> p(nullptr, ficapi::stateful_int_deleter { 0x12345678 });
 		ficapi_int_re_create(ztd::out_ptr::inout_ptr(p));
 		int* rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -130,7 +130,7 @@ TEST_CASE("inout_ptr/exceptions/stateful fail in scope", "inout_ptr type works w
 		}
 	}
 	SECTION("unique_ptr<ficapi::opaque, stateful_handle_deleter>") {
-		std::unique_ptr<ficapi::opaque, ficapi::stateful_handle_deleter> p(nullptr, ficapi::stateful_handle_deleter{ 0x12345678 });
+		std::unique_ptr<ficapi::opaque, ficapi::stateful_handle_deleter> p(nullptr, ficapi::stateful_handle_deleter { 0x12345678 });
 		ficapi_handle_re_create(ztd::out_ptr::inout_ptr(p));
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -148,7 +148,7 @@ TEST_CASE("inout_ptr/exceptions/stateful fail in scope", "inout_ptr type works w
 		}
 	}
 	SECTION("unique_ptr<ficapi::opaque, stateful_deleter>, void inout_ptr") {
-		std::unique_ptr<ficapi::opaque, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter{ 0x12345678, ficapi_type::ficapi_type_int });
+		std::unique_ptr<ficapi::opaque, ficapi::stateful_deleter> p(nullptr, ficapi::stateful_deleter { 0x12345678, ficapi_type::ficapi_type_int });
 		ficapi_re_create(ztd::out_ptr::inout_ptr<void*>(p), ficapi_type::ficapi_type_opaque);
 		ficapi::opaque_handle rawp = p.get();
 		REQUIRE(rawp != nullptr);
@@ -185,7 +185,7 @@ TEST_CASE("inout_ptr/exceptions/exception scope escape", "inout_ptr type properl
 		}
 	};
 	SECTION("unique_ptr<void, stateful_deleter>") {
-		reused_deleter deleter{};
+		reused_deleter deleter {};
 		try {
 			std::unique_ptr<void, std::reference_wrapper<reused_deleter>> p(nullptr, std::ref(deleter));
 
@@ -219,7 +219,7 @@ TEST_CASE("inout_ptr/exceptions/exception scope escape", "inout_ptr type properl
 		}
 	}
 	SECTION("unique_ptr<int, stateful_deleter>") {
-		reused_int_deleter deleter{};
+		reused_int_deleter deleter {};
 		try {
 			std::unique_ptr<int, std::reference_wrapper<reused_int_deleter>> p(nullptr, std::ref(deleter));
 

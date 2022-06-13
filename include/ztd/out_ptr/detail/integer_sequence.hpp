@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,16 +34,16 @@ namespace ztd { namespace out_ptr { namespace op_detail {
 	template <std::size_t... Values>
 	using index_sequence = std::index_sequence<Values...>;
 
-	template<typename T, T N>
+	template <typename T, T N>
 	using make_integer_sequence = std::make_integer_sequence<T, N>;
-			
-	template<std::size_t N>
+
+	template <std::size_t N>
 	using make_index_sequence = std::make_index_sequence<N>;
 
 #else
 
 	template <typename T, T... Values>
-	class integer_sequence {};
+	class integer_sequence { };
 
 	template <std::size_t... Values>
 	using index_sequence = integer_sequence<std::size_t, Values...>;
@@ -53,21 +53,21 @@ namespace ztd { namespace out_ptr { namespace op_detail {
 		struct mis {
 			using type = typename mis<T, N - 1, ((N - 1) == 0), N - 1, Values...>::type;
 		};
-		
+
 		template <typename T, T N, T... Values>
 		struct mis<T, N, true, Values...> {
 			using type = integer_sequence<T, Values...>;
 		};
-	}
+	} // namespace impl
 
-	template<typename T, T N>
+	template <typename T, T N>
 	using make_integer_sequence = typename impl::mis<T, N, N == 0>::type;
-			
-	template<std::size_t N>
+
+	template <std::size_t N>
 	using make_index_sequence = make_integer_sequence<std::size_t, N>;
 
 #endif
 
-}}}
+}}} // namespace ztd::out_ptr::op_detail
 
 #endif // ZTD_OUT_PTR_DETAIL_INTEGER_SEQUENCE_HPP

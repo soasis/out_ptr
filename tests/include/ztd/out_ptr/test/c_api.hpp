@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -83,11 +83,11 @@ namespace ztd { namespace out_ptr { namespace test {
 	}
 
 	inline bool check_derived2(derived2& target) {
-		return target == derived2{};
+		return target == derived2 {};
 	}
 
 	inline bool check_derived1(derived1& target) {
-		return target == derived1{};
+		return target == derived1 {};
 	}
 
 }}} // namespace ztd::out_ptr::test

@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ double compute_stddev(const std::vector<double>& v) {
 
 double compute_index_of_dispersion(const std::vector<double>& v) {
 	double variance = compute_variance(v);
-	double mean	= compute_mean(v);
+	double mean	 = compute_mean(v);
 	if (mean == 0.0) {
 		return 0.0;
 	}

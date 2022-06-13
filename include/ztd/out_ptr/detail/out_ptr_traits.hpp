@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ namespace out_ptr {
 
 		template <typename... Args>
 		static pointer construct(Smart&, Args&&...) noexcept {
-			return pointer{};
+			return pointer {};
 		}
 
 		static typename std::add_pointer<pointer>::type get(Smart&, pointer& p) {

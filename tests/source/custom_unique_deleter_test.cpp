@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,13 +62,13 @@ struct fd {
 	}
 	fd(FILE* f)
 #ifdef _WIN32
-	: handle(f ? _fileno(f) : static_cast<intptr_t>(-1)){
+	: handle(f ? _fileno(f) : static_cast<intptr_t>(-1)) {
 #else
 	: handle(f ? fileno(f) : static_cast<intptr_t>(-1)) {
 #endif // Windows
 	}
 
-	  operator FILE*() const {
+	operator FILE*() const {
 		if (!*this)
 			return nullptr;
 #ifdef _WIN32
@@ -154,13 +154,13 @@ TEST_CASE("out_ptr/fd_with_custom_pointer", "out_ptr type works with smart point
 		}
 		fd(FILE* f)
 #ifdef _WIN32
-		: handle(f ? _fileno(f) : static_cast<intptr_t>(-1)){
+		: handle(f ? _fileno(f) : static_cast<intptr_t>(-1)) {
 #else
 		: handle(f ? fileno(f) : static_cast<intptr_t>(-1)) {
 #endif // Windows
 		}
 
-		  operator FILE*() const {
+		operator FILE*() const {
 			if (!*this)
 				return nullptr;
 #ifdef _WIN32

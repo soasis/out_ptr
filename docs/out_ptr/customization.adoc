@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -181,4 +181,3 @@ namespace ztd { namespace out_ptr {
 Either way you choose to specialize, that is everything you need to write. A full, optimized implementation for `ztd::out_ptr::inout_ptr_t` and `ztd::handle` can be seen in https://github.com/ThePhD/out_ptr/blob/master/examples/source/customization.handle.cpp[this example].
 
 The work is identical for `inout_ptr_t`, but the requirements on the type for how the destructor behave is slightly different. It anticipates that the function handling the double-pointer output argument `$$T**$$` will also handle calling the deleter first before re-allocating properly; therefore, its only responsibility to make sure the pointer is properly reseated in the smart pointer. This is typically done by calling `.release()` on the smart pointer and then putting the new value back into the pointer. For this reason, `ztd::out_ptr::inout_ptr_t` cannot support shared pointers, because there is no way to release a pointer in a shared ownership model.
-

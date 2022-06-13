@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ void intrusive_ptr_release(IDispatch* p) {
 
 void COM_folder_check() {
 	CLSID clsid;
-	CLSIDFromProgID(CComBSTR{ "Scripting.FileSystemObject" }, &clsid);
+	CLSIDFromProgID(CComBSTR { "Scripting.FileSystemObject" }, &clsid);
 
 	boost::intrusive_ptr<IDispatch> dispatch_ptr(nullptr);
 	// put the return value into dispatch_ptr,
@@ -45,10 +45,10 @@ void COM_folder_check() {
 		throw std::runtime_error("failed to create IDispatch Instance");
 	}
 	// use it however you like...
-	CComDispatchDriver dd{ dispatch_ptr.get() };
-	CComVariant arg{ "C:\\Windows" };
-	CComVariant ret{ false };
-	HRESULT inv1_result = dd.Invoke1(CComBSTR{ "FolderExists" }, &arg, &ret);
+	CComDispatchDriver dd { dispatch_ptr.get() };
+	CComVariant arg { "C:\\Windows" };
+	CComVariant ret { false };
+	HRESULT inv1_result = dd.Invoke1(CComBSTR { "FolderExists" }, &arg, &ret);
 	if (FAILED(inv1_result)) {
 		throw std::runtime_error("failed to run Invoke1 for FolderExists");
 	}
@@ -58,7 +58,7 @@ void COM_folder_check() {
 			<< std::endl;
 }
 
-int main(int, char* []) {
+int main(int, char*[]) {
 	CoInitialize(0);
 
 	COM_folder_check();

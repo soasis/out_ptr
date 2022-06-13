@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ int main() {
 			std::cerr << "Error is non-zero, could not open " << file_name << " with a raw handle." << std::endl;
 		}
 		else {
-			char file_data[51]{};
+			char file_data[51] {};
 			std::cout << "Opened " << file_name << " sucessfully! Reading up to 50 bytes..." << std::endl;
 			std::size_t file_data_count = std::fread(file_data, 1, 50, my_unique_fptr.get());
 			std::cout << "Successfully read " << file_data_count << " bytes! They read:\n"

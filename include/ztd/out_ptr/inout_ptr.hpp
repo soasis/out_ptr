@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ namespace out_ptr {
 		template <typename, typename Smart, typename... Args>
 		inout_ptr_t<Smart, pointer_of_t<Smart>, Args...> inout_ptr_tagged(std::true_type, Smart& s, Args&&... args) noexcept(::std::is_nothrow_constructible<inout_ptr_t<Smart, pointer_of_t<Smart>, Args...>, Smart&, Args...>::value) {
 			using Pointer = pointer_of_t<Smart>;
-			using P	  = inout_ptr_t<Smart, Pointer, Args...>;
+			using P	    = inout_ptr_t<Smart, Pointer, Args...>;
 			return P(s, std::forward<Args>(args)...);
 		}
 
@@ -68,7 +68,7 @@ namespace out_ptr {
 
 	template <typename Pointer = op_detail::marker, typename Smart, typename... Args>
 	auto inout_ptr(Smart& s, Args&&... args) noexcept(noexcept(op_detail::inout_ptr_tagged<Pointer>(::std::is_same<Pointer, op_detail::marker>(), s, std::forward<Args>(args)...)))
-	-> decltype(op_detail::inout_ptr_tagged<Pointer>(::std::is_same<Pointer, op_detail::marker>(), s, std::forward<Args>(args)...)) {
+		-> decltype(op_detail::inout_ptr_tagged<Pointer>(::std::is_same<Pointer, op_detail::marker>(), s, std::forward<Args>(args)...)) {
 		return op_detail::inout_ptr_tagged<Pointer>(::std::is_same<Pointer, op_detail::marker>(), s, std::forward<Args>(args)...);
 	}
 

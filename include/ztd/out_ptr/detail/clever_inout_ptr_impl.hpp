@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning(push)
-#pragma warning(disable: 4127)
+#pragma warning(disable : 4127)
 #endif
 
 namespace ztd {
@@ -78,7 +78,7 @@ namespace op_detail {
 					constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
 					std::size_t max_space				 = sizeof(Smart) - memory_start;
 					void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
-					target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+					target							 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
 				}
 #else
 				if (std::is_reference<D>::value || std::is_function<D>::value) {
@@ -86,7 +86,7 @@ namespace op_detail {
 					constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
 					std::size_t max_space				 = sizeof(Smart) - memory_start;
 					void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
-					target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+					target							 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
 				}
 				else {
 					// implementation has Pointer as first member: alias directly
@@ -104,7 +104,7 @@ namespace op_detail {
 				constexpr const std::size_t memory_start = sizeof(D) + (sizeof(D) % alignof(D));
 				std::size_t max_space				 = sizeof(Smart) - memory_start;
 				void* source						 = static_cast<void*>(static_cast<char*>(static_cast<void*>(std::addressof(ptr))) + memory_start);
-				target						 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
+				target							 = std::align(alignof(source_pointer), sizeof(source_pointer), source, max_space);
 #endif
 			}
 			// get direct Pointer
@@ -118,7 +118,7 @@ namespace op_detail {
 		inout_unique_fast(Smart& ptr, std::tuple<>&&) noexcept
 		: inout_unique_fast(can_aliasing_optimization(), ptr) {
 		}
-		inout_unique_fast(inout_unique_fast&& right) noexcept = default;
+		inout_unique_fast(inout_unique_fast&& right) noexcept			= default;
 		inout_unique_fast& operator=(inout_unique_fast&& right) noexcept = default;
 
 		operator Pointer*() const noexcept {

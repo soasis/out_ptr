@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ TEST_CASE("clever_inout_ptr/reused", "clever_inout_ptr type properly deletes non
 		}
 	};
 	SECTION("unique_ptr<void, reused_deleter>") {
-		std::unique_ptr<void, reused_deleter> p(nullptr, reused_deleter{});
+		std::unique_ptr<void, reused_deleter> p(nullptr, reused_deleter {});
 
 		ficapi_re_create(ztd::out_ptr::op_detail::clever_inout_ptr(p), ficapi_type::ficapi_type_int);
 		{
@@ -81,7 +81,7 @@ TEST_CASE("clever_inout_ptr/reused", "clever_inout_ptr type properly deletes non
 		}
 	}
 	SECTION("unique_ptr<int, reused_int_deleter>") {
-		std::unique_ptr<int, reused_int_deleter> p(nullptr, reused_int_deleter{});
+		std::unique_ptr<int, reused_int_deleter> p(nullptr, reused_int_deleter {});
 
 		ficapi_int_re_create(ztd::out_ptr::op_detail::clever_inout_ptr(p));
 		{

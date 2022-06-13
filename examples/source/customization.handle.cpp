@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ namespace ztd { namespace out_ptr {
 			right.m_target_ptr = nullptr;
 		}
 		inout_ptr_t& operator=(inout_ptr_t&& right) noexcept {
-			Base::operator	=(std::move(right));
+			Base::operator=(std::move(right));
 			this->m_target_ptr = right.m_target_ptr;
 			return *this;
 		}

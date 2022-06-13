@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 #include <memory>
 #include <iostream>
 
-int main(int, char* []) {
+int main(int, char*[]) {
 	using zop = ztd::out_ptr;
 
 	std::shared_ptr<sqlite3> database;

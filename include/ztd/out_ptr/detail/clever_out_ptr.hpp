@@ -1,4 +1,4 @@
-// Copyright ⓒ 2018-2021 ThePhD.
+// Copyright ⓒ 2018-2022 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,13 +58,13 @@ namespace op_detail {
 	template <typename, typename Smart, typename... Args>
 	clever_out_ptr_t<Smart, pointer_of_t<Smart>, Args...> clever_out_ptr_tagged(std::true_type, Smart& s, Args&&... args) noexcept(::std::is_nothrow_constructible<clever_out_ptr_t<Smart, pointer_of_t<Smart>, Args...>, Smart&, Args...>::value) {
 		using Pointer = pointer_of_t<Smart>;
-		using P	  = clever_out_ptr_t<Smart, Pointer, Args...>;
+		using P	    = clever_out_ptr_t<Smart, Pointer, Args...>;
 		return P(s, std::forward<Args>(args)...);
 	}
 
 	template <typename Pointer = marker, typename Smart, typename... Args>
 	auto clever_out_ptr(Smart& p, Args&&... args) noexcept(noexcept(clever_out_ptr_tagged<Pointer>(::std::is_same<Pointer, marker>(), p, std::forward<Args>(args)...)))
-	-> decltype(clever_out_ptr_tagged<Pointer>(::std::is_same<Pointer, marker>(), p, std::forward<Args>(args)...)) {
+		-> decltype(clever_out_ptr_tagged<Pointer>(::std::is_same<Pointer, marker>(), p, std::forward<Args>(args)...)) {
 		return clever_out_ptr_tagged<Pointer>(::std::is_same<Pointer, marker>(), p, std::forward<Args>(args)...);
 	}
 
