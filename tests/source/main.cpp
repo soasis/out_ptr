@@ -17,7 +17,16 @@
 #define CATCH_CONFIG_RUNNER 1
 #include <catch2/catch.hpp>
 
+#include <ztd/out_ptr.hpp>
+
+#include <iostream>
+
 int main(int argc, char* argv[]) {
+	std::cout << "ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_" << ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_ << std::endl;
+	std::cout << "ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_" << ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_ << std::endl;
+	std::cout << "ZTD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_" << ZTD_OUT_PTR_CLEVER_MOVELIB_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_ << std::endl;
+	std::cout << "ZTD_OUT_PTR_CLEVER_SANITY_CHECK_I_" << ZTD_OUT_PTR_CLEVER_SANITY_CHECK_I_ << std::endl;
+
 	int r = Catch::Session().run(argc, argv);
 	return r;
 }
