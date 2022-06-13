@@ -43,7 +43,7 @@
 #else
 #define ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_ 0
 #endif
-#elif /* defined(_LIBCPP_VERSION) ||*/ defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
+#elif defined(_LIBCPP_VERSION) || defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
 // implementation changed for libc++: must verify sometime later
 #define ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_ 1
 #else
