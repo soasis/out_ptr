@@ -44,7 +44,6 @@
 #define ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_ 0
 #endif
 #elif defined(_LIBCPP_VERSION) || defined(__GLIBC__) || defined(_YVALS) || defined(_CPPLIB_VER)
-// implementation changed for libc++: must verify sometime later
 #define ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_ 1
 #else
 #define ZTD_OUT_PTR_USE_CLEVER_INOUT_PTR_I_ 0
@@ -57,7 +56,7 @@
 #else
 #define ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_ 0
 #endif
-#elif 0 /*defined(_LIBCPP_VERSION)*/ // implementation changed: must verify sometime later
+#elif defined(_LIBCPP_VERSION)
 #define ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_ 1
 #else
 #define ZTD_OUT_PTR_CLEVER_UNIQUE_IMPLEMENTATION_FIRST_MEMBER_I_ 0
