@@ -40,6 +40,16 @@ namespace ztd {
 namespace out_ptr {
 namespace op_detail {
 
+// Has to be done in multiple places because certain compilers ignore this instantiation
+#define ZTD_OUT_PTR_SAFETY_ASSERTION()                                                                                       \
+	static_assert(sizeof...(Indices) >= necessary_arity<Smart, typename std::tuple_element<Indices, Base>::type...>::value, \
+		"out_ptr requires certain arguments to be passed in for use with this type "                                       \
+		"(e.g. shared_ptr<T> must pass a deleter in so when reset is called the "                                          \
+		"deleter can be properly initialized, otherwise the deleter will be "                                              \
+		"defaulted by the shared_ptr<T>::reset() call!)")
+
+
+
 	template <typename Smart, typename Pointer, typename Traits, typename Args, typename List>
 	class ZTD_OUT_PTR_TRIVIAL_ABI_I_ base_out_ptr_impl;
 
@@ -52,14 +62,11 @@ namespace op_detail {
 		Smart* m_smart_ptr;
 		storage m_target_ptr;
 
-		static_assert(sizeof...(Indices) >= necessary_arity<Smart, typename std::tuple_element<Indices, Base>::type...>::value, // clang-format hack
-			"out_ptr requires certain arguments to be passed in for use with this type "
-			"(e.g. shared_ptr<T> must pass a deleter in so when reset is called the "
-			"deleter can be properly initialized, otherwise the deleter will be "
-			"defaulted by the shared_ptr<T>::reset() call!)");
+		ZTD_OUT_PTR_SAFETY_ASSERTION();
 
 		base_out_ptr_impl(Smart& ptr, Base&& args, storage initial) noexcept
 		: Base(std::move(args)), m_smart_ptr(std::addressof(ptr)), m_target_ptr(initial) {
+			ZTD_OUT_PTR_SAFETY_ASSERTION();
 		}
 
 	public:
@@ -80,11 +87,13 @@ namespace op_detail {
 		}
 
 		operator Pointer*() const noexcept {
+			ZTD_OUT_PTR_SAFETY_ASSERTION();
 			using has_get_call = std::integral_constant<bool, has_traits_get_call<traits_t>::value>;
 			return call_traits_get<traits_t>(has_get_call(), *const_cast<Smart*>(this->m_smart_ptr), const_cast<storage&>(this->m_target_ptr));
 		}
 
 		~base_out_ptr_impl() noexcept(noexcept(traits_t::reset(std::declval<Smart&>(), std::declval<storage&>(), std::get<Indices>(std::move(std::declval<Base&>()))...))) {
+			ZTD_OUT_PTR_SAFETY_ASSERTION();
 			if (this->m_smart_ptr) {
 				Base&& args = std::move(static_cast<Base&>(*this));
 				(void)args; // unused if "Indices" is empty
@@ -92,6 +101,8 @@ namespace op_detail {
 			}
 		}
 	};
+
+#undef ZTD_OUT_PTR_SAFETY_ASSERTION
 
 }}} // namespace ztd::out_ptr::op_detail
 
