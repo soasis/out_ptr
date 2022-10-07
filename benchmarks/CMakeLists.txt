@@ -19,16 +19,34 @@ include(FetchContent)
 # Get Python interpreter for cache stuff
 find_package(Python3)
 
-
-set(BENCHMARK_ENABLE_TESTING OFF)
-set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
-FetchContent_Declare(
-	googlebenchmark
-	GIT_REPOSITORY https://github.com/google/benchmark.git
-)
-FetchContent_MakeAvailable(
-	googlebenchmark
-)
+# google benchmark
+function (google_benchmark_dependency_jail)
+	FetchContent_Declare(
+		google_benchmark
+		GIT_REPOSITORY https://github.com/google/benchmark.git
+		GIT_TAG main
+	)
+	# Benchmark variables, internal setup
+	set(BENCHMARK_ENABLE_EXCEPTIONS ON)
+	set(BENCHMARK_ENABLE_TESTING OFF)
+	set(BENCHMARK_DOWNLOAD_DEPENDENCIES OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	set(BENCHMARK_ENABLE_WERROR OFF)
+	set(BENCHMARK_FORCE_WERROR OFF)
+	set(BENCHMARK_ENABLE_INSTALL OFF)
+	set(BENCHMARK_ENABLE_TESTING OFF)
+	set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+	set(BENCHMARK_ENABLE_WERROR OFF)
+	set(BENCHMARK_FORCE_WERROR OFF)
+	if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND WIN32)
+		# google benchmark is broken, so we need to force HAVE_STD_REGEX to be on for this.
+		set(HAVE_STD_REGEX ON)
+	endif()
+	FetchContent_MakeAvailable(google_benchmark)
+	set_property(DIRECTORY "${google_benchmark_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL YES)
+endfunction()
+google_benchmark_dependency_jail()
 
 
 file(GLOB_RECURSE ztd_out_ptr_benchmarks_sources
