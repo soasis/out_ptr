@@ -15,7 +15,7 @@
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #define CATCH_CONFIG_RUNNER 1
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/out_ptr.hpp>
 

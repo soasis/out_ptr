@@ -20,7 +20,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 namespace ztd { namespace out_ptr {
 

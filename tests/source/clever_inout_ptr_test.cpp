@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("clever_inout_ptr/basic", "clever_inout_ptr type works with smart pointers and C-style output APIs") {

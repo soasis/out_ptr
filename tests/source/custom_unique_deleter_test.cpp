@@ -16,7 +16,7 @@
 
 #include <ztd/out_ptr/out_ptr.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <atomic>
 #include <mutex>

@@ -21,7 +21,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 // A template that always evaluates to false anyhow
 template <std::size_t I>

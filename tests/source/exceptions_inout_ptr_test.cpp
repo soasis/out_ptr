@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("inout_ptr/exceptions/basic fail in scope", "inout_ptr does not double-delete or destroy a pointer if the C function fails") {

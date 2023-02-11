@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <ztd/out_ptr/test/c_api.hpp>
 

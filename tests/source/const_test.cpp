@@ -19,7 +19,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 // simulate C++03-era wrappers
 template <typename... Args>

@@ -15,7 +15,7 @@
 //  See https://github.com/ThePhD/out_ptr/blob/master/docs/out_ptr.adoc for documentation.
 
 #define CATCH_CONFIG_RUNNER 1
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 int main(int argc, char* argv[]) {
 	int r = Catch::Session().run(argc, argv);

@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("inout_ptr/failure/shared no deleter", "inout_ptr type will static assert the lack of a deleter (and the fact that it is a std::shared_ptr)") {

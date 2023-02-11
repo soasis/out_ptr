@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("simple_out_ptr/basic", "simple_out_ptr type works with smart pointers and C-style output APIs") {

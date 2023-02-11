@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("inout_ptr/failure/shared not allowed", "inout_ptr type will static assert that a std::shared_ptr is not allowed") {

@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("out_ptr/exceptions/reused", "out_ptr type properly deletes non-nullptr types from earlier") {

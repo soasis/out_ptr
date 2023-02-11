@@ -18,7 +18,7 @@
 
 #include <ficapi/ficapi.hpp>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 
 TEST_CASE("out_ptr/fail/shared no deleter", "out_ptr type will static assert the lack of a deleter") {
