@@ -1,4 +1,4 @@
-//  Copyright ⓒ 2018-2022 ThePhD.
+//  Copyright ⓒ 2018-2023 ThePhD.
 //
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
@@ -304,4 +304,4 @@ namespace ztd {
 	}
 } // namespace ztd
 
-#endif // ZTD_HANDLE_HANDLE_HPP
+#endif

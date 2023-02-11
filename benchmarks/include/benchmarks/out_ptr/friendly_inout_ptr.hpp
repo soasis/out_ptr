@@ -1,10 +1,10 @@
-// Copyright ⓒ 2018-2022 ThePhD.
+// Copyright ⓒ 2018-2023 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -93,4 +93,4 @@ namespace ztd { namespace out_ptr {
 
 #endif // OUT_PTR_HAS_FRIENDLY_UNIQUE_PTR
 
-#endif // ZTD_OUT_PTR_FRIENDLY_INOUT_PTR_HPP
+#endif

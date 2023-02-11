@@ -1,10 +1,10 @@
-// Copyright ⓒ 2018-2022 ThePhD.
+// Copyright ⓒ 2018-2023 ThePhD.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -94,12 +94,10 @@ namespace out_ptr {
 		template <typename... Args>
 		static void reset(Smart& s, pointer& p, Args&&... args) noexcept {
 			using can_reset = op_detail::is_resetable<Smart, source_pointer, Args...>;
-			if (p) {
-				reset_or_create(can_reset(), s, static_cast<source_pointer>(std::move(p)), std::forward<Args>(args)...);
-			}
+			reset_or_create(can_reset(), s, static_cast<source_pointer>(std::move(p)), std::forward<Args>(args)...);
 		}
 	};
 
 }} // namespace ztd::out_ptr
 
-#endif // ZTD_OUT_PTR_DETAIL_OUT_PTR_TRAITS_HPP
+#endif
