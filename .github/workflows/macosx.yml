@@ -17,8 +17,8 @@ jobs:
     
     - name: configure
       run: |
-        cmake -B build/debug   -D ZTD_OUT_PTR_TESTS=ON -D ZTD_OUT_PTR_EXAMPLES=ON
-        cmake -B build/release -D ZTD_OUT_PTR_TESTS=ON -D ZTD_OUT_PTR_EXAMPLES=ON
+        cmake -B build/debug   -G Ninja -D ZTD_OUT_PTR_TESTS=ON -D ZTD_OUT_PTR_EXAMPLES=ON
+        cmake -B build/release -G Ninja -D ZTD_OUT_PTR_TESTS=ON -D ZTD_OUT_PTR_EXAMPLES=ON
 
     - name: build
       run: |
